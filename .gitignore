@@ -1,0 +1,7 @@
+/vendor
+/node_modules
+.env
+.project
+.buildpath
+.env.example
+.settings
