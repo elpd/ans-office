@@ -6,7 +6,12 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Laravel</title>
 
-	<link href="/css/app.css" rel="stylesheet">
+	<link rel="stylesheet" media="screen" href="/js/jqGrid/css/jquery-ui.css" />
+	<link rel="stylesheet" media="screen" href="/js/jqGrid/css/trirand/ui.jqgrid.css" />
+
+	{!! HTML::style('lib/bootstrap-3.3.2-dist/css/bootstrap.css') !!}
+	{!! HTML::style('css/app.css') !!}
+	{!! HTML::style('css/custom.css') !!}
 
 	<!-- Fonts -->
 	<link href='//fonts.googleapis.com/css?family=Roboto:400,300' rel='stylesheet' type='text/css'>
@@ -34,6 +39,8 @@
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
 					<li><a href="/">Home</a></li>
+					<li><a href="/admin">Admin</a></li>
+					<li><a href="/employee">Employee</a></li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">
@@ -56,7 +63,19 @@
 	@yield('content')
 
 	<!-- Scripts -->
-	<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-	<script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js"></script>
+	<!--script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js">
+	</script-->
+	<!--script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.1/js/bootstrap.min.js">
+	</script-->
+	<!--script src="/js/jqGrid/src/jquery.jqGrid.js"></script-->
+	<!--script src="/js/jqGrid/src/i18n/grid.locale-en.js"></script-->
+	<script>
+		var scripts = [];
+		var $_token = "{{ csrf_token() }}";
+	</script>
+	<script data-main="/js/main" src="/js/require.js"></script>
+
+	@yield('childScript');
+
 </body>
 </html>

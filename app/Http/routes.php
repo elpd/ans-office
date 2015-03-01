@@ -19,3 +19,12 @@ Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
+
+Route::get('employee', 'EmployeeController@index');
+Route::get('employee/groups-members', 'GroupsMembersController@index');
+
+Route::resource('api/group', 'api\GroupController');
+Route::resource('api/groups-members', 'api\GroupsMembersController');
+Route::resource('api/group-members-status', 'api\GroupMembersStatusController');
+Route::resource('api/guide', 'api\GuideController');
+Route::resource('api/contact', 'api\ContactController');

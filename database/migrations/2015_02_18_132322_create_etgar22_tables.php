@@ -13,7 +13,7 @@ class CreateEtgar22Tables extends Migration {
 	public function up()
 	{
 		// Creates the contacts table
-        Schema::create('contacts', 
+        Schema::create('contacts',
                 function  ($table)
                 {
                     $table->increments('id')->unsigned();
@@ -27,16 +27,16 @@ class CreateEtgar22Tables extends Migration {
                     $table->tinyInteger('donate');
                     $table->tinyInteger('blacklisted');
                     $table->timestamps();
-                    
+
                     $table->unique(
                             array(
                                     'email',
                                     'first_name'
                             ));
                 });
-        
+
         // Create the cycles table
-        Schema::create('cycles', 
+        Schema::create('cycles',
                 function  ($table)
                 {
                     $table->increments('id')->unsigned();
@@ -44,38 +44,38 @@ class CreateEtgar22Tables extends Migration {
                     ->unique();;
                     $table->integer('num');
                     $table->timestamps();
-                    
+
                 });
-        
+
         // Create the group status table
-        Schema::create('group_status', 
+        Schema::create('group_status',
                 function  ($table)
                 {
                     $table->increments('id')->unsigned();
                     $table->string('status', 20);
                     $table->timestamps();
                 });
-        
+
         // Create the groups members status table
-        Schema::create('group_members_status', 
+        Schema::create('group_members_status',
                 function  ($table)
                 {
                     $table->increments('id')->unsigned();
                     $table->string('status', 20);
                     $table->timestamps();
                 });
-        
+
         // Create the guides table
-        Schema::create('guides', 
+        Schema::create('guides',
                 function  ($table)
                 {
                     $table->increments('id')->unsigned();
                     $table->string('name', 20);
                     $table->timestamps();
                 });
-        
+
         // Create the etgar22 table
-        Schema::create('etgar22', 
+        Schema::create('etgar22',
                 function  ($table)
                 {
                     $table->increments('id')->unsigned();
@@ -91,16 +91,16 @@ class CreateEtgar22Tables extends Migration {
                     $table->string('parents-name', 30);
                     $table->string('parent-email', 100);
                     $table->timestamps();
-                    
+
                     $table->foreign('contact_id')
                         ->references('id')
                         ->on('contacts');
                 });
-        
+
         // Create the groups table
-        Schema::create('groups', 
+        Schema::create('groups',
                 function  ($table)
-                {                    
+                {
                     $table->increments('id')->unsigned();
                     $table->integer('cycle_id')
                         ->unsigned()
@@ -110,22 +110,22 @@ class CreateEtgar22Tables extends Migration {
                         ->unsigned()
                         ->index();
                     $table->timestamps();
-                    
+
                     $table->foreign('cycle_id')
                         ->references('id')
                         ->on('cycles')
                         ->onUpdate('cascade')
                         ->onDelete('cascade');
-                    
+
                     $table->foreign('status_id')
                         ->references('id')
                         ->on('group_status')
                         ->onUpdate('cascade')
                         ->onDelete('cascade');
                 });
-        
+
         // Create the groups members table
-        Schema::create('groups_members', 
+        Schema::create('groups_members',
                 function  ($table)
                 {
                     $table->increments('id')->unsigned();
@@ -144,32 +144,42 @@ class CreateEtgar22Tables extends Migration {
                         ->nullable()
                         ->index();
                     $table->timestamps();
-                    
+
                     $table->unique(
                             array(
                                     'group_id',
                                     'contact_id'
                             ));
-                    
+
                     $table->foreign('group_id')
                         ->references('id')
-                        ->on('groups');
-                    
+                        ->on('groups')
+												->onUpdate('cascade')
+												->onDelete('cascade');
+
                     $table->foreign('contact_id')
                         ->references('id')
-                        ->on('contacts');
-                    
+                        ->on('contacts')
+												->onUpdate('cascade')
+												->onDelete('cascade');
+
                     $table->foreign('status_id')
                         ->references('id')
-                        ->on('group_members_status');
-                    
+                        ->on('group_members_status')
+												->onUpdate('no action')
+												->onDelete('no action');
+
                     $table->foreign('guide_id_1')
                         ->references('id')
-                        ->on('guides');
-                    
+                        ->on('guides')
+												->onUpdate('no action')
+												->onDelete('no action');
+
                     $table->foreign('guide_id_2')
                         ->references('id')
-                        ->on('guides');
+                        ->on('guides')
+												->onUpdate('no action')
+												->onDelete('no action');
                 });
 	}
 
@@ -180,20 +190,20 @@ class CreateEtgar22Tables extends Migration {
 	 */
 	public function down()
 	{
-		Schema::table('etgar22', 
+		Schema::table('etgar22',
                 function  (Blueprint $table)
                 {
                     $table->dropForeign('etgar22_contact_id_foreign');
                 });
-        
-        Schema::table('groups', 
+
+        Schema::table('groups',
                 function  (Blueprint $table)
                 {
                     $table->dropForeign('groups_status_id_foreign');
                     $table->dropForeign('groups_cycle_id_foreign');
                 });
-        
-        Schema::table('groups_members', 
+
+        Schema::table('groups_members',
                 function  (Blueprint $table)
                 {
                     $table->dropForeign('groups_members_guide_id_1_foreign');
@@ -202,7 +212,7 @@ class CreateEtgar22Tables extends Migration {
                     $table->dropForeign('groups_members_contact_id_foreign');
                     $table->dropForeign('groups_members_status_id_foreign');
                 });
-        
+
         Schema::drop('contacts');
         Schema::drop('cycles');
         Schema::drop('etgar22');

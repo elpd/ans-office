@@ -8,15 +8,20 @@ use Watson\Validating\ValidatingTrait;
 class GroupsMember extends Model
 {
     use ValidatingTrait;
-    
+
     protected $table = 'groups_members';
-    
-    protected $fillable = array(
+
+    public $fillable = array(
             'group_id',
             'contact_id',
             'status_id',
             'guide_id_1',
             'guide_id_2',
+    );
+
+    public $nullable = array(
+      'guide_id_1',
+      'guide_id_2'
     );
 
     protected $rules = array(
@@ -39,5 +44,5 @@ class GroupsMember extends Model
                     'exists:guides,id'
             )
     );
-    
+
 }
