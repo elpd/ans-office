@@ -8,9 +8,10 @@ use Watson\Validating\ValidatingTrait;
 class Cycle extends Model
 {
     use ValidatingTrait;
-    
-    protected $fillable = array(
-            'startDate'
+
+    public $fillable = array(
+            'startDate',
+            'num',
     );
 
     protected $rules = array(
@@ -19,6 +20,6 @@ class Cycle extends Model
                     'date'
             )
     );
-    
-    
+
+    public $nullable = [];
 }

@@ -51,10 +51,10 @@
 						<div class="navbar-collapse collapse sidebar-navbar-collapse">
 
 							<ul class="nav navbar-nav">
-								<li><a href="logged.employee.contacts">Contacts</a> </li>
-								<li><a ui-sref="logged.employee.cycles">Cycles</a> </li>
-								<li><a ui-sref="logged.employee.groups">Groups</a></li>
-								<li><a ui-sref="logged.employee.guides">Guides</a></li>
+								<li><a href="/employee/contacts">Contacts</a> </li>
+								<li><a href="/employee/cycles">Cycles</a> </li>
+								<li><a href="/employee/groups">Groups</a></li>
+								<li><a href="/employee/guides">Guides</a></li>
 								<li><a href="/employee/groups-members">Groups Members</a></li>
 							</ul>
 						</div>

@@ -22,9 +22,11 @@ Route::controllers([
 
 Route::get('employee', 'EmployeeController@index');
 Route::get('employee/groups-members', 'GroupsMembersController@index');
+Route::get('employee/cycles', 'CycleController@index');
 
 Route::resource('api/group', 'api\GroupController');
 Route::resource('api/groups-members', 'api\GroupsMembersController');
 Route::resource('api/group-members-status', 'api\GroupMembersStatusController');
 Route::resource('api/guide', 'api\GuideController');
 Route::resource('api/contact', 'api\ContactController');
+Route::resource('api/cycle', 'api\CycleController');

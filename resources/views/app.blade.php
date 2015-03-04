@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Laravel</title>
 
-	<link rel="stylesheet" media="screen" href="/js/jqGrid/css/jquery-ui.css" />
+	<link rel="stylesheet" media="screen" href="/lib/jquery-ui-1.11.3.custom/jquery-ui.css" />
 	<link rel="stylesheet" media="screen" href="/js/jqGrid/css/trirand/ui.jqgrid.css" />
 
 	{!! HTML::style('lib/bootstrap-3.3.2-dist/css/bootstrap.css') !!}

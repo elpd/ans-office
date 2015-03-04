@@ -43,23 +43,6 @@ class GroupsMembersController extends Controller {
 	{
 		//
 		abort(404);
-	}
-
-	/**
-	 * Update the specified resource in storage.
-	 *
-	 * @param  int  $id
-	 * @return Response
-	 */
-	public function update($id)
-	{
-		$item = GroupsMember::findOrFail($id);
-		$input = Request::all();
-
-		$item->status_id = $input['status_id'];
-		$item->save();
-
-		return ['success' => true];
-	}
+	}	
 
 }

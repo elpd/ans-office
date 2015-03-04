@@ -37,7 +37,7 @@ trait GeneralRestControlling {
         $itemResult['cell'] = $item;
 
         $result[] = $itemResult;
-        
+
         return $result;
       }, array());
   }
@@ -84,6 +84,34 @@ trait GeneralRestControlling {
   }
 
   /**
+  * Update the specified resource in storage.
+  *
+  * @param  int  $id
+  * @return Response
+  */
+  public function update($id)
+  {
+    $class = $this->biClass;
+    $object = new $class();
+
+    $item = $class::findOrFail($id);
+    $input = Request::only($object->fillable);
+    foreach ($object->nullable as $nullableField) {
+      if (array_key_exists ($nullableField, $input) && $input[$nullableField] === '' ) {
+        $input[$nullableField] = null;
+      }
+    }
+
+    foreach($input as $inputKey => $inputValue) {
+      $item->$inputKey = $inputValue;
+    }
+
+    $item->save();
+
+    return ['success' => true];
+  }
+
+  /**
   * Remove the specified resource from storage.
   *
   * @param  int  $id
@@ -105,5 +133,40 @@ trait GeneralRestControlling {
       'success' => true,
       'item_id' => $id
     ];
+  }
+
+  /**
+  * Show the form for creating a new resource.
+  *
+  * @return Response
+  */
+  public function create()
+  {
+    //
+    abort(404);
+  }
+
+  /**
+  * Display the specified resource.
+  *
+  * @param  int  $id
+  * @return Response
+  */
+  public function show($id)
+  {
+    //
+    abort(404);
+  }
+
+  /**
+  * Show the form for editing the specified resource.
+  *
+  * @param  int  $id
+  * @return Response
+  */
+  public function edit($id)
+  {
+    //
+    abort(404);
   }
 }

@@ -1,80 +1,44 @@
 define([
     'classes/utilities',
-    'classes/bi/GroupMembersStatus',
-    'classes/bi/Guide',
-    'classes/bi/Contact',
-    'classes/bi/Group'
   ],
   function(
-    utilities,
-    GroupMembersStatus,
-    Guide,
-    Contact,
-    Group
+    utilities
   ) {
 
     $(document).ready(function() {
       $("#jqGrid").jqGrid({
+
         colModel: [{
           label: 'ID',
           name: 'id',
           width: 30
         }, {
-          label: 'Group',
-          name: 'group_id',
+          label: 'Start Date',
+          name: 'startDate',
           editable: true,
-          edittype: 'select',
-          formatter: 'select',
+          //edittype: 'select',
+          formatter: 'date',
           editoptions: {
-            value: generateGetItems('/api/group', Group)(),
-            dataUrl: '/api/group',
-            buildSelect: generateBuildSelect(Group)
-          }
-          //width: 80
-        }, {
-          label: 'Contact',
-          name: 'contact_id',
-          editable: true,
-          edittype: 'select',
-          formatter: 'select',
-          editoptions: {
-            value: generateGetItems('/api/contact', Contact)(),
-            dataUrl: '/api/contact',
-            buildSelect: generateBuildSelect(Contact)
+            // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+            // use it to place a third party control to customize the toolbar
+            dataInit: function(element) {
+              $(element).datepicker({
+                id: 'orderDate_datePicker',
+                dateFormat: 'yy-mm-dd',
+                //minDate: new Date(2010, 0, 1),
+                maxDate: new Date(2020, 0, 1),
+                showOn: 'focus'
+              });
+            }
           }
         }, {
-          label: 'Status',
-          name: 'status_id',
+          label: 'Num',
+          name: 'num',
           editable: true,
-          edittype: 'select',
-          formatter: 'select',
+          //edittype: 'select',
+          formatter: 'integer',
           editoptions: {
-            value: generateGetItems('/api/group-members-status',
-              GroupMembersStatus)(),
-            dataUrl: '/api/group-members-status',
-            buildSelect: generateBuildSelect(GroupMembersStatus)
-          }
-        }, {
-          label: 'Guide 1',
-          name: 'guide_id_1',
-          editable: true,
-          edittype: 'select',
-          formatter: 'select',
-          editoptions: {
-            value: generateGetItems('/api/guide', Guide)(),
-            dataUrl: '/api/guide',
-            buildSelect: generateBuildSelect(Guide)
-          }
-        }, {
-          label: 'Guide 2',
-          name: 'guide_id_2',
-          editable: true,
-          edittype: 'select',
-          formatter: 'select',
-          editoptions: {
-            value: generateGetItems('/api/guide', Guide)(),
-            dataUrl: '/api/guide',
-            buildSelect: generateBuildSelect(Guide)
+
           }
         }],
 
@@ -83,13 +47,15 @@ define([
         height: 200,
         rowNum: 15,
         datatype: 'json',
-        url: "/api/groups-members",
+        url: "/api/cycle",
         pager: "#jqGridPager",
-        caption: "Groups Members",
+        caption: "Cycles",
         //onSelectRow: editRow,
         ondblClickRow: editRow,
-        autowidth: true
-        //loadOnce: false
+        autowidth: true,
+        subGrid: true,
+        subGridRowExpanded: showChildGrid
+          //loadOnce: false
       });
 
       $('#jqGrid').navGrid("#jqGridPager",
@@ -110,28 +76,29 @@ define([
           closeAfterAdd: true,
           recreateForm: true,
           reloadAfterSubmit: true,
-          url: '/api/groups-members/',
+          url: '/api/cycle/',
           mtype: 'POST',
           editData: {
             _token: $_token
           },
-          afterSubmit : function( data, postdata, oper) {
+          afterSubmit: function(data, postdata, oper) {
             var response = data.responseJSON;
             if (!response.success) {
-              var errorsArray = utilities.errorsObjectToArray(response.errors);
-              if(errorsArray.length) {
-                return [false,errorsArray];
+              var errorsArray = utilities.errorsObjectToArray(
+                response.errors);
+              if (errorsArray.length) {
+                return [false, errorsArray];
               }
             }
             //$(this).jqGrid("setGridParam", {datatype: 'json'});
-            return [true,"",response.item_id];
+            return [true, "", response.item_id];
           }
         },
         // options for the Delete Dailog
         {
           height: 'auto',
           width: 620,
-          url: '/api/groups-members/-1',
+          url: '/api/cycle/-1',
           mtype: 'DELETE',
           delData: {
             _token: $_token
@@ -149,8 +116,6 @@ define([
         }
       });
 
-      //fetchGridData();
-
       var lastSelection;
 
       function editRow(id) {
@@ -161,7 +126,7 @@ define([
           var editOptions = {
             keys: true,
             focusField: 4,
-            url: '/api/groups-members/' + id.toString(),
+            url: '/api/cycle/' + id.toString(),
             "extraparam": {
               _token: $_token
             },
@@ -172,30 +137,6 @@ define([
           lastSelection = id;
         }
       };
-
-      function fetchGridData() {
-
-        var gridArrayData = [];
-        // show loading message
-        $("#jqGrid")[0].grid.beginReq();
-        $.ajax({
-          url: "/api/groups-members",
-          success: function(result) {
-            for (var i = 0; i < result.rows.length; i++) {
-              var item = result.rows[i];
-              gridArrayData.push(item.cell);
-            }
-            // set the new data
-            $("#jqGrid").jqGrid('setGridParam', {
-              data: gridArrayData
-            });
-            // hide the show message
-            $("#jqGrid")[0].grid.endReq();
-            // refresh the grid
-            $("#jqGrid").trigger('reloadGrid');
-          }
-        });
-      }
 
       function formatLink(cellValue, options, rowObject) {
         return "<a href='" + cellValue + "'>" + cellValue.substring(0,
@@ -244,6 +185,59 @@ define([
 
         return buildSelect;
       };
+
+      // the event handler on expanding parent row receives two parameters
+      // the ID of the grid tow  and the primary key of the row
+      function showChildGrid(parentRowID, parentRowKey) {
+        var childGridID = parentRowID + "_table";
+        var childGridPagerID = parentRowID + "_pager";
+
+        // send the parent row primary key to the server so that we know which
+        // grid to show
+        var childGridURL = parentRowKey + ".json";
+        //childGridURL = childGridURL + "&parentRowID=" +
+        // encodeURIComponent(parentRowKey)
+
+        // add a table and pager HTML elements to the parent grid row -
+        // we will render the child grid here
+        $('#' + parentRowID).append('<table id=' + childGridID +
+          '></table><div id=' + childGridPagerID +
+          ' class=scroll></div>');
+
+        $("#" + childGridID).jqGrid({
+          url: childGridURL,
+          mtype: "GET",
+          datatype: "json",
+          page: 1,
+          colModel: [{
+            label: 'Order ID',
+            name: 'OrderID',
+            key: true,
+            width: 75
+          }, {
+            label: 'Required Date',
+            name: 'RequiredDate',
+            width: 100
+          }, {
+            label: 'Ship Name',
+            name: 'ShipName',
+            width: 100
+          }, {
+            label: 'Ship City',
+            name: 'ShipCity',
+            width: 100
+          }, {
+            label: 'Freight',
+            name: 'Freight',
+            width: 75
+          }],
+          loadonce: true,
+          width: 500,
+          height: '100%',
+          pager: "#" + childGridPagerID
+        });
+
+      }
 
     });
   });
