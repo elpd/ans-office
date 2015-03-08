@@ -1,16 +1,12 @@
 define([
     'classes/utilities',
-    'classes/bi/Cycle',
-    'classes/bi/GroupStatus'
   ],
   function(
-    utilities,
-    Cycle,
-    GroupStatus
+    utilities
   ) {
 
     $(document).ready(function() {
-      var cycleControllerUrl = "/api/cycle";
+      var contactControllerUrl = "/api/contact";
 
       $("#jqGrid").jqGrid({
 
@@ -20,8 +16,8 @@ define([
           width: 30,
           key: true
         }, {
-          label: 'Start Date',
-          name: 'startDate',
+          label: 'Registration Date',
+          name: 'registration_date',
           editable: true,
           //edittype: 'select',
           formatter: 'date',
@@ -30,7 +26,7 @@ define([
             // use it to place a third party control to customize the toolbar
             dataInit: function(element) {
               $(element).datepicker({
-                id: 'orderDate_datePicker',
+                id: 'registrationDate_datePicker',
                 dateFormat: 'yy-mm-dd',
                 //minDate: new Date(2010, 0, 1),
                 maxDate: new Date(2020, 0, 1),
@@ -39,11 +35,58 @@ define([
             }
           }
         }, {
-          label: 'Num',
-          name: 'num',
+          label: 'Email',
+          name: 'email',
           editable: true,
-          //edittype: 'select',
-          formatter: 'integer',
+          editoptions: {
+
+          }
+        }, {
+          label: 'First Name',
+          name: 'first_name',
+          editable: true,
+          editoptions: {
+
+          }
+        }, {
+          label: 'Last Name',
+          name: 'last_name',
+          editable: true,
+          editoptions: {
+
+          }
+        }, {
+          label: 'Phone',
+          name: 'phone',
+          editable: true,
+          editoptions: {
+
+          }
+        }, {
+          label: 'Facebook',
+          name: 'facebook',
+          editable: true,
+          editoptions: {
+
+          }
+        }, {
+          label: 'Birth Year',
+          name: 'birth_year',
+          editable: true,
+          editoptions: {
+
+          }
+        }, {
+          label: 'Donate',
+          name: 'donate',
+          editable: true,
+          editoptions: {
+
+          }
+        }, {
+          label: 'Blacklisted',
+          name: 'blacklisted',
+          editable: true,
           editoptions: {
 
           }
@@ -54,14 +97,14 @@ define([
         height: 200,
         rowNum: 15,
         datatype: 'json',
-        url: cycleControllerUrl,
+        url: contactControllerUrl,
         pager: "#jqGridPager",
-        caption: "Cycles",
+        caption: "Contacts",
         //onSelectRow: editRow,
         ondblClickRow: editRow,
-        autowidth: true,
-        subGrid: true,
-        subGridRowExpanded: showChildGrid
+        autowidth: true//,
+        //subGrid: true,
+        //subGridRowExpanded: showChildGrid
           //loadOnce: false
       });
 
@@ -83,7 +126,7 @@ define([
           closeAfterAdd: true,
           recreateForm: true,
           reloadAfterSubmit: true,
-          url: cycleControllerUrl,
+          url: contactControllerUrl,
           mtype: 'POST',
           editData: {
             _token: $_token
@@ -105,7 +148,7 @@ define([
         {
           height: 'auto',
           width: 620,
-          url: cycleControllerUrl + '/-1',
+          url: contactControllerUrl + '/-1',
           mtype: 'DELETE',
           delData: {
             _token: $_token
@@ -133,7 +176,7 @@ define([
           var editOptions = {
             keys: true,
             focusField: 4,
-            url: cycleControllerUrl + id.toString(),
+            url: contactControllerUrl + '/' + id.toString(),
             "extraparam": {
               _token: $_token
             },
@@ -144,73 +187,5 @@ define([
           lastSelection = id;
         }
       };
-
-      // the event handler on expanding parent row receives two parameters
-      // the ID of the grid row  and the primary key of the row
-      function showChildGrid(parentRowID, parentRowKey) {
-        var childGridID = parentRowID + "_table";
-        var childGridPagerID = parentRowID + "_pager";
-
-        // send the parent row primary key to the server so that we know which
-        // grid to show
-        //var childGridURL = parentRowKey + ".json";
-        //childGridURL = childGridURL + "&parentRowID=" +
-        // encodeURIComponent(parentRowKey)
-        var childGridURL = cycleControllerUrl + '/' + parentRowKey +
-          '/groups';
-
-        // add a table and pager HTML elements to the parent grid row -
-        // we will render the child grid here
-        $('#' + parentRowID).append(
-          '<table id=' + childGridID +
-          '></table>' +
-          '<div id=' + childGridPagerID +
-          ' class=scroll></div>');
-
-        $("#" + childGridID).jqGrid({
-          url: childGridURL,
-          mtype: "GET",
-          datatype: "json",
-          page: 1,
-          colModel: [{
-            label: 'ID',
-            name: 'id',
-            key: true,
-            width: 75
-          }, {
-            label: 'Cycle',
-            name: 'cycle_id',
-            width: 100,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-              value: utilities.generateGetItems('/api/cycle', Cycle)(),
-              dataUrl: '/api/cycle',
-              buildSelect: utilities.generateBuildSelect(Cycle)
-            }
-          }, {
-            label: 'Name',
-            name: 'name',
-            width: 100
-          }, {
-            label: 'Statue',
-            name: 'status_id',
-            width: 75,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-              value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
-              dataUrl: '/api/group-status',
-              buildSelect: utilities.generateBuildSelect(GroupStatus)
-            }
-          }],
-          loadonce: true,
-          width: 500,
-          height: '100%',
-          pager: "#" + childGridPagerID
-        });
-
-      }
-
     });
   });

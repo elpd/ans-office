@@ -22,4 +22,9 @@ class Cycle extends Model
     );
 
     public $nullable = [];
+
+    public function groups()
+    {
+      return $this->hasMany('App\Group');
+    }
 }

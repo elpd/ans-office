@@ -4,8 +4,7 @@ define([
   function(
     BusinessObject
   ) {
-
-  var Class = function GroupMembersStatus(params) {
+  var Class = function GroupStatus(params) {
     this.setByParams(params);
   };
 

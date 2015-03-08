@@ -8,8 +8,8 @@ use Watson\Validating\ValidatingTrait;
 class Contact extends Model
 {
     use ValidatingTrait;
-    
-    protected $fillable = array(
+
+    public $fillable = array(
             'registration_date',
             'email',
             'first_name',
@@ -20,6 +20,8 @@ class Contact extends Model
             'donate',
             'blacklisted',
     );
+
+    public $nullable = [];
 
     protected $rules = array(
             "first_name" => array(
@@ -39,5 +41,5 @@ class Contact extends Model
             "donate" => array(),
             "blacklisted" => array(),
     );
-    
+
 }

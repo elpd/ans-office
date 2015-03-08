@@ -2,11 +2,11 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use App\Group;
+use App\GroupStatus;
 
-class GroupController extends Controller {
+class GroupStatusController extends Controller {
 
-	protected $biClass = 'App\Group';
+	protected $biClass = 'App\GroupStatus';
 
 	use GeneralRestControlling;
 }

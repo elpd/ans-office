@@ -1,35 +1,26 @@
-define([], function() {
-  var Class = function Guide(params) {
-    this.setByParams(params);
-  };
+define([
+    'classes/BusinessObject'
+  ],
+  function(
+    BusinessObject
+  ) {
+    var Class = function Guide(params) {
+      this.setByParams(params);
+    };
 
-  Class.prototype = {
-    toSelectOption: function() {
-      var value = this.id;
-      var label = this.name;
+    Class.prototype = (function() {
+      var Prototype = function Prototype() {
+        this.toString = function() {
+          return this.name;
+        };
+      };
 
-      var html = "<option value='" +
-        value +
-        "'>" +
-        label +
-        "</option>";
+      Prototype.prototype = new BusinessObject();
 
-      return html;
-    },
+      var prototype = new Prototype();
 
-    toString: function() {
-        return this.name;
-    },
+      return prototype;
+    })();
 
-    setByParams: function(params) {
-      var self = this;
-      for (var prop in params) {
-        if (params.hasOwnProperty(prop)) {
-          self[prop] = params[prop];
-        }
-      }
-    }
-  };
-
-  return Class;
-});
+    return Class;
+  });

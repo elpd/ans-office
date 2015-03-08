@@ -4,15 +4,14 @@ define([
   function(
     BusinessObject
   ) {
-
-    var Class = function Contact(params) {
+    var Class = function Cycle(params) {
       this.setByParams(params);
     };
 
     Class.prototype = (function() {
       var Prototype = function Prototype() {
         this.toString = function() {
-          return this.first_name + ' ' + this.last_name;
+          return this.startDate + ' - ' + this.num;
         };
       };
 

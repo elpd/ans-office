@@ -1,80 +1,62 @@
 define([
     'classes/utilities',
-    'classes/bi/GroupMembersStatus',
-    'classes/bi/Guide',
-    'classes/bi/Contact',
-    'classes/bi/Group'
+    'classes/bi/Group',
+    'classes/bi/Cycle',
+    'classes/bi/GroupStatus'
   ],
   function(
     utilities,
-    GroupMembersStatus,
-    Guide,
-    Contact,
-    Group
+    Group,
+    Cycle,
+    GroupStatus
   ) {
 
     $(document).ready(function() {
+      var mainBi = {
+          controllerUrl: "/api/group",
+          asCapitalPlural: function() {
+            return 'Groups';
+          }
+      };
+
       $("#jqGrid").jqGrid({
+
         colModel: [{
           label: 'ID',
           name: 'id',
-          width: 30
+          key: true,
+          width: 75
         }, {
-          label: 'Group',
-          name: 'group_id',
-          editable: true,
+          label: 'Cycle',
+          name: 'cycle_id',
+          width: 100,
           edittype: 'select',
           formatter: 'select',
           editoptions: {
-            value: utilities.generateGetItems('/api/group', Group)(),
-            dataUrl: '/api/group',
-            buildSelect: utilities.generateBuildSelect(Group)
+            value: utilities.generateGetItems('/api/cycle', Cycle)(),
+            dataUrl: '/api/cycle',
+            buildSelect: utilities.generateBuildSelect(Cycle)
           }
-          //width: 80
         }, {
-          label: 'Contact',
-          name: 'contact_id',
+          label: 'Name',
+          name: 'name',
+          width: 100,
           editable: true,
-          edittype: 'select',
-          formatter: 'select',
+          //edittype: 'select',
+          //formatter: 'integer',
           editoptions: {
-            value: utilities.generateGetItems('/api/contact', Contact)(),
-            dataUrl: '/api/contact',
-            buildSelect: utilities.generateBuildSelect(Contact)
+
           }
         }, {
-          label: 'Status',
+          label: 'Statue',
           name: 'status_id',
-          editable: true,
+          width: 75,
           edittype: 'select',
           formatter: 'select',
           editoptions: {
-            value: utilities.generateGetItems('/api/group-members-status',
-              GroupMembersStatus)(),
-            dataUrl: '/api/group-members-status',
-            buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
-          }
-        }, {
-          label: 'Guide 1',
-          name: 'guide_id_1',
-          editable: true,
-          edittype: 'select',
-          formatter: 'select',
-          editoptions: {
-            value: utilities.generateGetItems('/api/guide', Guide)(),
-            dataUrl: '/api/guide',
-            buildSelect: utilities.generateBuildSelect(Guide)
-          }
-        }, {
-          label: 'Guide 2',
-          name: 'guide_id_2',
-          editable: true,
-          edittype: 'select',
-          formatter: 'select',
-          editoptions: {
-            value: utilities.generateGetItems('/api/guide', Guide)(),
-            dataUrl: '/api/guide',
-            buildSelect: utilities.generateBuildSelect(Guide)
+            value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
+            dataUrl: '/api/group-status',
+            buildSelect: utilities.generateBuildSelect(GroupStatus)
           }
         }],
 
@@ -83,12 +65,14 @@ define([
         height: 200,
         rowNum: 15,
         datatype: 'json',
-        url: "/api/groups-members",
+        url: mainBi.controllerUrl,
         pager: "#jqGridPager",
-        caption: "Groups Members",
+        caption: mainBi.asCapitalPlural(),
         //onSelectRow: editRow,
         ondblClickRow: editRow,
-        autowidth: true
+        autowidth: true//,
+        //subGrid: true,
+        //subGridRowExpanded: showChildGrid
           //loadOnce: false
       });
 
@@ -110,7 +94,7 @@ define([
           closeAfterAdd: true,
           recreateForm: true,
           reloadAfterSubmit: true,
-          url: '/api/groups-members/',
+          url: mainBi.controllerUrl,
           mtype: 'POST',
           editData: {
             _token: $_token
@@ -132,7 +116,7 @@ define([
         {
           height: 'auto',
           width: 620,
-          url: '/api/groups-members/-1',
+          url: mainBi.controllerUrl + '/-1',
           mtype: 'DELETE',
           delData: {
             _token: $_token
@@ -150,8 +134,6 @@ define([
         }
       });
 
-      //fetchGridData();
-
       var lastSelection;
 
       function editRow(id) {
@@ -162,7 +144,7 @@ define([
           var editOptions = {
             keys: true,
             focusField: 4,
-            url: '/api/groups-members/' + id.toString(),
+            url: mainBi.controllerUrl + '/' + id.toString(),
             "extraparam": {
               _token: $_token
             },
@@ -173,30 +155,5 @@ define([
           lastSelection = id;
         }
       };
-
-      function fetchGridData() {
-
-        var gridArrayData = [];
-        // show loading message
-        $("#jqGrid")[0].grid.beginReq();
-        $.ajax({
-          url: "/api/groups-members",
-          success: function(result) {
-            for (var i = 0; i < result.rows.length; i++) {
-              var item = result.rows[i];
-              gridArrayData.push(item.cell);
-            }
-            // set the new data
-            $("#jqGrid").jqGrid('setGridParam', {
-              data: gridArrayData
-            });
-            // hide the show message
-            $("#jqGrid")[0].grid.endReq();
-            // refresh the grid
-            $("#jqGrid").trigger('reloadGrid');
-          }
-        });
-      }
-
     });
   });

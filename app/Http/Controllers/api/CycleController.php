@@ -10,5 +10,4 @@ class CycleController extends Controller {
 	protected $biClass = 'App\Cycle';
 
 	use GeneralRestControlling;
-
 }
