@@ -8,7 +8,7 @@ var Class = function AnsHomepage() {
 Class.prototype = (function(){
   function Prototype() {
     this.getAsLoggedOut = function() {
-      browser.get('http://ans-mvc.app');
+      browser.get('http://127.0.0.1:8000');
 
       var loginPage = new LoginPage();
       return loginPage;

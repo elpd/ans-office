@@ -7,7 +7,7 @@ var Class = function LoginPage() {
 Class.prototype = (function(){
   function Prototype() {
     this.get = function() {
-      browser.get('http://ans-mvc.app/auth/login');
+      browser.get('http://127.0.0.1:8000/auth/login');
     };
   };
 
