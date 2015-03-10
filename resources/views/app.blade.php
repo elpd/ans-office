@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Laravel</title>
+	<title>ANS Office System</title>
 
 	<link rel="stylesheet" media="screen" href="/lib/jquery-ui-1.11.3.custom/jquery-ui.css" />
 	<link rel="stylesheet" media="screen" href="/js/jqGrid/css/trirand/ui.jqgrid.css" />
