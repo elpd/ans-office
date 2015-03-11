@@ -2,7 +2,7 @@
 
 @section('subContent')
 <div>
-	<h2>Cycles</h2>
+	<h2 class="section_header">Cycles</h2>
 
 	<table id="jqGrid"></table>
 	<div id="jqGridPager"></div>

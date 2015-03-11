@@ -18,7 +18,7 @@ Class.prototype = (function(){
     this.getTitle = function() {
       return browser.getTitle();
     };
-  };
+  }
 
   Prototype.prototype = new PageObject();
   var prototype = new Prototype();
