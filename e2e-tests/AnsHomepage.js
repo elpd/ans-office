@@ -1,5 +1,6 @@
 var PageObject = require('./PageObject.js');
 var LoginPage = require('./LoginPage');
+var mainSettings = require('./mainSettings');
 
 var Class = function AnsHomepage() {
 
@@ -8,7 +9,7 @@ var Class = function AnsHomepage() {
 Class.prototype = (function(){
   function Prototype() {
     this.getAsLoggedOut = function() {
-      browser.get('http://127.0.0.1:8000');
+      browser.get(mainSettings.mainUrl);
 
       var loginPage = new LoginPage();
       return loginPage;
