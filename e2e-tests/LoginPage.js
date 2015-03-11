@@ -1,4 +1,5 @@
 var PageObject = require('./PageObject.js');
+var mainSettings = require('./mainSettings');
 
 var Class = function LoginPage() {
 
@@ -7,7 +8,7 @@ var Class = function LoginPage() {
 Class.prototype = (function(){
   function Prototype() {
     this.get = function() {
-      browser.get('http://127.0.0.1:8000/auth/login');
+      browser.get(mainSettings.mainUrl + '/auth/login');
     };
   };
 
