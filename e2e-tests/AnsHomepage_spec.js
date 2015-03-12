@@ -1,19 +1,20 @@
 var AnsHomepage = require('./AnsHomepage.js');
 
-beforeEach(function() {
-  isAngularSite(false);
-});
+var ansHomepage = null;
 
 describe('ans homepage', function() {
+  beforeEach(function() {
+    isAngularSite(false);
+    ansHomepage = new AnsHomepage();
+  });
+  
   it('should have a title', function() {
-    var ansHomepage = new AnsHomepage();
     var loginPage = ansHomepage.getAsLoggedOut();
 
     expect(ansHomepage.getTitle()).toEqual('ANS Office System');
   });
 
   it('should redirect to login page', function(){
-    var ansHomepage = new AnsHomepage();
     var loginPage = ansHomepage.getAsLoggedOut();
 
     expect(browser.getCurrentUrl()).toMatch(/\/auth\/login/);

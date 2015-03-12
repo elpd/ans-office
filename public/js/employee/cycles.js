@@ -61,7 +61,13 @@ define([
         ondblClickRow: editRow,
         autowidth: true,
         subGrid: true,
-        subGridRowExpanded: showChildGrid
+        subGridRowExpanded: showChildGrid,
+        gridComplete: function(){
+          $('#loading_indicator').append('<div id="loading_indicator_finished"></div>');
+        },
+        rowattr: function(rowData, currentObj, rowId){
+          return {"class": "dataRow"};
+        }
           //loadOnce: false
       });
 
@@ -143,7 +149,7 @@ define([
           grid.jqGrid('editRow', id, editOptions);
           lastSelection = id;
         }
-      };
+      }
 
       // the event handler on expanding parent row receives two parameters
       // the ID of the grid row  and the primary key of the row

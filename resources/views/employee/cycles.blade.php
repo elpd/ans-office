@@ -6,6 +6,7 @@
 
 	<table id="jqGrid"></table>
 	<div id="jqGridPager"></div>
+	<div id="loading_indicator"></div>
 
 </div>
 @endsection
