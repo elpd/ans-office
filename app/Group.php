@@ -8,7 +8,7 @@ use Watson\Validating\ValidatingTrait;
 class Group extends Model
 {
     use ValidatingTrait;
-    
+
     protected $fillable = array(
             'cycle_id',
             'name',
@@ -29,5 +29,6 @@ class Group extends Model
                     'exists:group_status,id'
             ),
     );
-    
+
+    public $nullable = [];
 }

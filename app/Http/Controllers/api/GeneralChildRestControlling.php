@@ -43,10 +43,39 @@ trait GeneralChildRestControlling {
   *
   * @return Response
   */
-  public function store()
+  public function store($parentId)
   {
-    //
-    abort('404');
+    $parentClass = $this->biParentClass;
+    $parent = $parentClass::findOrFail($parentId);
+
+    $childClass = $this->biClass;
+    $child = new $childClass(['name'=>'aaaaa', 'status_id' => 1]);
+
+    $functionName = $this->biClassPFName;
+
+    try {
+      $item = $parent->$functionName()->save($child);
+      return [
+        'success' => true,
+        'item_id' => $item->id,
+      ];
+    }
+    catch (\Watson\Validating\ValidationException $e) {
+      return [
+        'success' => false,
+        'errors' => $e->getErrors(),
+      ];
+    }
+    catch (\Exception $e) {
+      throw $e;
+      $errors = implode(',', $e->errorInfo);
+
+      return [
+        'success' => false,
+        'errors' => ['general' => $errors],
+        'exception' => $e
+      ];
+    }
   }
 
   /**
