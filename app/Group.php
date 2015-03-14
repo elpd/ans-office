@@ -9,7 +9,7 @@ class Group extends Model
 {
     use ValidatingTrait;
 
-    protected $fillable = array(
+    public $fillable = array(
             'cycle_id',
             'name',
             'status_id',
@@ -31,4 +31,8 @@ class Group extends Model
     );
 
     public $nullable = [];
+
+    public function cycle() {
+      return $this->belongsTo('App\Cycle');
+    }
 }

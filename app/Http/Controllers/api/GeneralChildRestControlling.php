@@ -49,12 +49,25 @@ trait GeneralChildRestControlling {
     $parent = $parentClass::findOrFail($parentId);
 
     $childClass = $this->biClass;
-    $child = new $childClass(['name'=>'aaaaa', 'status_id' => 1]);
 
-    $functionName = $this->biClassPFName;
+    $object = new $childClass();
+    $input = Request::only($object->fillable);
+    foreach ($object->nullable as $nullableField) {
+      if (array_key_exists ($nullableField, $input) && $input[$nullableField] === '' ) {
+        $input[$nullableField] = null;
+      }
+    }
+
+    $item = new $childClass($input);
+
+    //$functionName = $this->biClassPFName;
+    $functionName = $this->biParentFName;
 
     try {
-      $item = $parent->$functionName()->save($child);
+      //$item = $parent->$functionName()->save($child);
+      $item->$functionName()->associate($parent);
+      $item->saveOrFail();
+
       return [
         'success' => true,
         'item_id' => $item->id,
@@ -67,8 +80,11 @@ trait GeneralChildRestControlling {
       ];
     }
     catch (\Exception $e) {
-      throw $e;
-      $errors = implode(',', $e->errorInfo);
+      if (property_exists($e, 'errorInfo')) {
+        $errors = implode(',', $e->errorInfo);
+      } else {
+        throw $e;
+      }
 
       return [
         'success' => false,
