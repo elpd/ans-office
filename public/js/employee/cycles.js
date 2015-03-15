@@ -71,7 +71,7 @@ define([
         },
         rowattr: function(rowData, currentObj, rowId) {
             return {
-              "class": "dataRow"
+              "class": ["dataRow cycleData"]
             };
           }
           //loadOnce: false

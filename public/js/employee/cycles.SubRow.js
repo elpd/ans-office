@@ -33,7 +33,9 @@ define([
           '<table id=' + childGridID +
           '></table>' +
           '<div id=' + childGridPagerID +
-          ' class=scroll></div>');
+          ' class=scroll></div>' +
+          '<div id=' + childGridID + 'load_indicator' +
+          ' class="load_indicator"></div>');
 
         $("#" + childGridID).jqGrid({
           url: childGridURL,
@@ -87,7 +89,16 @@ define([
           loadonce: true,
           width: 500,
           height: '100%',
-          pager: "#" + childGridPagerID
+          pager: "#" + childGridPagerID,
+          gridComplete: function() {
+            $('#' + childGridID + 'load_indicator').append(
+              '<div class="loadIndicator_finished"></div>');
+          },
+          rowattr: function(rowData, currentObj, rowId) {
+            return {
+              "class": ["dataRow groupData"]
+            };
+          }
         });
 
         $('#' + childGridID).navGrid('#' + childGridPagerID,
