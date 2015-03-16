@@ -12,9 +12,10 @@ Class.prototype = (function(){
       var cyclesLink = element(by.id('cycles_section_link'));
       cyclesLink.click();
 
-      return new CyclesPage();
+      var cyclesPageElement = element(by.id('cycles_page'));
+      return new CyclesPage({element: cyclesPageElement});
     };
-  };
+  }
 
   Prototype.prototype = new PageObject();
   var prototype = new Prototype();

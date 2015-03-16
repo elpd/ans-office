@@ -2,9 +2,10 @@
   var Promise = require("bluebird");
   var PageObject = require('./../PageObject');
   var mainSettings = require('./../mainSettings');
+  var RowPage = require ('./CyclesPage/RowPage');
 
-  var Class = function CyclesPage() {
-
+  var Class = function CyclesPage(params) {
+    this.element = params.element;
   };
 
   Class.prototype = (function() {
@@ -29,6 +30,26 @@
         });
 
         return cycleInt;
+      };
+
+      this.getRowPage = function(index) {
+        var cyclesRows = this.getRows();
+        var cycleRow = cyclesRows.get(index);
+        var rowPage = new RowPage({
+          element: cycleRow
+        });
+
+        return rowPage;
+      };
+
+      this.waitOnData = function() {
+        var loadIndicator = this.element.element(by.id(
+          'loading_indicator_finished'));
+        var browserPromise = browser.wait(function() {
+          return loadIndicator.isPresent();
+        });
+
+        return browserPromise;
       };
     }
 

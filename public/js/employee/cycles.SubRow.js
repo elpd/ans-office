@@ -38,10 +38,7 @@ define([
           ' class="load_indicator"></div>');
 
         $("#" + childGridID).jqGrid({
-          url: childGridURL,
-          mtype: "GET",
-          datatype: "json",
-          page: 1,
+
           colModel: [{
               label: 'ID',
               name: 'id',
@@ -86,10 +83,17 @@ define([
               }
             }
           ],
-          loadonce: true,
+          //mtype: "GET",
+
+          page: 1,
+          //loadonce: true,
+          viewrecords: true,
           width: 500,
           height: '100%',
+          datatype: "json",
+          url: childGridURL,
           pager: "#" + childGridPagerID,
+          autowidth: true,
           gridComplete: function() {
             $('#' + childGridID + 'load_indicator').append(
               '<div class="loadIndicator_finished"></div>');
@@ -158,6 +162,15 @@ define([
           addParams: {
             keys: true
           }
+        });
+
+        $('#' + childGridID).bind("jqGridAddEditClickSubmit", function (e, rowid, orgClickEvent) {
+          $load_ind = $('#' + childGridID + 'load_indicator' + ' ' +
+            'div.loadIndicator_finished');
+          $load_ind.remove();
+
+          // if we want to return true, we should test e.result additionally
+          return e.result === undefined ? true : e.result;
         });
       }
     };

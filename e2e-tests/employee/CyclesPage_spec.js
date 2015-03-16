@@ -43,6 +43,7 @@
     });
 
     describe('- sub data', function() {
+
       it('should be with existing expand sub data element ', function() {
         var loadIndicator = element(by.id(
           'loading_indicator_finished'));
@@ -77,6 +78,24 @@
 
         });
       });
+
+      it('should be able to add sub group', function(){
+        cyclesPage.waitOnData().then(function(){
+          rowPage = cyclesPage.getRowPage(0);
+          rowPage.expand();
+          subDataPage = rowPage.getSubDataPage();
+          subDataPage.waitOnData().then(function(){
+            var addRowPage = subDataPage.openAddRowPage();
+            addRowPage.doAdd({name: 'a', status_id: 1});
+
+            subDataPage.waitOnData().then(function(){
+              var subRows = subDataPage.getRows();
+              expect(subRows.count()).toBe(3);
+            });
+          });
+        });
+      });
+
     });
 
   });
