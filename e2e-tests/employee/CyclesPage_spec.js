@@ -79,23 +79,55 @@
         });
       });
 
-      it('should be able to add sub group', function(){
-        cyclesPage.waitOnData().then(function(){
+      it('should be able to add sub group', function() {
+        cyclesPage.waitOnData().then(function() {
           rowPage = cyclesPage.getRowPage(0);
           rowPage.expand();
           subDataPage = rowPage.getSubDataPage();
-          subDataPage.waitOnData().then(function(){
-            var addRowPage = subDataPage.openAddRowPage();
-            addRowPage.doAdd({name: 'a', status_id: 1});
+          subDataPage.waitOnData().then(function() {
+            subDataPage.openAddRowPage().then(function(
+              addRowPage) {
+              addRowPage.doAdd({
+                name: 'a',
+                status: 'registration'
+              });
 
-            subDataPage.waitOnData().then(function(){
-              var subRows = subDataPage.getRows();
-              expect(subRows.count()).toBe(3);
+              subDataPage.waitOnData().then(function() {
+                var subRows = subDataPage.getRows();
+                expect(subRows.count()).toBe(3);
+              });
             });
           });
         });
       });
 
+      it('should be able to remove sub group', function() {
+        cyclesPage.waitOnData().then(function() {
+          rowPage = cyclesPage.getRowPage(0);
+          rowPage.expand();
+          subDataPage = rowPage.getSubDataPage();
+          subDataPage.waitOnData().then(function() {
+            var oldCountP = subDataPage.getRows().count();
+            oldCountP.then(function(oldCount) {
+              subDataPage.openDeleteRowPage({
+                row: 0
+              }).then(function(deleteRowPage) {
+                deleteRowPage.doDelete();
+
+                //expect(deleteRowPage.isPresent()).toBe(false);
+
+                subDataPage.waitOnData().then(
+                  function() {
+                    var subRows = subDataPage.getRows();
+
+                    expect(subRows.count())
+                      .toBe(oldCount - 1);
+                  });
+              });
+            });
+          });
+        });
+      });
     });
 
   });

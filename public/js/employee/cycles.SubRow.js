@@ -150,7 +150,11 @@ define([
             delData: {
               _token: $_token
             },
-            reloadAfterSubmit: true
+            reloadAfterSubmit: true,
+            beforeSubmit: function(postdata, formid) {
+              removeLoadIndicator();
+              return [true];
+            }
           }
         );
 
@@ -164,14 +168,20 @@ define([
           }
         });
 
-        $('#' + childGridID).bind("jqGridAddEditClickSubmit", function (e, rowid, orgClickEvent) {
-          $load_ind = $('#' + childGridID + 'load_indicator' + ' ' +
-            'div.loadIndicator_finished');
-          $load_ind.remove();
+        $('#' + childGridID).bind("jqGridAddEditClickSubmit", function(e,
+          rowid, orgClickEvent) {
+
+          removeLoadIndicator();
 
           // if we want to return true, we should test e.result additionally
           return e.result === undefined ? true : e.result;
         });
+
+        function removeLoadIndicator() {
+          $load_ind = $('#' + childGridID + 'load_indicator' + ' ' +
+          'div.loadIndicator_finished');
+          $load_ind.remove();
+        }
       }
     };
 

@@ -3,6 +3,7 @@
   var PageObject = require('./../../PageObject');
   var mainSettings = require('./../../mainSettings');
   var AddCycleGroupPage = require('./SubDataPage/AddCycleGroupPage');
+  var DeleteCycleGroupPage = require('./SubDataPage/DeleteCycleGroupPage');
 
   var Class = function SubDataPage(params) {
     this.element = params.element;
@@ -21,19 +22,65 @@
       };
 
       this.openAddRowPage = function() {
-        var openButton = this.element.element(by.id(
-          'add_jqGrid_1_table'));
-        openButton.click();
+        var self = this;
+        var pagePromise = new Promise(function(resolve, reject) {
+          self.getGridId().then(function(gridId) {
 
-        var addPageElement = element(by.id('editmodjqGrid_1_table'));
-        return new AddCycleGroupPage({
-          element: addPageElement
+            var openButton = self.element.element(by.id(
+              'add_' + gridId + '_table'));
+            openButton.click();
+
+            var addPageElement = element(by.id(
+              'editmod' + gridId + '_table'));
+
+            var page = new AddCycleGroupPage({
+              element: addPageElement
+            });
+
+            resolve(page);
+          });
         });
+
+        return pagePromise;
+      };
+
+      this.getGridId = function() {
+        var table_el = this.element.element(by.css('div.tablediv'));
+        var idPromise = table_el.getAttribute('id');
+
+        return idPromise;
       };
 
       this.getRows = function() {
         var rows = this.element.all(by.css('tr.dataRow.groupData'));
         return rows;
+      };
+
+      this.openDeleteRowPage = function(groupData) {
+
+        var self = this;
+        var pagePromise = new Promise(function(resolve, reject) {
+          self.getGridId().then(function(gridId) {
+
+            // Select row.
+            var rows = self.getRows();
+            rows.get(0).click();
+
+            var deleteButton = self.element.element(by.id(
+              'del_' + gridId + '_table'));
+            deleteButton.click();
+
+            var deletePageElement = element(by.id('delmod' +
+              gridId + '_table'));
+            var page = new DeleteCycleGroupPage({
+              element: deletePageElement
+            });
+
+            resolve(page);
+          });
+        });
+
+        return pagePromise;
       };
     }
     Prototype.prototype = new PageObject();

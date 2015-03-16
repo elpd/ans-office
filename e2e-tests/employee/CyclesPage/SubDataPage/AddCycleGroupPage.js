@@ -11,7 +11,7 @@
     function Prototype() {
       this.doAdd = function(groupData) {
         this.setName(groupData.name);
-        this.setStatus(groupData.status_id);
+        this.setStatusByLabel(groupData.status);
         this.doSubmit();
       };
 
@@ -38,6 +38,13 @@
             'option[value="' +
             status_id +
             '"]'));
+        desiredOption.click();
+      };
+
+      this.setStatusByLabel = function(status) {
+        var statusInput = this.getStatusInput();
+        var desiredOption = statusInput.element(by.cssContainingText('option',
+          status));
         desiredOption.click();
       };
 

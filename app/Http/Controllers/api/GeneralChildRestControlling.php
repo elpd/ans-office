@@ -136,9 +136,21 @@ trait GeneralChildRestControlling {
   * @param  int  $id
   * @return Response
   */
-  public function destroy($id)
+  public function destroy($parentId, $id)
   {
-    //
-    abort('404');
+    $class = $this->biClass;
+
+    if ($id == -1) {
+      $id = Request::get('id');
+    }
+
+    $item = $class::findOrFail($id);
+
+    $item->delete();
+
+    return [
+      'success' => true,
+      'item_id' => $id
+    ];
   }
 }
