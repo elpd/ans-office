@@ -1,16 +1,19 @@
 define([
     'classes/utilities',
     'classes/bi/Cycle',
-    'classes/bi/GroupStatus'
+    'employee/cycles.SubRow'
   ],
   function(
     utilities,
     Cycle,
-    GroupStatus
+    SubRow
   ) {
 
     $(document).ready(function() {
       var cycleControllerUrl = "/api/cycle";
+      var subRow = new SubRow({
+        parentControllerUrl: cycleControllerUrl
+      });
 
       $("#jqGrid").jqGrid({
 
@@ -61,7 +64,16 @@ define([
         ondblClickRow: editRow,
         autowidth: true,
         subGrid: true,
-        subGridRowExpanded: showChildGrid
+        subGridRowExpanded: subRow.show.bind(subRow),
+        gridComplete: function() {
+          $('#loading_indicator').append(
+            '<div id="loading_indicator_finished"></div>');
+        },
+        rowattr: function(rowData, currentObj, rowId) {
+            return {
+              "class": ["dataRow cycleData"]
+            };
+          }
           //loadOnce: false
       });
 
@@ -143,74 +155,6 @@ define([
           grid.jqGrid('editRow', id, editOptions);
           lastSelection = id;
         }
-      };
-
-      // the event handler on expanding parent row receives two parameters
-      // the ID of the grid row  and the primary key of the row
-      function showChildGrid(parentRowID, parentRowKey) {
-        var childGridID = parentRowID + "_table";
-        var childGridPagerID = parentRowID + "_pager";
-
-        // send the parent row primary key to the server so that we know which
-        // grid to show
-        //var childGridURL = parentRowKey + ".json";
-        //childGridURL = childGridURL + "&parentRowID=" +
-        // encodeURIComponent(parentRowKey)
-        var childGridURL = cycleControllerUrl + '/' + parentRowKey +
-          '/groups';
-
-        // add a table and pager HTML elements to the parent grid row -
-        // we will render the child grid here
-        $('#' + parentRowID).append(
-          '<table id=' + childGridID +
-          '></table>' +
-          '<div id=' + childGridPagerID +
-          ' class=scroll></div>');
-
-        $("#" + childGridID).jqGrid({
-          url: childGridURL,
-          mtype: "GET",
-          datatype: "json",
-          page: 1,
-          colModel: [{
-            label: 'ID',
-            name: 'id',
-            key: true,
-            width: 75
-          }, {
-            label: 'Cycle',
-            name: 'cycle_id',
-            width: 100,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-              value: utilities.generateGetItems('/api/cycle', Cycle)(),
-              dataUrl: '/api/cycle',
-              buildSelect: utilities.generateBuildSelect(Cycle)
-            }
-          }, {
-            label: 'Name',
-            name: 'name',
-            width: 100
-          }, {
-            label: 'Statue',
-            name: 'status_id',
-            width: 75,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-              value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
-              dataUrl: '/api/group-status',
-              buildSelect: utilities.generateBuildSelect(GroupStatus)
-            }
-          }],
-          loadonce: true,
-          width: 500,
-          height: '100%',
-          pager: "#" + childGridPagerID
-        });
-
       }
-
     });
   });

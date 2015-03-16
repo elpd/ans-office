@@ -38,9 +38,9 @@
 
 			<div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
 				<ul class="nav navbar-nav">
-					<li><a href="/">Home</a></li>
-					<li><a href="/admin">Admin</a></li>
-					<li><a href="/employee">Employee</a></li>
+					<li><a href="/" id="home_section_link">Home</a></li>
+					<li><a href="/admin" id="admin_section_link">Admin</a></li>
+					<li><a href="/employee" id="employee_section_link">Employee</a></li>
 				</ul>
 
 				<ul class="nav navbar-nav navbar-right">

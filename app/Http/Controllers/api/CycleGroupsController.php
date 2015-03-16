@@ -10,6 +10,7 @@ class CycleGroupsController extends Controller {
 	protected $biParentClass = 'App\Cycle';
 	protected $biClass = 'App\Group';
 	protected $biClassPFName = 'groups';
+	protected $biParentFName = 'cycle';
 
 	use GeneralChildRestControlling;
 

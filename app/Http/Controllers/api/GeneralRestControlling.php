@@ -31,7 +31,7 @@ trait GeneralRestControlling {
   function pluck_array_reduce($data) {
     return array_reduce(
       $data,
-      function($result, $item) {
+      function($result, $item) {$item->saveOrFail();
         $itemResult = [];
         $itemResult['id'] = $item->id;
         $itemResult['cell'] = $item;

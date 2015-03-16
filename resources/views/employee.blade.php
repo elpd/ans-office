@@ -6,32 +6,6 @@
 
 			<div class="col-xs-2">
 
-				<div class="row">
-
-					<div class="col-md-1"></div>
-
-					<div class="btn-group col-md-10" dropdown>
-						<button type="button" class="btn btn-danger dropdown-toggle new-button"
-						dropdown-toggle ng-disabled="disabled">
-						NEW
-							<span class="caret"></span>
-						</button>
-						<ul class="dropdown-menu" role="menu">
-							<li><a ui-sref="logged.employee.contact.new">Contact</a>
-							</li>
-							<li><a ui-sref="logged.employee.cycle.new">Cycle</a>
-							</li>
-							<li><a ui-sref="logged.employee.group.new">Group</a>
-							</li>
-							<li><a ui-sref="logged.employee.guide.new">Guide</a>
-							</li>
-						</ul>
-					</div>
-
-					<div class="col-md-1"></div>
-
-				</div>
-
 				<div class="sidebar-nav">
 					<div class="navbar navbar-default" role="navigation">
 
@@ -51,11 +25,11 @@
 						<div class="navbar-collapse collapse sidebar-navbar-collapse">
 
 							<ul class="nav navbar-nav">
-								<li><a href="/employee/contacts">Contacts</a> </li>
-								<li><a href="/employee/cycles">Cycles</a> </li>
-								<li><a href="/employee/groups">Groups</a></li>
-								<li><a href="/employee/guides">Guides</a></li>
-								<li><a href="/employee/groups-members">Groups Members</a></li>
+								<li><a href="/employee/contacts" id="contacts_section_link">Contacts</a> </li>
+								<li><a href="/employee/cycles" id="cycles_section_link">Cycles</a> </li>
+								<li><a href="/employee/groups" id="groups_section_link">Groups</a></li>
+								<li><a href="/employee/guides" id="guides_section_link">Guides</a></li>
+								<li><a href="/employee/groups-members" id="groups_members_section_link">Groups Members</a></li>
 							</ul>
 						</div>
 						<!--/.nav-collapse -->

@@ -9,6 +9,7 @@ var Class = function AnsHomepage() {
 Class.prototype = (function(){
   function Prototype() {
     this.getAsLoggedOut = function() {
+      browser.manage().deleteAllCookies();
       browser.get(mainSettings.mainUrl);
 
       var loginPage = new LoginPage();
@@ -18,7 +19,7 @@ Class.prototype = (function(){
     this.getTitle = function() {
       return browser.getTitle();
     };
-  };
+  }
 
   Prototype.prototype = new PageObject();
   var prototype = new Prototype();

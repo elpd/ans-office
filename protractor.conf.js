@@ -23,5 +23,5 @@ exports.config = {
     };
   },
 
-  specs: ['e2e-tests/*_spec.js']
+  specs: ['e2e-tests/*_spec.js', 'e2e-tests/employee/*_spec.js']
 }
