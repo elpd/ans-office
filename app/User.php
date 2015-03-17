@@ -6,13 +6,17 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Watson\Validating\ValidatingTrait;
+use Bican\Roles\Contracts\HasRoleAndPermissionContract;
+use Bican\Roles\Traits\HasRoleAndPermission;
 
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
 	use Authenticatable, CanResetPassword;
 
 	use ValidatingTrait;
-	
+
+	use HasRoleAndPermission;
+
 	/**
 	 * The database table used by the model.
 	 *
@@ -33,7 +37,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 * @var array
 	 */
 	protected $hidden = ['password', 'remember_token'];
-	
+
 	protected $rules = array();
 
 }

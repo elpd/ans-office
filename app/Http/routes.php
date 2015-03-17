@@ -27,6 +27,8 @@ Route::get('employee/guides', 'GuideController@index');
 Route::get('employee/groups-members', 'GroupsMembersController@index');
 Route::get('employee/cycles', 'CycleController@index');
 
+Route::get('admin', 'AdminController@index');
+
 Route::resource('api/contact', 'api\ContantController');
 Route::resource('api/group', 'api\GroupController');
 Route::resource('api/group-status', 'api\GroupStatusController');
