@@ -10,9 +10,11 @@
   Class.prototype = (function() {
     function Prototype() {
       this.doAdd = function(groupData) {
-        this.setName(groupData.name);
-        this.setStatusByLabel(groupData.status);
-        this.doSubmit();
+        var self = this;
+        self.setName(groupData.name);
+        return self.setStatusByLabel(groupData.status).then(function(){
+          self.doSubmit();
+        });
       };
 
       this.getNameInput = function() {
@@ -34,18 +36,27 @@
 
       this.setStatus = function(status_id) {
         var statusInput = this.getStatusInput();
-        var desiredOption = statusInput.element(by.css(
+        return browser.wait(function() {
+          return statusInput.isPresent();
+        }).then(function() {
+          var desiredOption = statusInput.element(by.css(
             'option[value="' +
             status_id +
             '"]'));
-        desiredOption.click();
+          desiredOption.click();
+        });
       };
 
       this.setStatusByLabel = function(status) {
         var statusInput = this.getStatusInput();
-        var desiredOption = statusInput.element(by.cssContainingText('option',
-          status));
-        desiredOption.click();
+        return browser.wait(function() {
+          return statusInput.isPresent();
+        }).then(function() {
+          var desiredOption = statusInput.element(by.cssContainingText(
+            'option',
+            status));
+          desiredOption.click();
+        });
       };
 
       this.doSubmit = function() {
