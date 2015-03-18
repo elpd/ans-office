@@ -29,6 +29,7 @@ Route::get('employee/cycles', 'CycleController@index');
 
 Route::get('admin', 'AdminController@index');
 Route::get('admin/users', 'UserController@index');
+Route::get('admin/roles', 'RoleController@index');
 
 Route::resource('api/contact', 'api\ContantController');
 Route::resource('api/group', 'api\GroupController');
@@ -40,5 +41,6 @@ Route::resource('api/contact', 'api\ContactController');
 Route::resource('api/cycle', 'api\CycleController');
 Route::resource('api/cycle.groups', 'api\CycleGroupsController');
 Route::resource('api/user', 'api\UserController');
+Route::resource('api/role', 'api\RoleController');
 
 Route::get('api/language', 'api\LanguageController@index');
