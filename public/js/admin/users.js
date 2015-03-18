@@ -1,52 +1,52 @@
 define([
     'classes/utilities',
-    'classes/bi/Cycle',
-    'employee/cycles.SubRow'
+    'classes/bi/User',
+    'admin/users.SubRow',
+    'services/language',
+    'classes/LoadingIndicator',
   ],
   function(
     utilities,
     Cycle,
-    SubRow
+    SubRow,
+    lang,
+    LoadingIndicator
   ) {
+    var CONTROLLER_URL = "/api/user";
+    var GRID_ID = 'users_grid';
+    var PAGER_ID = GRID_ID + '_pager';
+    var DATA_ROW_CLASS = 'userData';
 
     $(document).ready(function() {
-      var cycleControllerUrl = "/api/cycle";
+
+      var loadingIndicator = new LoadingIndicator(GRID_ID);
+
       var subRow = new SubRow({
-        parentControllerUrl: cycleControllerUrl
+        parentControllerUrl: CONTROLLER_URL
       });
 
-      $("#jqGrid").jqGrid({
+      $("#" + GRID_ID).jqGrid({
 
         colModel: [{
-          label: 'ID',
+          label: lang.getFor('main.id'),
           name: 'id',
           width: 30,
           key: true
         }, {
-          label: 'Start Date',
-          name: 'startDate',
+          label: lang.getFor('main.name'),
+          name: 'name',
           editable: true,
           //edittype: 'select',
-          formatter: 'date',
+          //formatter: 'integer',
           editoptions: {
-            // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
-            // use it to place a third party control to customize the toolbar
-            dataInit: function(element) {
-              $(element).datepicker({
-                id: 'orderDate_datePicker',
-                dateFormat: 'yy-mm-dd',
-                //minDate: new Date(2010, 0, 1),
-                maxDate: new Date(2020, 0, 1),
-                showOn: 'focus'
-              });
-            }
+
           }
         }, {
-          label: 'Num',
-          name: 'num',
+          label: lang.getFor('main.email'),
+          name: 'email',
           editable: true,
           //edittype: 'select',
-          formatter: 'integer',
+          //formatter: 'integer',
           editoptions: {
 
           }
@@ -57,27 +57,26 @@ define([
         height: 200,
         rowNum: 15,
         datatype: 'json',
-        url: cycleControllerUrl,
-        pager: "#jqGridPager",
-        caption: "Cycles",
+        url: CONTROLLER_URL,
+        pager: '#' + PAGER_ID,
+        caption: lang.getFor('main.cycles'),
         //onSelectRow: editRow,
         ondblClickRow: editRow,
         autowidth: true,
         subGrid: true,
         subGridRowExpanded: subRow.show.bind(subRow),
         gridComplete: function() {
-          $('#loading_indicator').append(
-            '<div id="loading_indicator_finished"></div>');
+          loadingIndicator.setAsFinished();
         },
         rowattr: function(rowData, currentObj, rowId) {
             return {
-              "class": ["dataRow cycleData"]
+              "class": ["dataRow " + DATA_ROW_CLASS]
             };
           }
           //loadOnce: false
       });
 
-      $('#jqGrid').navGrid("#jqGridPager",
+      $('#' + GRID_ID).navGrid('#' + PAGER_ID,
         // the buttons to appear on the toolbar of the grid
         {
           edit: false,
@@ -95,10 +94,11 @@ define([
           closeAfterAdd: true,
           recreateForm: true,
           reloadAfterSubmit: true,
-          url: cycleControllerUrl,
+          url: CONTROLLER_URL,
           mtype: 'POST',
           editData: {
-            _token: $_token
+            _token: $_token,
+            password: 'default password'
           },
           afterSubmit: function(data, postdata, oper) {
             var response = data.responseJSON;
@@ -117,7 +117,7 @@ define([
         {
           height: 'auto',
           width: 620,
-          url: cycleControllerUrl + '/-1',
+          url: CONTROLLER_URL + '/-1',
           mtype: 'DELETE',
           delData: {
             _token: $_token
@@ -125,7 +125,8 @@ define([
           reloadAfterSubmit: true
         }
       );
-      $('#jqGrid').inlineNav('#jqGridPager', {
+
+      $('#' + GRID_ID).inlineNav('#' + PAGER_ID, {
         edit: false,
         add: false,
         del: true,
@@ -139,13 +140,13 @@ define([
 
       function editRow(id) {
         if (id && id !== lastSelection) {
-          var grid = $("#jqGrid");
+          var grid = $("#" + GRID_ID);
           grid.jqGrid('restoreRow', lastSelection);
 
           var editOptions = {
             keys: true,
             focusField: 4,
-            url: mainBi.controllerUrl + '/' + id.toString(),
+            url: CONTROLLER_URL + '/' + id.toString(),
             "extraparam": {
               _token: $_token
             },
