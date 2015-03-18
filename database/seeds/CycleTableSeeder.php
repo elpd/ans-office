@@ -4,7 +4,6 @@ use App\Cycle;
 
 class CycleTableSeeder extends Seeder
 {
-
     public function run ()
     {
         DB::table('cycles')->delete();
