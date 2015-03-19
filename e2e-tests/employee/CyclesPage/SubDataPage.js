@@ -16,7 +16,7 @@
           '.loadIndicator_finished'));
         var browserPromise = browser.wait(function() {
           return loadIndicator.isPresent();
-        });
+        }, mainSettings.waitTimeout);
 
         return browserPromise;
       };
