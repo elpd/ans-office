@@ -15,7 +15,8 @@
 
     Prototype.prototype = new CrudGridPageObject({
       gridId: 'users_grid',
-      gridRowClass: 'userData'
+      gridRowClass: 'userData',
+      gridPagerId: 'users_grid_pager'
     });
 
     var prototype = new Prototype();

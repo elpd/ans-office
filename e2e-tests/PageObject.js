@@ -7,9 +7,13 @@
     setParams: function(params) {
       this.element = params.element;
     },
-    
+
     getCurrentUrl: function() {
       return browser.getCurrentUrl();
+    },
+
+    getElement: function() {
+      return this.element;
     }
   };
 

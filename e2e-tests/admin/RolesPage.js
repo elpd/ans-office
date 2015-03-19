@@ -15,7 +15,8 @@
 
     Prototype.prototype = new CrudGridPageObject({
       gridId: 'roles_grid',
-      gridRowClass: 'roleData'
+      gridRowClass: 'roleData',
+      gridPagerId: 'roles_grid_pager'
     });
     var prototype = new Prototype();
     return prototype;

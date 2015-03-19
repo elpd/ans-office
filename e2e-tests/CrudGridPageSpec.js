@@ -1,5 +1,7 @@
 (function() {
 
+  var NavGridPageSpec = require('./NavGridPageSpec');
+
   var Class = function CrudGridPageSpec(params) {
     this.setParams(params);
   };
@@ -22,6 +24,10 @@
       describe(self.testPageName, function() {
         var testPage = null;
 
+        var getTestPage = function() {
+          return testPage;
+        };
+
         beforeEach(function() {
           isAngularSite(false);
           testPage = self.openTestPage();
@@ -42,11 +48,28 @@
 
           });
 
+          it('should be present', function(){
+            testPage.waitOnData().then(function(){
+              var gridElement = testPage.getGrid();
+              expect(gridElement.isPresent()).toBe(true);
+            });
+          });
+
           it('should have same rows as test data', function(){
             testPage.waitOnData().then(function(){
               expect(testPage.getRows().count()).toEqual(self.testData.rows.length);
             });
           });
+
+          var navGridPageSpec = new NavGridPageSpec({
+            getPageElement: function(){
+              return getTestPage().getNavGrid();
+            },
+            waitOnData: function() {
+              return testPage.waitOnData();
+            }
+          });
+          navGridPageSpec.specify();
 
         });
 

@@ -145,7 +145,7 @@ define([
           var editOptions = {
             keys: true,
             focusField: 4,
-            url: mainBi.controllerUrl + '/' + id.toString(),
+            url: cycleControllerUrl + '/' + id.toString(),
             "extraparam": {
               _token: $_token
             },

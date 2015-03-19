@@ -46,3 +46,5 @@ Route::resource('api/role', 'api\RoleController');
 Route::resource('api/permission', 'api\PermissionController');
 
 Route::get('api/language', 'api\LanguageController@index');
+
+Route::get('test/refresh', 'TestController@refresh');

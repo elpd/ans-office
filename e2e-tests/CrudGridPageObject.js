@@ -1,6 +1,7 @@
 (function() {
 
   var PageObject = require('./PageObject');
+  var NavGridPageObject = require('./NavGridPageObject');
 
   var Class = function CrudGridPageObject(params) {
     this.setParams(params);
@@ -14,6 +15,7 @@
 
         self.gridId = params.gridId;
         self.gridRowClass = params.gridRowClass;
+        self.gridPagerId = params.gridPagerId;
       };
 
       this.setVariables = function() {
@@ -32,9 +34,29 @@
 
       this.getRows = function() {
         var self = this;
-        
+
         return element.all(by.css('#' + self.gridId +
           ' tr.dataRow.' + self.gridRowClass));
+      };
+
+      this.getGrid = function() {
+        var self = this;
+        return element(by.id(self.gridId));
+      };
+
+      this.getNavGridElement = function() {
+        var self = this;
+        return this.element.element(by.id(self.gridPagerId + '_left'));
+      };
+
+      this.getNavGrid = function() {
+        var self = this;
+        var element = self.getNavGridElement();
+
+        return new NavGridPageObject({
+          element: element,
+          gridId: self.gridId
+        });
       };
 
       this.waitOnData = function() {
