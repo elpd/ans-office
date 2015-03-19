@@ -28,7 +28,10 @@ class LanguageController extends Controller {
 		$result = [
 			'en' => [
 				'main' => [
-					'id' => 'ID'
+					'id' => 'ID',
+					'Id' => 'ID',
+					'Roles' => 'Roles',
+					'Name' => 'Name'
 					]
 			],
 			'he' => [

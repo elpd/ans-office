@@ -6,7 +6,6 @@
 
 	<table id="users_grid"></table>
 	<div id="users_grid_pager"></div>
-	<div id="users_grid_loading_indicator"></div>
 
 </div>
 @endsection

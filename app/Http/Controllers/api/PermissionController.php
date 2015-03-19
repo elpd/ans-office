@@ -3,12 +3,12 @@
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Request;
-use Bican\Roles\Models\Role;
+use Bican\Roles\Models\Permission;
 use Hash;
 
-class RoleController extends Controller {
+class PermissionController extends Controller {
 
-	protected $biClass = 'Bican\Roles\Models\Role';
+	protected $biClass = 'Bican\Roles\Models\Permission';
 
 	use GeneralRestControlling;
 

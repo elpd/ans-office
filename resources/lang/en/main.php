@@ -10,6 +10,8 @@ return [
   |
   */
 
-  'User' => 'User|Users'
-
+  'User' => 'User|Users',
+  'Role' => 'Role|Roles',
+  'Roles' => 'Roles',
+  'Permission' => 'Permission|Permissions'
 ];

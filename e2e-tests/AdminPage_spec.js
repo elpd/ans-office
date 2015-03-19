@@ -6,7 +6,7 @@
 
   function openAdminPage() {
     var ansHomepage = new AnsHomepage();
-    adminPage = ansHomepage.openAdminPage();
+    var adminPage = ansHomepage.openAdminPage();
 
     return adminPage;
   }
