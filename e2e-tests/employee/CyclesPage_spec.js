@@ -32,7 +32,7 @@
       var loadIndicator = element(by.id('loading_indicator_finished'));
       browser.wait(function() {
         return loadIndicator.isPresent();
-      }).then(function() {
+      }, 3000).then(function() {
         var rows = cyclesPage.getRows();
 
         rows.then(function(itemsRows) {
