@@ -3,7 +3,8 @@ var mainSettings = {
     rootUser: {
       email: "root@example.com",
       password: "root"
-    }
+    },
+    waitTimeout: 3000
 };
 
 module.exports = mainSettings;

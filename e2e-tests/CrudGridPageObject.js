@@ -1,5 +1,5 @@
 (function() {
-
+  var mainSettings = require('./mainSettings');
   var PageObject = require('./PageObject');
   var NavGridPageObject = require('./NavGridPageObject');
 
@@ -67,7 +67,7 @@
 
         var browserPromise = browser.wait(function() {
           return loadingIndicator.isPresent();
-        });
+        }, mainSettings.waitTimeout);
 
         return browserPromise;
       };
