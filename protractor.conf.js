@@ -14,7 +14,7 @@ exports.config = {
   },
 
   onPrepare: function() {
-    global.isAngularSite = function(flagAngularSite){
+    global.isAngularSite = function(flagAngularSite) {
       if (flagAngularSite) {
         browser.ignoreSynchronization = false;
       } else {
@@ -23,5 +23,11 @@ exports.config = {
     };
   },
 
-  specs: ['e2e-tests/*_spec.js', 'e2e-tests/employee/*_spec.js']
-}
+  suites: {
+    full: 'e2e-tests/*_spec.js',
+    employee: 'e2e-tests/employee/*_spec.js',
+    admin: 'e2e-tests/admin/*_spec.js'
+  },
+
+  getPageTimeout: 5000
+};

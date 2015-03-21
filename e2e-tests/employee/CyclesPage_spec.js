@@ -32,7 +32,7 @@
       var loadIndicator = element(by.id('loading_indicator_finished'));
       browser.wait(function() {
         return loadIndicator.isPresent();
-      }).then(function() {
+      }, 3000).then(function() {
         var rows = cyclesPage.getRows();
 
         rows.then(function(itemsRows) {
@@ -49,7 +49,7 @@
           'loading_indicator_finished'));
         browser.wait(function() {
           return loadIndicator.isPresent();
-        }).then(function() {
+        }, 3000).then(function() {
           var cycleInt = cyclesPage.getCycleInt(0);
           var expandButton = cycleInt.getExpandButton();
 
@@ -63,7 +63,7 @@
           'loading_indicator_finished'));
         browser.wait(function() {
           return loadIndicator.isPresent();
-        }).then(function() {
+        }, 3000).then(function() {
           var cycleInt = cyclesPage.getCycleInt(0);
           cycleInt.expand();
           var cycleSubDataInt = cycleInt.getExpendedRow();

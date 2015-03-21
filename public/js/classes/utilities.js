@@ -7,7 +7,7 @@ define([], function(){
     errorsObjectToArray: function(errosObject) {
       var errorsArray = [];
 
-      for (errorKey in errosObject) {
+      for (var errorKey in errosObject) {
         if (errosObject.hasOwnProperty(errorKey)){
           errorsArray.push(errorKey + ': ' + errosObject[errorKey]);
         }
@@ -34,7 +34,7 @@ define([], function(){
         });
 
         return items;
-      };
+      }
 
       return getItems;
     },
@@ -54,7 +54,7 @@ define([], function(){
         html = html + '</select>';
 
         return html;
-      };
+      }
 
       return buildSelect;
     }
