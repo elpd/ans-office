@@ -30,14 +30,19 @@
               'add_' + gridId + '_table'));
             openButton.click();
 
+
             var addPageElement = element(by.id(
               'editmod' + gridId + '_table'));
 
-            var page = new AddCycleGroupPage({
-              element: addPageElement
-            });
+            browser.wait(function() {
+              return addPageElement.isPresent();
+            }, mainSettings.waitTimeout).then(function(){
+              var page = new AddCycleGroupPage({
+                element: addPageElement
+              });
 
-            resolve(page);
+              resolve(page);
+            });
           });
         });
 
