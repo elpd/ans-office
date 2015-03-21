@@ -35,11 +35,14 @@
               return el;
             }
 
+            var addPage = null;
+
             browser.wait(function() {
-              return getAddPageElement().isPresent();
+              addPage = getAddPageElement();
+              return addPage.isPresent();
             }, mainSettings.waitTimeout).then(function(){
               var page = new AddCycleGroupPage({
-                element: getAddPageElement()
+                element: addPage
               });
 
               resolve(page);
