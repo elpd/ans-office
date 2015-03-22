@@ -1,5 +1,6 @@
 (function () {
 
+    var mainSettings = require('./mainSettings');
     var PageObject = require('./PageObject');
     var AddWindowPageObject = require('./AddWindowPageObject');
 
@@ -48,7 +49,7 @@
                 var addWindowEl = self.getAddWindowElement();
                 var browserPromise = browser.wait(function () {
                     return addWindowEl.isPresent();
-                });
+                }, mainSettings.waitTimeout);
 
                 return browserPromise.then(function () {
                     var addWindow = new AddWindowPageObject({
@@ -64,7 +65,7 @@
                 var self = this;
                 return browser.wait(function () {
                     return self.getElement().isPresent();
-                });
+                }, mainSettings.waitTimeout);
             };
         }
 
