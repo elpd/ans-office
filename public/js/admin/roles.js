@@ -37,6 +37,33 @@ define([
           editoptions: {
 
           }
+        }, {
+            label: lang.getFor('main.Slug'),
+            name: 'slug',
+            editable: true,
+            //edittype: 'select',
+            //formatter: 'integer',
+            editoptions: {
+
+            }
+        }, {
+            label: lang.getFor('main.Description'),
+            name: 'description',
+            editable: true,
+            //edittype: 'select',
+            //formatter: 'integer',
+            editoptions: {
+
+            }
+        }, {
+            label: lang.getFor('main.Level'),
+            name: 'level',
+            editable: true,
+            //edittype: 'select',
+            formatter: 'integer',
+            editoptions: {
+
+            }
         }]
       });
 

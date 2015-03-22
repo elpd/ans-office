@@ -8,6 +8,7 @@ use Watson\Validating\ValidatingTrait;
 class Group extends Model
 {
     use ValidatingTrait;
+    use GeneralModel;
 
     public $fillable = array(
             'cycle_id',

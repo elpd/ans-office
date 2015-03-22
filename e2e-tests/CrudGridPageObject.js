@@ -16,6 +16,7 @@
         self.gridId = params.gridId;
         self.gridRowClass = params.gridRowClass;
         self.gridPagerId = params.gridPagerId;
+        self.fieldsDef = params.fieldsDef;
       };
 
       this.setVariables = function() {
@@ -55,7 +56,8 @@
 
         return new NavGridPageObject({
           element: element,
-          gridId: self.gridId
+          gridId: self.gridId,
+          fieldsDef: self.fieldsDef
         });
       };
 

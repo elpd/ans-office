@@ -8,7 +8,8 @@ use Watson\Validating\ValidatingTrait;
 class Guide extends Model
 {
     use ValidatingTrait;
-    
+    use GeneralModel;
+
     protected $fillable = array(
             'name',
     );

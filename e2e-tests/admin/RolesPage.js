@@ -16,7 +16,20 @@
     Prototype.prototype = new CrudGridPageObject({
       gridId: 'roles_grid',
       gridRowClass: 'roleData',
-      gridPagerId: 'roles_grid_pager'
+      gridPagerId: 'roles_grid_pager',
+      fieldsDef: [{
+        name: 'name',
+        modalInputCss: 'input#name'
+      }, {
+          name: 'slug',
+          modalInputCss: 'input#slug'
+      }, {
+          name: 'description',
+          modalInputCss: 'input#description'
+      }, {
+          name: 'level',
+          modalInputCss: 'input#level'
+      }]
     });
     var prototype = new Prototype();
     return prototype;

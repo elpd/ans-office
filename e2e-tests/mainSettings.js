@@ -4,7 +4,7 @@ var mainSettings = {
       email: "root@example.com",
       password: "root"
     },
-    waitTimeout: 3000
+    waitTimeout: 2000
 };
 
 module.exports = mainSettings;

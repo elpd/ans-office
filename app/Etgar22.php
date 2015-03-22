@@ -8,6 +8,8 @@ use Watson\Validating\ValidatingTrait;
 class Etgar22 extends Model
 {
     use ValidatingTrait;
+    use GeneralModel;
+
     
     protected $table = 'etgar22';
     

@@ -8,6 +8,7 @@ use Watson\Validating\ValidatingTrait;
 class Contact extends Model
 {
     use ValidatingTrait;
+    use GeneralModel;
 
     public $fillable = array(
             'registration_date',

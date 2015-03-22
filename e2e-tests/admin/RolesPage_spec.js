@@ -28,6 +28,12 @@
         id: 2,
         name: 'Guest'
       }]
+    },
+    addParams: {
+      name: 'moderator',
+        slug: 'moderator',
+        description: 'moderating activites',
+        level: 1
     }
   });
 

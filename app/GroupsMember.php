@@ -8,6 +8,7 @@ use Watson\Validating\ValidatingTrait;
 class GroupsMember extends Model
 {
     use ValidatingTrait;
+    use GeneralModel;
 
     protected $table = 'groups_members';
 

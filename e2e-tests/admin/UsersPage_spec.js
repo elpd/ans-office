@@ -20,6 +20,11 @@
         name: 'root',
         email: 'root@example.com'
       }]
+    },
+    addParams: {
+      name: 'user_c',
+      email: 'user_c@example.com',
+        password: 'first_password'
     }
   });
 

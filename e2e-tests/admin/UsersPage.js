@@ -16,7 +16,17 @@
     Prototype.prototype = new CrudGridPageObject({
       gridId: 'users_grid',
       gridRowClass: 'userData',
-      gridPagerId: 'users_grid_pager'
+      gridPagerId: 'users_grid_pager',
+      fieldsDef: [{
+        name: 'name',
+        modalInputCss: 'input#name'
+      }, {
+        name: 'email',
+        modalInputCss: 'input#email'
+      }, {
+          name: 'password',
+          modalInputCss: 'input#password'
+      }]
     });
 
     var prototype = new Prototype();

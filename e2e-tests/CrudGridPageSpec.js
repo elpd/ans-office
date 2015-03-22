@@ -16,6 +16,7 @@
       self.headerLabel = params.headerLabel;
       self.openTestPage = params.openTestPage;
       self.testData = params.testData;
+      self.addParams = params.addParams;
     },
 
     specify: function() {
@@ -67,7 +68,8 @@
             },
             waitOnData: function() {
               return testPage.waitOnData();
-            }
+            },
+            addParams: self.addParams
           });
           navGridPageSpec.specify();
 
