@@ -1,4 +1,6 @@
 (function () {
+    
+    var mainSettings = require('./mainSettings');
     var _ = require('lodash');
     var Promise = require("bluebird");
     var PageObject = require('./PageObject');
@@ -51,7 +53,7 @@
                      });
                      */
                     //return promise;
-                });
+                }, mainSettings.waitTimeout);
                 return browserPromise;
             };
 
