@@ -1,7 +1,9 @@
 define([
   'classes/LoadingIndicator',
+    'classes/utilities'
 ], function(
-  LoadingIndicator
+  LoadingIndicator,
+  utilities
 ) {
 
   var Class = function GeneralGrid(params) {

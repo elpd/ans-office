@@ -21,6 +21,10 @@ exports.config = {
         browser.ignoreSynchronization = true;
       }
     };
+
+      //var SpecReporter = require('jasmine-spec-reporter');
+      // add jasmine spec reporter
+      //jasmine.getEnv().addReporter(new SpecReporter({displayStacktrace: true}));
   },
 
   suites: {

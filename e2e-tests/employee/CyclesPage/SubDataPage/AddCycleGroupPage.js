@@ -38,7 +38,7 @@
         var statusInput = this.getStatusInput();
         return browser.wait(function() {
           return statusInput.isPresent();
-        }).then(function() {
+        },mainSettings.waitTimeout).then(function() {
           var desiredOption = statusInput.element(by.css(
             'option[value="' +
             status_id +
@@ -51,7 +51,7 @@
         var statusInput = this.getStatusInput();
         return browser.wait(function() {
           return statusInput.isPresent();
-        }).then(function() {
+        }, mainSettings.waitTimeout).then(function() {
           var desiredOption = statusInput.element(by.cssContainingText(
             'option',
             status));

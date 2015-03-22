@@ -8,7 +8,8 @@ use Watson\Validating\ValidatingTrait;
 class GroupStatus extends Model
 {
     use ValidatingTrait;
-    
+    use GeneralModel;
+
     protected $table = 'group_status';
     
     protected $fillable = array(

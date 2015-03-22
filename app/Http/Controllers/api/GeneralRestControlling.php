@@ -50,7 +50,7 @@ trait GeneralRestControlling {
   public function store() {
       $class = $this->biClass;
       $object = new $class();
-      $input = Request::only($object->fillable);
+      $input = Request::only($object->getFillable());
       foreach ($object->nullable as $nullableField) {
         if (array_key_exists ($nullableField, $input) && $input[$nullableField] === '' ) {
           $input[$nullableField] = null;
@@ -73,7 +73,11 @@ trait GeneralRestControlling {
         ];
       }
       catch (\Exception $e) {
-        $errors = implode(',', $e->errorInfo);
+        if (property_exists($e, 'errorInfo')) {
+          $errors = implode(',', $e->errorInfo);
+        } else {
+          $errors = ['general' => ['general error. See exception']];
+        }
 
         return [
           'success' => false,
@@ -95,7 +99,7 @@ trait GeneralRestControlling {
     $object = new $class();
 
     $item = $class::findOrFail($id);
-    $input = Request::only($object->fillable);
+    $input = Request::only($object->getFillable());
     foreach ($object->nullable as $nullableField) {
       if (array_key_exists ($nullableField, $input) && $input[$nullableField] === '' ) {
         $input[$nullableField] = null;

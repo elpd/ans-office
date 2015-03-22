@@ -1,66 +1,88 @@
-(function() {
+(function () {
 
-  var Class = function NavGridPageSpec(params) {
-    this.setParams(params);
-  };
+    var Promise = require("bluebird");
+    var AddWindowPageSpec = require('./AddWindowPageSpec');
 
-  Class.prototype = {
-    setParams: function(params) {
-      var self = this;
-      self.getPageElement = params.getPageElement;
-      self.waitOnData = params.waitOnData;
-    },
+    var Class = function NavGridPageSpec(params) {
+        this.setParams(params);
+    };
 
-    specify: function() {
-      var self = this;
+    Class.prototype = {
+        setParams: function (params) {
+            var self = this;
+            self.getPageElement = params.getPageElement;
+            self.waitOnData = params.waitOnData;
+            self.addParams = params.addParams;
+        },
 
-      describe('navgrid', function() {
+        specify: function () {
+            var self = this;
 
-        var navGrid = null;
+            describe('navgrid', function () {
 
-        beforeEach(function(){
-          navGrid = self.getPageElement();
-        });
+                var navGrid = null;
 
-        it('should be present', function() {
-          self.waitOnData().then(function() {
-            var navElement = navGrid.getElement();
+                function getNavGrid() {
+                    return navGrid;
+                }
 
-            expect(navElement).not.toBeNull();
-            expect(navElement.isPresent()).toBe(true);
-          });
-        });
-
-        describe('options', function() {
-
-          describe('add', function() {
-
-            it('should be present', function() {
-              self.waitOnData().then(function() {
-                var addElement = navGrid.getAddButtonElement();
-                expect(addElement.isPresent()).toBe(
-                  true);
-              });
-            });
-
-            it('should open adding window when pressing',
-              function() {
-                self.waitOnData().then(function() {
-                  var addWindow = navGrid.pressAdd();
-
-                  expect(addWindow).not.toBeNull();
-                  expect(addWindow.getElement().isPresent()).toBe(
-                    true);
+                beforeEach(function () {
+                    navGrid = self.getPageElement();
                 });
-              });
-          });
-        });
 
-      });
-    }
+                it('should be present', function () {
+                    self.waitOnData().then(function () {
+                        var navElement = navGrid.getElement();
 
-  };
+                        expect(navElement).not.toBeNull();
+                        expect(navElement.isPresent()).toBe(true);
+                    });
+                });
 
-  module.exports = Class;
+                describe('options', function () {
+
+                    describe('add', function () {
+
+                        it('should be present', function () {
+                            self.waitOnData().then(function () {
+                                var addElement = navGrid.getAddButtonElement();
+                                expect(addElement.isPresent()).toBe(
+                                    true);
+                            });
+                        });
+
+                        it('should open adding window when pressing',
+                            function () {
+                                self.waitOnData().then(function () {
+                                    navGrid.pressAdd().then(function(addWindow){
+                                        expect(addWindow).not.toBeNull();
+                                        expect(addWindow.getElement().isPresent())
+                                            .toBe(true);
+                                    });
+                                });
+                            }
+                        );
+
+                        var addWindowPageSpec = new AddWindowPageSpec({
+                            open: function () {
+                                var promise = getNavGrid().waitOnData().then(function () {
+                                    var addWindow = getNavGrid().pressAdd();
+                                    return (addWindow);
+                                });
+                                return promise;
+                            },
+                            addParams: self.addParams
+                        });
+                        addWindowPageSpec.specify();
+
+                    });
+                });
+
+            });
+        }
+
+    };
+
+    module.exports = Class;
 
 })();

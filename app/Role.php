@@ -4,17 +4,13 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 use Watson\Validating\ValidatingTrait;
+use App\GeneralModel;
 
-class GroupMembersStatus extends Model
+class Role extends \Bican\Roles\Models\Role
 {
     use ValidatingTrait;
     use GeneralModel;
 
-    protected $table = 'group_members_status';
-    
-    protected $fillable = array(
-            'status',
-    );
-    
-    protected $rules = array();   
+    public $nullable = [];
+    protected $rules = [];
 }

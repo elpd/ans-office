@@ -7,3 +7,4 @@
 .settings
 .idea
 composer.lock
+npm-debug.log

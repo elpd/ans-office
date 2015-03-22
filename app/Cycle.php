@@ -8,6 +8,7 @@ use Watson\Validating\ValidatingTrait;
 class Cycle extends Model
 {
     use ValidatingTrait;
+    use GeneralModel;
 
     public $fillable = array(
             'startDate',

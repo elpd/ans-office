@@ -31,7 +31,11 @@ class LanguageController extends Controller {
 					'id' => 'ID',
 					'Id' => 'ID',
 					'Roles' => 'Roles',
-					'Name' => 'Name'
+					'Name' => 'Name',
+					'Email' => 'Email',
+					'Slug' => 'Slug',
+					'Description' => 'Description',
+					'password' => 'Password'
 					]
 			],
 			'he' => [

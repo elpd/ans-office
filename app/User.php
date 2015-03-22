@@ -12,6 +12,7 @@ use Bican\Roles\Traits\HasRoleAndPermission;
 class User extends Model implements AuthenticatableContract, CanResetPasswordContract {
 
 	use Authenticatable, CanResetPassword;
+    use GeneralModel;
 
 	use ValidatingTrait;
 

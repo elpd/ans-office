@@ -24,12 +24,12 @@ define([
         caption: lang.getFor('main.cycles'),
         SubRow: SubRow,
         colModel: [{
-          label: lang.getFor('main.id'),
+          label: lang.getFor('main.Id'),
           name: 'id',
           width: 30,
           key: true
         }, {
-          label: lang.getFor('main.name'),
+          label: lang.getFor('main.Name'),
           name: 'name',
           editable: true,
           //edittype: 'select',
@@ -38,7 +38,7 @@ define([
 
           }
         }, {
-          label: lang.getFor('main.email'),
+          label: lang.getFor('main.Email'),
           name: 'email',
           editable: true,
           //edittype: 'select',
@@ -46,6 +46,15 @@ define([
           editoptions: {
 
           }
+        },  {
+            label: lang.getFor('main.Password'),
+            name: 'password',
+            editable: true,
+            //edittype: 'select',
+            //formatter: 'integer',
+            editoptions: {
+
+            }
         }]
       });
 
