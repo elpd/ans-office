@@ -1,5 +1,6 @@
 (function () {
 
+    var mainSettings = require('./mainSettings');
     var NavGridPageSpec = require('./NavGridPageSpec');
 
     var Class = function CrudGridPageSpec(params) {
@@ -10,7 +11,6 @@
         setParams: function (params) {
             var self = this;
 
-            self.TestPageClass = params.TestPageClass;
             self.testPageName = params.testPageName;
             self.pageAddressRegex = params.pageAddressRegex;
             self.headerLabel = params.headerLabel;
@@ -18,6 +18,7 @@
             self.testData = params.testData;
             self.addParams = params.addParams;
             self.removeSpec = params.removeSpec;
+            self.updateSpec = params.updateSpec;
         },
 
         specify: function () {
@@ -32,6 +33,8 @@
 
                 beforeEach(function () {
                     isAngularSite(false);
+
+                    refreshData();
                     testPage = self.openTestPage();
                 });
 
@@ -63,6 +66,78 @@
                         });
                     });
 
+                    describe('inline editing', function () {
+
+                        it('should be able to enter update mode', function () {
+                            testPage.waitOnData().then(function () {
+                                var row = testPage.getRowPage({
+                                    by: self.updateSpec.keyName,
+                                    value: self.updateSpec.keyValue
+                                });
+
+                                //expect(row.getEditableAttribute()).toEqual('0');
+
+                                row.startUpdateMode();
+
+                                expect(row.getEditableAttribute()).toEqual('1');
+                            });
+                        });
+
+                        it('should be able to exit update mode', function () {
+                            testPage.waitOnData().then(function () {
+                                var row = testPage.getRowPage({
+                                    by: self.updateSpec.keyName,
+                                    value: self.updateSpec.keyValue
+                                });
+
+                                //expect(row.getEditableAttribute()).toEqual('0');
+
+                                row.startUpdateMode();
+
+                                expect(row.getEditableAttribute()).toEqual('1');
+
+                                row.endUpdateMode();
+
+                                expect(row.getEditableAttribute()).toEqual('0');
+                            });
+                        });
+
+                        self.updateSpec.fields.forEach(function (updFieldSpec) {
+
+                            it('should be able to update ' + updFieldSpec.name, function () {
+                                testPage.waitOnData().then(function () {
+                                    var rowTemp = testPage.getRowPage({
+                                        by: self.updateSpec.keyName,
+                                        value: self.updateSpec.keyValue
+                                    });
+                                    rowTemp.getIdPromise().then(function(rowId){
+                                        row = testPage.getRowPage({
+                                            by: 'id',
+                                            value: rowId
+                                        });
+
+                                        row.startUpdateMode();
+                                        expect(row.getEditableAttribute()).toEqual('1');
+
+                                        row.editCell({
+                                            cellName: updFieldSpec.name,
+                                            newValue: updFieldSpec.newValue
+                                        });
+
+                                        row.endUpdateMode();
+                                        expect(row.getEditableAttribute()).toEqual('0');
+
+                                        var updatedCellElement = row.getCellElement({name: updFieldSpec.name});
+
+                                        expect(updatedCellElement.getText()).toEqual(updFieldSpec.newValue);
+                                    });
+
+                                });
+                            });
+                        });
+
+                    });
+
                     var navGridPageSpec = new NavGridPageSpec({
                         getPageElement: function () {
                             return getTestPage().getNavGrid();
@@ -83,6 +158,10 @@
             });
         }
     };
+
+    function refreshData() {
+        browser.get(mainSettings.mainUrl + '/test/refresh');
+    }
 
     module.exports = Class;
 
