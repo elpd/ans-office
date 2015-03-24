@@ -1,42 +1,46 @@
-(function() {
-  var CrudGridPageSpec = require('./../CrudGridPageSpec');
-  var RolesPage = require('./RolesPage.js');
-  var AnsHomepage = require('./../AnsHomepage');
+(function () {
+    var CrudGridPageSpec = require('./../CrudGridPageSpec');
+    var RolesPage = require('./RolesPage.js');
+    var AnsHomepage = require('./../AnsHomepage');
 
-  var specs = new CrudGridPageSpec({
-    TestPageClass: RolesPage,
-    testPageName: 'RolesPage',
-    openTestPage: function() {
-      var ansHomepage = new AnsHomepage();
-      var rolesPage = ansHomepage.openRolesPage();
+    var specs = new CrudGridPageSpec({
+        TestPageClass: RolesPage,
+        testPageName: 'RolesPage',
+        openTestPage: function () {
+            var ansHomepage = new AnsHomepage();
+            var rolesPage = ansHomepage.openRolesPage();
 
-      return rolesPage;
-    },
-    pageAddressRegex: /admin\/roles/,
-    headerLabel: 'Roles',
-    testData: {
-      rows: [{
-        id: 1,
-        name: 'Admin'
-      }, {
-        id: 2,
-        name: 'Employee'
-      }, {
-        id: 2,
-        name: 'User'
-      }, {
-        id: 2,
-        name: 'Guest'
-      }]
-    },
-    addParams: {
-      name: 'moderator',
-        slug: 'moderator',
-        description: 'moderating activites',
-        level: 1
-    }
-  });
+            return rolesPage;
+        },
+        pageAddressRegex: /admin\/roles/,
+        headerLabel: 'Roles',
+        testData: {
+            rows: [{
+                id: 1,
+                name: 'Admin'
+            }, {
+                id: 2,
+                name: 'Employee'
+            }, {
+                id: 2,
+                name: 'User'
+            }, {
+                id: 2,
+                name: 'Guest'
+            }]
+        },
+        addParams: {
+            name: 'moderator',
+            slug: 'moderator',
+            description: 'moderating activites',
+            level: 1
+        },
+        removeSpec: {
+            by: 'slug',
+            value: 'guest'
+        }
+    });
 
-  specs.specify();
+    specs.specify();
 
 })();

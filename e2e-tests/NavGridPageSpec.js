@@ -2,6 +2,7 @@
 
     var Promise = require("bluebird");
     var AddWindowPageSpec = require('./AddWindowPageSpec');
+    var RemoveWindowPageSpec = require('./RemoveWindowPageSpec');
 
     var Class = function NavGridPageSpec(params) {
         this.setParams(params);
@@ -11,8 +12,10 @@
         setParams: function (params) {
             var self = this;
             self.getPageElement = params.getPageElement;
+            self.getGridPageObject = params.getGridPageObject;
             self.waitOnData = params.waitOnData;
             self.addParams = params.addParams;
+            self.removeSpec = params.removeSpec;
         },
 
         specify: function () {
@@ -54,7 +57,7 @@
                         it('should open adding window when pressing',
                             function () {
                                 self.waitOnData().then(function () {
-                                    navGrid.pressAdd().then(function(addWindow){
+                                    navGrid.pressAdd().then(function (addWindow) {
                                         expect(addWindow).not.toBeNull();
                                         expect(addWindow.getElement().isPresent())
                                             .toBe(true);
@@ -76,6 +79,51 @@
                         addWindowPageSpec.specify();
 
                     });
+
+                    describe('remove', function () {
+
+                        it('should be present', function () {
+                            self.waitOnData().then(function () {
+                                var el = navGrid.getRemoveButtonElement();
+                                expect(el.isPresent()).toBe(
+                                    true);
+                            });
+                        });
+
+                        it('should open removing window when pressing',
+                            function () {
+                                self.waitOnData().then(function () {
+                                    self.getGridPageObject().selectRow({
+                                        by: self.removeSpec.by,
+                                        value: self.removeSpec.value
+                                    });
+                                    navGrid.pressRemove().then(function (actionWindow) {
+                                        expect(actionWindow).not.toBeNull();
+                                        expect(actionWindow.getElement().isPresent())
+                                            .toBe(true);
+                                    });
+                                });
+                            }
+                        );
+
+                        var removeWindowPageSpec = new RemoveWindowPageSpec({
+                            open: function () {
+                                var promise = getNavGrid().waitOnData().then(function () {
+                                    self.getGridPageObject().selectRow({
+                                        by: self.removeSpec.by,
+                                        value: self.removeSpec.value
+                                    });
+                                    var actionWindow = getNavGrid().pressRemove();
+                                    return (actionWindow);
+                                });
+                                return promise;
+                            },
+                            removeSpec: self.removeSpec
+                        });
+                        removeWindowPageSpec.specify();
+
+                    });
+
                 });
 
             });

@@ -7,30 +7,51 @@ use App\User;
 class UserTableSeeder extends Seeder
 {
 
-    public function run ()
+    public function run()
     {
         DB::table('users')->delete();
 
         $initialPassword = Hash::make('root');
+        $initialUserPassword = Hash::make('user');
 
-        $newItem = User::create(
-                array(
-                        'name' => 'root',
-                        'email' => 'root@example.com',
-                        'password' => $initialPassword,
-                        //'password_confirmation' => $initialPassword,
-                        //'confirmation_code' => Hash::make('first_confirmation'),
-                        //'confirmed' => 1,
-                ));
         $adminRole = Role::where('slug', '=', 'admin')->firstOrFail();
         $employeeRole = Role::where('slug', '=', 'employee')->firstOrFail();
 
-        $newItem->attachRole($adminRole);
-        $newItem->attachRole($employeeRole);
+        $sampleData = [
+            [
+                'user' => [
+                    'name' => 'root',
+                    'email' => 'root@example.com',
+                    'password' => $initialPassword,
+                ],
+                'roles' => [
+                    $adminRole,
+                    $employeeRole,
+                ]
+            ],
+            [
+                'user' => [
+                    'name' => 'user_1',
+                    'email' => 'user_1@example.com',
+                    'password' => $initialUserPassword,
+                ],
+                'roles' => [
+                    $employeeRole
+                ]
+            ]
+        ];
 
-        $errors = $newItem->getErrors();
-        if (count($errors) > 0) {
-            throw new Exception($errors);
+        foreach ($sampleData as $sampleUser) {
+            $newItem = User::create($sampleUser['user']);
+
+            foreach ($sampleUser['roles'] as $desiredRole) {
+                $newItem->attachRole($desiredRole);
+            }
+
+            $errors = $newItem->getErrors();
+            if (count($errors) > 0) {
+                throw new Exception($errors);
+            }
         }
     }
 }
