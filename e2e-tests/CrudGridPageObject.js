@@ -2,6 +2,7 @@
     var mainSettings = require('./mainSettings');
     var PageObject = require('./PageObject');
     var NavGridPageObject = require('./NavGridPageObject');
+    var RowPageObject = require('./RowPageObject');
 
     var Class = function CrudGridPageObject(params) {
         this.setParams(params);
@@ -38,6 +39,35 @@
 
                 return element.all(by.css('#' + self.gridId +
                 ' tr.dataRow.' + self.gridRowClass));
+            };
+
+            this.getRowPage = function (params) {
+                var self = this;
+
+                var rowEl = self.findRow({
+                    by: params.by,
+                    value: params.value
+                });
+
+                var rowPage = new RowPageObject({
+                    element: rowEl,
+                    gridId: self.gridId
+                });
+
+                return rowPage;
+            };
+
+            this.findRow = function (params) {
+                var self = this;
+
+                var rowElement = null;
+                var cellElSelection = self.element.element(by.css('tr.dataRow' + '.' + self.gridRowClass +
+                ' ' +
+                'td[aria-describedby="' + self.gridId + '_' + params.by + '"][title="' + params.value + '"]'));
+
+                var rowElement = cellElSelection.element(by.xpath('ancestor::tr'));
+
+                return rowElement;
             };
 
             this.getGrid = function () {
@@ -78,12 +108,10 @@
                 var self = this;
 
                 return self.waitOnData().then(function () {
-                    var rowElSeleciton = null;
-                    var cellElSelection = self.element.element(by.css('tr.dataRow' + '.' + self.gridRowClass +
-                    ' ' +
-                    'td[aria-describedby="' + self.gridId + '_' + params.by + '"][title="' + params.value + '"]'));
-
-                    var rowElSelection = cellElSelection.element(by.xpath('ancestor::tr'));
+                    var rowElSelection = self.findRow({
+                        by: params.by,
+                        value: params.value
+                    });
 
                     rowElSelection.click();
                 });

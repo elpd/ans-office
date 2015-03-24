@@ -4,7 +4,6 @@
     var AnsHomepage = require('./../AnsHomepage');
 
     var specs = new CrudGridPageSpec({
-        TestPageClass: RolesPage,
         testPageName: 'RolesPage',
         openTestPage: function () {
             var ansHomepage = new AnsHomepage();
@@ -38,6 +37,28 @@
         removeSpec: {
             by: 'slug',
             value: 'guest'
+        },
+        updateSpec: {
+            fields: [
+                {
+                    name: 'name',
+                    newValue: 'Moderator'
+                },
+                {
+                    name: 'slug',
+                    newValue: 'moderator'
+                },
+                {
+                    name: 'description',
+                    newValue: 'moderation rights'
+                },
+                {
+                    name: 'level',
+                    newValue: '2'
+                }
+            ],
+            keyName: 'slug',
+            keyValue: 'guest'
         }
     });
 
