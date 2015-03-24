@@ -27,7 +27,7 @@
             this.waitOnData = function () {
                 var self = this;
                 var dataPromise = browser.wait(function () {
-                    return self.element.isPresent();
+                    return self.element.isDisplayed();
                 });
 
                 return dataPromise;
@@ -37,34 +37,25 @@
                 var self = this;
                 var browserPromise = browser.wait(function () {
                     var promise = new Promise(function (resolve, reject) {
-                        var res = self.element.isPresent();
+                        var res = self.element.isDisplayed();
                         res.then(function (found) {
                             resolve(!found);
                         });
                     });
                     return promise;
-                    /*
-                     var promise = new protractor.promise.Promise(function(resolve, reject){
-                     self.element.isPresent(function(){
-                     resolve(false);
-                     }, function(){
-                     resolve(true);
-                     });
-                     });
-                     */
-                    //return promise;
+
                 }, mainSettings.waitTimeout);
                 return browserPromise;
             };
-/*
+
             this.getTitleElement = function () {
                 var self = this;
-                return this.element.element(by.id('edithd' + self.gridId));
+                return this.element.element(by.id('delhd' + self.gridId));
             };
 
             this.getSubmitButtonElement = function () {
                 var self = this;
-                return this.element.element(by.id('sData'));
+                return this.element.element(by.id('dData'));
             };
 
             this.getInputsElements = function () {
@@ -76,16 +67,12 @@
                 return inputsEl;
             };
 
-            this.doAdd = function (params) {
+            this.doAction = function (params) {
                 var self = this;
-                var inputs = self.getInputsElements();
                 var submitButton = self.getSubmitButtonElement();
 
-                _.forEach(inputs, function (n, key) {
-                    n.sendKeys(params[key]);
-                });
                 submitButton.click();
-            }; */
+            };
         }
 
         Prototype.prototype = new PageObject();

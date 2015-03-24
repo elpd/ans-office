@@ -77,14 +77,17 @@
             this.selectRow = function (params) {
                 var self = this;
 
-                var rowElSeleciton = null;
-                var cellElSelection = self.element.element(by.css('tr.dataRow' + '.' + self.gridRowClass +
-                ' ' +
-                'td[aria-describedby="' + self.gridId + '_' + params.by + '"][title="' + params.value + '"]'));
+                return self.waitOnData().then(function () {
+                    var rowElSeleciton = null;
+                    var cellElSelection = self.element.element(by.css('tr.dataRow' + '.' + self.gridRowClass +
+                    ' ' +
+                    'td[aria-describedby="' + self.gridId + '_' + params.by + '"][title="' + params.value + '"]'));
 
-                var rowElSelection = cellElSelection.element(by.xpath('ancestor::tr'));
+                    var rowElSelection = cellElSelection.element(by.xpath('ancestor::tr'));
 
-                return rowElSelection.click();
+                    rowElSelection.click();
+                });
+
             };
         }
 
