@@ -3,6 +3,7 @@
     var mainSettings = require('./mainSettings');
     var PageObject = require('./PageObject');
     var AddWindowPageObject = require('./AddWindowPageObject');
+    var RemoveWindowPageObject = require('./RemoveWindowPageObject');
 
     var Class = function CrudGridPageObject(params) {
         this.setParams(params);
@@ -28,9 +29,19 @@
                 return element(by.id('add_' + self.gridId));
             };
 
+            this.getRemoveButtonElement = function () {
+                var self = this;
+                return element(by.id('del_' + self.gridId));
+            };
+
             this.getAddWindowElement = function () {
                 var self = this;
                 return element(by.id('editmod' + self.gridId));
+            };
+
+            this.getRemoveWindowElement = function() {
+                var self = this;
+                return element(by.id('delmod' + self.gridId));
             };
 
             this.getAddWindow = function () {
@@ -43,22 +54,25 @@
 
             this.pressAdd = function () {
                 var self = this;
-                var addButton = self.getAddButtonElement();
-                addButton.click();
-
-                var addWindowEl = self.getAddWindowElement();
-                var browserPromise = browser.wait(function () {
-                    return addWindowEl.isPresent();
-                }, mainSettings.waitTimeout);
-
-                return browserPromise.then(function () {
-                    var addWindow = new AddWindowPageObject({
-                        element: addWindowEl,
-                        gridId: self.gridId,
-                        fieldsDef: self.fieldsDef
-                    });
-                    return addWindow;
+                return pressAction({
+                    getActionButtonElementFn: self.getAddButtonElement.bind(self),
+                    getActionWindowElementFn: self.getAddWindowElement.bind(self),
+                    ActionWindowPageObjectClass: AddWindowPageObject,
+                    gridId: self.gridId,
+                    fieldsDef: self.fieldsDef
                 });
+            };
+
+            this.pressRemove = function(){
+                var self = this;
+                return pressAction({
+                    getActionButtonElementFn: self.getRemoveButtonElement.bind(self),
+                    getActionWindowElementFn: self.getRemoveWindowElement.bind(self),
+                    ActionWindowPageObjectClass: RemoveWindowPageObject,
+                    gridId: self.gridId,
+                    fieldsDef: self.fieldsDef
+                });
+
             };
 
             this.waitOnData = function () {
@@ -74,6 +88,25 @@
         return prototype;
 
     })();
+
+    function pressAction(params) {
+        var actionButton = params.getActionButtonElementFn();
+        actionButton.click();
+
+        var actionWindowEl = params.getActionWindowElementFn();
+        var browserPromise = browser.wait(function () {
+            return actionWindowEl.isPresent();
+        }, mainSettings.waitTimeout);
+
+        return browserPromise.then(function () {
+            var actionWindow = new params.ActionWindowPageObjectClass({
+                element: actionWindowEl,
+                gridId: params.gridId,
+                fieldsDef: params.fieldsDef
+            });
+            return actionWindow;
+        });
+    }
 
     module.exports = Class;
 })();

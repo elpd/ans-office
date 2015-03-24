@@ -11,8 +11,10 @@
         setParams: function (params) {
             var self = this;
             self.getPageElement = params.getPageElement;
+            self.getGridPageObject = params.getGridPageObject;
             self.waitOnData = params.waitOnData;
             self.addParams = params.addParams;
+            self.removeSpec = params.removeSpec;
         },
 
         specify: function () {
@@ -76,6 +78,34 @@
                         addWindowPageSpec.specify();
 
                     });
+
+                    describe('remove', function(){
+
+                        it ('should be present', function(){
+                            self.waitOnData().then(function () {
+                                var el = navGrid.getRemoveButtonElement();
+                                expect(el.isPresent()).toBe(
+                                    true);
+                            });
+                        });
+
+                        it('should open removing window when pressing',
+                            function () {
+                                self.waitOnData().then(function () {
+                                    self.getGridPageObject().selectRow({
+                                        by: self.removeSpec.by,
+                                        value: self.removeSpec.value
+                                    });
+                                    navGrid.pressRemove().then(function(actionWindow){
+                                        expect(actionWindow).not.toBeNull();
+                                        expect(actionWindow.getElement().isPresent())
+                                            .toBe(true);
+                                    });
+                                });
+                            }
+                        );
+                    });
+
                 });
 
             });
