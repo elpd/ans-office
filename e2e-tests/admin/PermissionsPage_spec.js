@@ -6,7 +6,9 @@
     var specs = new CrudGridPageSpec({
         testPageName: 'PermissionsPage',
         openTestPage: function () {
-            var ansHomepage = new AnsHomepage();
+            var ansHomepage = new AnsHomepage({
+                element: element(by.css('body'))
+            });
             return ansHomepage.openPermissionsPage();
         },
         pageAddressRegex: /admin\/permissions/,

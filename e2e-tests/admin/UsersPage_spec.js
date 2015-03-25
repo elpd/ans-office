@@ -6,7 +6,9 @@
     var specs = new CrudGridPageSpec({
         testPageName: 'UsersPage',
         openTestPage: function () {
-            var ansHomepage = new AnsHomepage();
+            var ansHomepage = new AnsHomepage({
+                element: element(by.css('body'))
+            });
             var usersPage = ansHomepage.openUsersPage();
 
             return usersPage;
