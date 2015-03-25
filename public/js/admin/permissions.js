@@ -1,7 +1,7 @@
 define([
     'classes/utilities',
     'classes/bi/Permission',
-    'admin/roles.SubRow',
+    'admin/permissions.SubRow',
     'services/language',
     'classes/LoadingIndicator',
     'classes/GeneralGrid',
