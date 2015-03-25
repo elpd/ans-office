@@ -6,13 +6,20 @@
     var UsersPage = require('./admin/UsersPage');
     var RolesPage = require('./admin/RolesPage');
     var PermissionsPage = require('./admin/PermissionsPage');
+    var MainNavbarPageObject = require('./MainNavbarPageObject');
 
-    var Class = function AnsHomepage() {
-
+    var Class = function AnsHomepage(params) {
+        var self = this;
+        self.setParams(params);
     };
 
     Class.prototype = (function () {
         function Prototype() {
+            this.setParams = function(params) {
+                var self = this;
+                self.element = params.element;
+            };
+
             this.getAsLoggedOut = function () {
                 browser.manage().deleteAllCookies();
                 browser.get(mainSettings.mainUrl);
@@ -23,6 +30,19 @@
 
             this.getTitle = function () {
                 return browser.getTitle();
+            };
+
+            this.getMainNavbar = function() {
+                var el = this.element.element(by.id('main_navbar'));
+                return new MainNavbarPageObject({
+                    element: el
+                });
+            };
+
+            this.waitOnData = function() {
+                return browser.wait(function(){
+                    return true;
+                });
             };
 
             this.loginAsRoot = function () {

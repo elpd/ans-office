@@ -5,7 +5,9 @@
   var adminPage = null;
 
   function openAdminPage() {
-    var ansHomepage = new AnsHomepage();
+    var ansHomepage = new AnsHomepage({
+        element: element(by.css('body'))
+    });
     var adminPage = ansHomepage.openAdminPage();
 
     return adminPage;
