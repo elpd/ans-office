@@ -13,13 +13,13 @@ class PermissionTableSeeder extends Seeder
         $itemsData = array(
             array(
                 'name' => 'Edit Template',
-                'slug' => 'edit',
+                'slug' => 'edit.template',
                 'description' => '',
                 'model' => 'DocumentTemplate',
             ),
             array(
                 'name' => 'View Template',
-                'slug' => 'view',
+                'slug' => 'view.template',
                 'description' => '',
                 'model' => 'DocumentTemplate',
             ),

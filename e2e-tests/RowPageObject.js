@@ -85,6 +85,7 @@
         elem.getAttribute('value').then(function (text) {
             var len = text.length
             var backspaceSeries = new Array(len+1).join(protractor.Key.BACK_SPACE);
+            elem.sendKeys(protractor.Key.END);
             elem.sendKeys(backspaceSeries);
         })
     }
