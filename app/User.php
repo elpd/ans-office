@@ -39,7 +39,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	 */
 	protected $hidden = ['password', 'remember_token'];
 
-	protected $rules = array();
+	protected $rules = [
+        'password' => [
+            'confirmed'
+        ]
+    ];
 
 	public $nullable = [];
 }

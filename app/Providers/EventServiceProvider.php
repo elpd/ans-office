@@ -2,6 +2,7 @@
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use League\Flysystem\Exception;
 
 class EventServiceProvider extends ServiceProvider {
 
@@ -27,6 +28,15 @@ class EventServiceProvider extends ServiceProvider {
 		parent::boot($events);
 
 		//
+
+        \Event::listen('eloquent.validated: App\User', function($model, $event)
+        {
+            if ($event === 'passed') {
+                if (isset($model->password_confirmation)) {
+                    unset($model->password_confirmation);
+                }
+            }
+        });
 	}
 
 }

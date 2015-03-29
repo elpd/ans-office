@@ -20,6 +20,9 @@ Route::controllers([
 	'password' => 'Auth\PasswordController',
 ]);
 
+Route::get('user/settings', 'User\SettingsController@index');
+Route::get('user/settings/general', 'User\Settings\GeneralController@index');
+
 Route::get('employee', 'EmployeeController@index');
 Route::get('employee/contacts', 'ContactController@index');
 Route::get('employee/groups', 'GroupController@index');
@@ -44,6 +47,12 @@ Route::resource('api/cycle.groups', 'api\CycleGroupsController');
 Route::resource('api/user', 'api\UserController');
 Route::resource('api/role', 'api\RoleController');
 Route::resource('api/permission', 'api\PermissionController');
+
+Route::get('api/user-name', 'api\User\NameController@show');
+Route::put('api/user-name', 'api\User\NameController@update');
+Route::get('api/user-email', 'api\User\EmailController@show');
+Route::put('api/user-email', 'api\User\EmailController@update');
+Route::put('api/user-password', 'api\User\PasswordController@update');
 
 Route::get('api/language', 'api\LanguageController@index');
 
