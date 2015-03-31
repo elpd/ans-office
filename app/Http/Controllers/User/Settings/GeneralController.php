@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers\User\Settings;
 
 use App\Http\Controllers\Controller;
+use App\UiLanguage;
 
 class GeneralController extends Controller {
 
@@ -22,7 +23,8 @@ class GeneralController extends Controller {
 	 */
 	public function index()
 	{
-		return view('user.settings.general');
+        $languages = UiLanguage::all();
+		return view('user.settings.general')->with('languages', $languages);
 	}
 
 }

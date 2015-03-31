@@ -46,4 +46,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     ];
 
 	public $nullable = [];
+
+    public function settings()
+    {
+        return $this->hasOne('App\Settings');
+    }
 }

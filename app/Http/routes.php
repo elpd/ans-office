@@ -35,7 +35,7 @@ Route::get('admin/users', 'UserController@index');
 Route::get('admin/roles', 'RoleController@index');
 Route::get('admin/permissions', 'PermissionController@index');
 
-Route::resource('api/contact', 'api\ContantController');
+Route::resource('api/contact', 'api\ContactController');
 Route::resource('api/group', 'api\GroupController');
 Route::resource('api/group-status', 'api\GroupStatusController');
 Route::resource('api/groups-members', 'api\GroupsMembersController');
@@ -47,12 +47,16 @@ Route::resource('api/cycle.groups', 'api\CycleGroupsController');
 Route::resource('api/user', 'api\UserController');
 Route::resource('api/role', 'api\RoleController');
 Route::resource('api/permission', 'api\PermissionController');
+Route::resource('api/ui_language', 'api\UiLanguageController');
+Route::resource('api/ui_theme', 'api\UiThemeController');
 
 Route::get('api/user-name', 'api\User\NameController@show');
 Route::put('api/user-name', 'api\User\NameController@update');
 Route::get('api/user-email', 'api\User\EmailController@show');
 Route::put('api/user-email', 'api\User\EmailController@update');
 Route::put('api/user-password', 'api\User\PasswordController@update');
+Route::get('api/user-settings', 'api\User\SettingsController@show');
+Route::put('api/user-settings', 'api\User\SettingsController@update');
 
 Route::get('api/language', 'api\LanguageController@index');
 

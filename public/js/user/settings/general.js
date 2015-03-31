@@ -1,4 +1,5 @@
 define([
+        'lodash',
         'classes/utilities',
         'services/language',
         'classes/AnsApplication',
@@ -6,19 +7,28 @@ define([
         'classes/Controller',
         'classes/services/UserNameService',
         'classes/services/UserEmailService',
-        'classes/services/UserPasswordService'
+        'classes/services/UserPasswordService',
+        'classes/services/UserSettingsService',
+        'classes/services/UiLanguageService',
+        'user/settings/general/UiThemeSection'
     ],
-    function (utilities,
+    function (_,
+              utilities,
               lang,
               AnsApplication,
               AccordionView,
               Controller,
               UserNameService,
               UserEmailService,
-              UserPasswordService) {
+              UserPasswordService,
+              UserSettingsService,
+              UiLanguageService,
+              UiThemeSection) {
 
         $(document).ready(function () {
             var app = new AnsApplication();
+
+            // User Name
 
             var userNameController = new Controller({});
             userNameController.dataService = new UserNameService();
@@ -60,7 +70,7 @@ define([
 
             userNameView.init();
 
-            //
+            // User Email
 
             var userEmailController = new Controller({});
             userEmailController.dataService = new UserEmailService();
@@ -102,7 +112,7 @@ define([
 
             userEmailView.init();
 
-            //
+            // User Password
 
             var userPasswordController = new Controller({});
             userPasswordController.dataService = new UserPasswordService();
@@ -145,9 +155,80 @@ define([
             };
             userPasswordView.draw = function () {
                 var self = this;
-                //self.get$InputEmail().val();
+                self.get$InputPassword().val('');
+                self.get$InputPasswordConfirmation().val('');
             };
 
             userPasswordView.init();
+
+            // User Language
+
+            var userLanguageController = new Controller({});
+            userLanguageController.userDataService = new UserSettingsService();
+            userLanguageController.uiLanguageService = new UiLanguageService();
+            userLanguageController.getUiLanguages = function () {
+                var self = this;
+                var promise = self.uiLanguageService.get();
+                return promise.then(function (result) {
+                    return _.pluck(result.rows, 'cell');
+                });
+            };
+            userLanguageController.getUserUiLanguage = function () {
+                var self = this;
+                var promise = self.userDataService.get().promise();
+                return promise.then(function (result) {
+                    return result.data.settings.ui_language_id;
+                });
+            };
+            userLanguageController.setUserUiLanguage = function (ui_language_id) {
+                var self = this;
+                var data = {
+                    ui_language_id: ui_language_id
+                }
+                return self.userDataService.update(data);
+            };
+
+            var userLanguageView = new AccordionView({
+                viewIdentity: '#section_settings_user_language',
+                controller: userLanguageController
+            });
+            userLanguageView.sendDataToController = function () {
+                var self = this;
+                var data = self.getUserUiLanguage();
+                return self.controller.setUserUiLanguage(data);
+            };
+            userLanguageView.draw = function () {
+                var self = this;
+                self.controller.getUiLanguages().done(function (languages) {
+                    self.redrawOptions(self.get$InputUserUiLanguage(), languages);
+                });
+                self.controller.getUserUiLanguage().done(function (selection) {
+                    self.get$InputUserUiLanguage().val(selection);
+                });
+            };
+            userLanguageView.redrawOptions = function ($selectInput, options) {
+                var $oldOptions = $selectInput.find('option');
+                $oldOptions.remove();
+
+                options.forEach(function (option) {
+                    var $newOption = $('<option value="' + option.id + '">' + option.name + '</option>')
+                    $selectInput.append($newOption);
+                });
+            };
+            userLanguageView.getUserUiLanguage = function () {
+                var self = this;
+                return self.get$InputUserUiLanguage().val();
+            };
+            userLanguageView.get$InputUserUiLanguage = function () {
+                var self = this;
+                return self.get$View().find('.input_language');
+            };
+
+            userLanguageView.init();
+
+            //
+
+            var uiThemeSection = new UiThemeSection();
+            uiThemeSection.execute();
         });
     });

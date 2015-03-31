@@ -82,7 +82,7 @@
 </script>
 <script data-main="/js/main" src="/js/require.js"></script>
 
-@yield('childScript');
+@yield('childScript')
 
 </body>
 </html>

@@ -27,7 +27,7 @@
                                    placeholder="@lang('main.enter_email')">
                         </div>
                         <button type="submit" class="btn btn-default input_submit">Submit</button>
-                        <div class="message_section">
+                        <div class="message_section bs-callout">
 
                         </div>
                     </form>
@@ -55,7 +55,7 @@
                                    placeholder="@lang('main.enter_email')">
                         </div>
                         <button type="submit" class="btn btn-default">Submit</button>
-                        <div class="message_section">
+                        <div class="message_section bs-callout">
 
                         </div>
                     </form>
@@ -74,7 +74,8 @@
                     </a>
                 </h4>
             </div>
-            <div id="section_settings_user_password_content" class="panel-collapse collapse panel-content" role="tabpanel"
+            <div id="section_settings_user_password_content" class="panel-collapse collapse panel-content"
+                 role="tabpanel"
                  aria-labelledby="section_settings_user_password_heading">
                 <div class="panel-body">
                     <form id="form_user_password">
@@ -83,11 +84,71 @@
                             <input type="text" class="form-control input_password" id="inputPassword"
                                    placeholder="@lang('main.enter_password')">
                             <label for="inputPasswordConfirmation">@lang('main.user_password_confirmation')</label>
-                            <input type="text" class="form-control input_password_confirmation" id="inputPasswordConfirmation"
+                            <input type="text" class="form-control input_password_confirmation"
+                                   id="inputPasswordConfirmation"
                                    placeholder="@lang('main.enter_password_confirmation')">
                         </div>
                         <button type="submit" class="btn btn-default input_submit">Submit</button>
-                        <div class="message_section">
+                        <div class="message_section bs-callout">
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" id="section_settings_user_language">
+            <div class="panel-heading" role="tab" id="section_settings_user_language_heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#section_settings_user_language_content"
+                       aria-expanded="true"
+                       aria-controls="section_settings_user_language_content">
+                        @lang('main.language')
+                    </a>
+                </h4>
+            </div>
+            <div id="section_settings_user_language_content" class="panel-collapse collapse panel-content"
+                 role="tabpanel"
+                 aria-labelledby="section_settings_user_language_heading">
+                <div class="panel-body">
+                    <form id="form_user_language">
+                        <div class="form-group">
+                            <label for="inputLanguage">@lang('main.language')</label>
+                            <select class="form-control input_language" id="inputLanguage"
+                                    placeholder="@lang('main.enter_language')">
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default input_submit">Submit</button>
+                        <div class="message_section bs-callout">
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel panel-default" id="section_settings_user_ui_theme">
+            <div class="panel-heading" role="tab" id="section_settings_user_ui_theme_heading">
+                <h4 class="panel-title">
+                    <a data-toggle="collapse" data-parent="#accordion" href="#section_settings_user_ui_theme_content"
+                       aria-expanded="true"
+                       aria-controls="section_settings_user_ui_theme_content">
+                        @lang('main.ui_theme')
+                    </a>
+                </h4>
+            </div>
+            <div id="section_settings_user_ui_theme_content" class="panel-collapse collapse panel-content"
+                 role="tabpanel"
+                 aria-labelledby="section_settings_user_ui_theme_heading">
+                <div class="panel-body">
+                    <form id="form_user_ui_theme">
+                        <div class="form-group">
+                            <label for="inputUiTheme">@lang('main.ui_theme')</label>
+                            <select class="form-control input_ui_theme" id="inputUiTheme"">
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-default input_submit">Submit</button>
+                        <div class="message_section bs-callout">
 
                         </div>
                     </form>
