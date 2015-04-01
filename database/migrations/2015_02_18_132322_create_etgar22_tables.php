@@ -26,6 +26,7 @@ class CreateEtgar22Tables extends Migration
             function ($table) {
                 $table->increments('id')->unsigned();
                 $table->string('name', 20);
+                $table->string('css_file', 50);
                 $table->timestamps();
             });
 
@@ -175,20 +176,20 @@ class CreateEtgar22Tables extends Migration
                 $table->foreign('status_id')
                     ->references('id')
                     ->on('group_members_status')
-                    ->onUpdate('no action')
-                    ->onDelete('no action');
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
 
                 $table->foreign('guide_id_1')
                     ->references('id')
                     ->on('guides')
-                    ->onUpdate('no action')
-                    ->onDelete('no action');
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
 
                 $table->foreign('guide_id_2')
                     ->references('id')
                     ->on('guides')
-                    ->onUpdate('no action')
-                    ->onDelete('no action');
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             });
 
         // Create the user settings table
@@ -205,6 +206,12 @@ class CreateEtgar22Tables extends Migration
                     ->unsigned()
                     ->index();
                 $table->timestamps();
+
+                $table->foreign('user_id')
+                    ->references('id')
+                    ->on('users')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
 
                 $table->foreign('ui_language_id')
                     ->references('id')
@@ -246,6 +253,13 @@ class CreateEtgar22Tables extends Migration
                 $table->dropForeign('groups_members_contact_id_foreign');
                 $table->dropForeign('groups_members_status_id_foreign');
             });
+
+        Schema::table('settings_user',
+            function(Blueprint $table){
+                $table->dropForeign('settings_user_user_id_foreign');
+                $table->dropForeign('settings_user_ui_language_id_foreign');
+                $table->dropForeign('settings_user_ui_theme_id_foreign');
+        });
 
         Schema::drop('contacts');
         Schema::drop('cycles');

@@ -26,12 +26,12 @@ class Settings extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function uiTheme()
+    public function ui_theme()
     {
         return $this->belongsTo('App\UiTheme');
     }
 
-    public function uiLanguage()
+    public function ui_language()
     {
         return $this->belongsTo('App\UiLanguage');
     }

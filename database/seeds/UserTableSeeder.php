@@ -71,11 +71,11 @@ class UserTableSeeder extends Seeder
                 $settingsDb->user()->associate($newItem);
                 if (isset($settings['ui_language'])){
                     $selectedLanguage = $settings['ui_language'];
-                    $settingsDb->uiLanguage()->associate($selectedLanguage);
+                    $settingsDb->ui_language()->associate($selectedLanguage);
                 }
                 if (isset($settings['ui_theme'])){
                     $selectedTheme = $settings['ui_theme'];
-                    $settingsDb->uiTheme()->associate($selectedTheme);
+                    $settingsDb->ui_theme()->associate($selectedTheme);
                 }
                 $newItem->settings()->save($settingsDb);
             }
