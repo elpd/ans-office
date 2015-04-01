@@ -61,10 +61,11 @@ define([
                 var self = this;
                 self.controller.getUiThemes().done(function (themes) {
                     self.redrawOptions(self.get$InputUserUiTheme(), themes);
+                    self.controller.getUserUiTheme().done(function (selection) {
+                        self.get$InputUserUiTheme().val(selection);
+                    });
                 });
-                self.controller.getUserUiTheme().done(function (selection) {
-                    self.get$InputUserUiTheme().val(selection);
-                });
+
             };
             userThemeView.redrawOptions = function ($selectInput, options) {
                 var $oldOptions = $selectInput.find('option');

@@ -44,7 +44,7 @@ define([
                 var self = this;
                 self.getParentProto().init.bind(self)();
                 self.get$MessageSection().hide();
-                self.draw();
+                //self.draw();
             };
 
             this.get$Form = function () {
