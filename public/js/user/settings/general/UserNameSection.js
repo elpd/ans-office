@@ -51,10 +51,19 @@ define([
                 var self = this;
                 return self.get$View().find('.input_name');
             };
+
+            userNameView.get$LoadingIndicator = function() {
+                var self = this;
+                return self.get$View().find('>.loading_indicator');
+            };
+
             userNameView.draw = function () {
                 var self = this;
+
+                self.get$LoadingIndicator().removeClass('done');
                 self.controller.getName().done(function (result) {
                     self.get$InputName().val(result.data.name);
+                    self.get$LoadingIndicator().addClass('done');
                 });
             };
 

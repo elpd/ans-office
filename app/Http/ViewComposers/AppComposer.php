@@ -1,6 +1,7 @@
 <?php namespace App\Http\ViewComposers;
 
 use Illuminate\Contracts\View\View;
+
 //use Illuminate\Users\Repository as UserRepository;
 
 class AppComposer
@@ -34,9 +35,13 @@ class AppComposer
     public function compose(View $view)
     {
         $user = \Auth::user();
-        $userSettings = $user->settings()->firstOrFail();
+        if ($user) {
+            $userSettings = $user->settings()->firstOrFail();
 
-        $view->with('userSettings', $userSettings);
+            $view->with('userSettings', $userSettings);
+        } else {
+            $view->with('userSettings', null);
+        }
     }
 
 }

@@ -10,8 +10,11 @@
     <link rel="stylesheet" media="screen" href="/js/jqGrid/css/trirand/ui.jqgrid.css"/>
 
     {!! HTML::style('lib/bootstrap-3.3.2-dist/css/bootstrap.css') !!}
-    <link rel="stylesheet" media="screen" href="/lib/bootstrap_themes/{{ $userSettings->ui_theme->css_file }}"/>
-    <!--{!! HTML::style('css/app.css') !!}-->
+    @if ($userSettings)
+      <link rel="stylesheet" media="screen" href="/lib/bootstrap_themes/{{ $userSettings->ui_theme->css_file }}"/>
+    @else
+       {!! HTML::style('css/app.css') !!}
+    @endif
     {!! HTML::style('css/custom.css') !!}
 
     <!-- Fonts -->
