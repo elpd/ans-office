@@ -29,14 +29,16 @@ class EventServiceProvider extends ServiceProvider {
 
 		//
 
+        /*
         \Event::listen('eloquent.validated: App\User', function($model, $event)
         {
             if ($event === 'passed') {
                 if (isset($model->password_confirmation)) {
-                    unset($model->password_confirmation);
+                    unset($model['password_confirmation']);
                 }
             }
         });
+        */
 	}
 
 }

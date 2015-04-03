@@ -31,10 +31,10 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
      *
      * @var array
      */
-    public $fillable = ['name',
+    public $fillable = [
+        'name',
         'email',
         'password',
-        'password_confirmation'
     ];
 
     /**
@@ -45,9 +45,6 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $hidden = ['password', 'remember_token'];
 
     protected $rules = [
-        'password' => [
-            'confirmed'
-        ]
     ];
 
     public $nullable = [];
@@ -55,5 +52,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     public function settings()
     {
         return $this->hasOne('App\Settings');
+    }
+
+    public function setPasswordAttribute($value)
+    {
+        $hashedPassword = \Hash::make($value);
+        $this->attributes['password'] = $hashedPassword;
     }
 }

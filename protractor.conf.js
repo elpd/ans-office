@@ -31,7 +31,8 @@ exports.config = {
         full: 'e2e-tests/*_spec.js',
         employee: 'e2e-tests/employee/*_spec.js',
         admin: 'e2e-tests/admin/*_spec.js',
-        user: 'e2e-tests/user/*_spec.js'
+        user: 'e2e-tests/user/*_spec.js',
+        user_settings: 'e2e-tests/user/settings/*_spec.js'
     },
 
     getPageTimeout: 5000

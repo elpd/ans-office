@@ -14,8 +14,8 @@ class UserTableSeeder extends Seeder
     {
         DB::table('users')->delete();
 
-        $initialPassword = Hash::make('root');
-        $initialUserPassword = Hash::make('user');
+        $initialPassword = 'root';
+        $initialUserPassword = 'user';
 
         $adminRole = Role::where('slug', '=', 'admin')->firstOrFail();
         $employeeRole = Role::where('slug', '=', 'employee')->firstOrFail();
@@ -30,7 +30,6 @@ class UserTableSeeder extends Seeder
                     'name' => 'root',
                     'email' => 'root@example.com',
                     'password' => $initialPassword,
-                    'password_confirmation' => $initialPassword,
                 ],
                 'roles' => [
                     $adminRole,
@@ -46,7 +45,6 @@ class UserTableSeeder extends Seeder
                     'name' => 'user_1',
                     'email' => 'user_1@example.com',
                     'password' => $initialUserPassword,
-                    'password_confirmation' => $initialUserPassword,
                 ],
                 'roles' => [
                     $employeeRole
