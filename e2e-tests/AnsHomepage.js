@@ -7,6 +7,7 @@
     var RolesPage = require('./admin/RolesPage');
     var PermissionsPage = require('./admin/PermissionsPage');
     var MainNavbarPageObject = require('./MainNavbarPageObject');
+    var GeneralSettingsPage = require('./user/settings/GeneralPage');
 
     var Class = function AnsHomepage(params) {
         var self = this;
@@ -91,7 +92,18 @@
                 var section = element(by.id('permissions_page'));
                 return new PermissionsPage({
                     element: section
-                })
+                });
+            };
+
+            this.openGeneralSettingsUserPage = function() {
+                var self = this;
+                self.loginAsRoot();
+
+                browser.get(mainSettings.mainUrl + '/user/settings/general');
+                var section = element(by.id('user_settings_general_page'));
+                return new GeneralSettingsPage({
+                    element: section
+                });
             };
         }
 

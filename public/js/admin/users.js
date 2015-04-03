@@ -21,6 +21,19 @@ define([
                 biNamePlural: 'users',
                 caption: lang.getFor('main.cycles'),
                 SubRow: SubRow,
+                onBeforeSubmitData: function(data){
+                    if (data.password) {
+                        data.password_confirmation = data.password; // TODO: make user input confirmation.
+                    }
+
+                    return data;
+                },
+                onBeforeAddSubmit: function(postdata, returnData) {
+                    // TODO: add password confirmation to form for user.
+                    if (postdata.password) {
+                        postdata.password_confirmation = postdata.password;
+                    }
+                },
                 colModel: [{
                     label: lang.getFor('main.Id'),
                     name: 'id',
@@ -46,7 +59,9 @@ define([
                     editable: true,
                     //edittype: 'select',
                     //formatter: 'integer',
-                    editoptions: {}
+                    editoptions: {
+
+                    }
                 }]
             });
 

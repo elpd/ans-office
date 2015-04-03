@@ -146,6 +146,8 @@ return [
 		'App\Providers\RouteServiceProvider',
 		'Illuminate\Html\HtmlServiceProvider',
 		'Bican\Roles\RolesServiceProvider',
+
+        'App\Providers\ComposerServiceProvider',
 	],
 
 	/*

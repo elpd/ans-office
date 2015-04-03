@@ -2,24 +2,52 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
-use Request;
+use Illuminate\Http\Request;
 use App\User;
-use Hash;
+use App\Settings;
+use App\UiLanguage;
+use App\UiTheme;
 
-class UserController extends Controller {
+class UserController extends Controller
+{
 
-	protected $biClass = 'App\User';
+    protected $biClass = 'App\User';
 
-	use GeneralRestControlling {
-		store as generalStore;
-	}
+    use GeneralRestControlling {
+        store as generalStore;
+        update as generalUpdate;
+    }
 
-	public function store() {
-		$password = Request::get('password');
-		$hashedPassword = Hash::make($password);
+    public function store(Request $request)
+    {
+        $this->validate($request, [
+            'password' => 'confirmed',
+        ]);
 
-		Request::merge(['password' => $hashedPassword]);
+        return $this->generalStore();
+    }
 
-		return $this->generalStore();
-	}
+    protected function storeChildren($user)
+    {
+        $userSettings = new Settings();
+
+        // Settings defaults
+
+        $englishUiLanguage = UiLanguage::where('name', '=', 'English')->firstOrFail();
+        $lumenUiTheme = UiTheme::where('name', '=', 'lumen')->firstOrFail();
+
+        $userSettings->ui_language()->associate($englishUiLanguage);
+        $userSettings->ui_theme()->associate($lumenUiTheme);
+
+        $user->settings()->save($userSettings);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $this->validate($request, [
+            'password' => 'confirmed',
+        ]);
+
+        return $this->generalUpdate($id);
+    }
 }

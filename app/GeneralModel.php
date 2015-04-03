@@ -5,4 +5,5 @@ trait GeneralModel
     public function getFillable(){
         return $this->fillable;
     }
+
 }
