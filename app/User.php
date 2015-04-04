@@ -49,10 +49,18 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public $nullable = [];
 
+    /*
+     * Relationships
+     */
+
     public function settings()
     {
         return $this->hasOne('App\Settings');
     }
+
+    /*
+     * Mutators
+     */
 
     public function setPasswordAttribute($value)
     {

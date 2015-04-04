@@ -10,8 +10,28 @@ class Etgar22 extends Model
     use ValidatingTrait;
     use GeneralModel;
 
-    
     protected $table = 'etgar22';
-    
-    protected $rules = array();    
+
+    protected $fillable = [
+        'contact_id',
+        'facebook_know_how',
+        'call_for_facebook_help',
+        'registration_date',
+        'notes',
+        'next_call',
+        'why_go_vegan',
+        'parent_name',
+        'parent_email',
+    ];
+
+    protected $rules = [];
+
+    /*
+    * Relationships
+    */
+
+    public function user()
+    {
+        return $this->belongsTo('App\User');
+    }
 }

@@ -11,36 +11,41 @@ class Contact extends Model
     use GeneralModel;
 
     public $fillable = array(
-            'registration_date',
-            'email',
-            'first_name',
-            'last_name',
-            'phone',
-            'facebook',
-            'birth_year',
-            'donate',
-            'blacklisted',
+        'registration_date',
+        'email',
+        'first_name',
+        'last_name',
+        'phone',
+        'facebook',
+        'birth_year',
+        'donate',
+        'blacklisted',
     );
 
     public $nullable = [];
 
     protected $rules = array(
-            "first_name" => array(
-                    'required',
-                    'alpha_dash'
-            ),
-            "last_name" => array(
-                    'required',
-                    'alpha_dash'
-            ),
-            "phone" => array(
-                    'required',
-                    'alpha_dash'
-            ),
-            "facebook" => array(),
-            "birth_year" => array(),
-            "donate" => array(),
-            "blacklisted" => array(),
+        "first_name" => array(
+            'required',
+        ),
+        "last_name" => array(
+        ),
+        "phone" => array(
+            'required',
+            'alpha_dash'
+        ),
+        "facebook" => array(),
+        "birth_year" => array(),
+        "donate" => array(),
+        "blacklisted" => array(),
     );
 
+    /*
+     * Relationships
+     */
+
+    public function etgar22()
+    {
+        return $this->hasOne('App\Etgar22');
+    }
 }
