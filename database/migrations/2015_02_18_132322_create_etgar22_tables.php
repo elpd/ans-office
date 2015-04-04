@@ -94,14 +94,14 @@ class CreateEtgar22Tables extends Migration
                 $table->integer('contact_id')
                     ->unsigned()
                     ->unique();
-                $table->integer('facebook_know_how');
+                $table->tinyInteger('facebook_know_how')->nullable();
                 $table->tinyInteger('call_for_facebook_help')->default(0);
                 $table->dateTime('registration_date');
                 $table->string('notes', 4000);
                 $table->dateTime('next_call');
-                $table->string('why-go-vegan', 1000);
-                $table->string('parents-name', 30);
-                $table->string('parent-email', 100);
+                $table->string('why_go_vegan', 1000);
+                $table->string('parent_name', 30);
+                $table->string('parent_email', 100);
                 $table->timestamps();
 
                 $table->foreign('contact_id')
