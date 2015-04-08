@@ -4,6 +4,8 @@ define([
 ], function (LoadingIndicator,
              utilities) {
 
+    var GRID_HEIGHT_MIN = 200;
+
     var Class = function GeneralGrid(params) {
         this.controllerUrl = params.controllerUrl;
         this.biName = params.biName;
@@ -48,10 +50,14 @@ define([
             viewrecords: true, // show the current page, data rang and total records on the toolbar
             width: 780,
             height: 200,
-            rowNum: 15,
+            // rowNum - number of rows to display
+            // options:
+            // - "" : all rows
+            rowNum: 1000,
             datatype: 'json',
             url: self.controllerUrl,
             pager: '#' + self.pagerId,
+            rowList:[30,50,100,200, 1000],
             caption: self.caption,
             //onSelectRow: editRow,
             ondblClickRow: editRow,
@@ -138,6 +144,8 @@ define([
             var headerHeight = $('.section_header').height();
 
             var calculatedHeight = pageHeight - headerHeight - 105;
+            // Set a minimum for height;
+            calculatedHeight = calculatedHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calculatedHeight;
             var calculatedHeightStr = calculatedHeight + 'px';
 
             $grid.setGridHeight(calculatedHeightStr);
@@ -167,7 +175,7 @@ define([
                 url: self.controllerUrl,
                 mtype: 'POST',
                 editData: {
-                    _token: $_token,
+                    _token: $_token
                 },
                 afterSubmit: function (data, postdata, oper) {
                     var response = data.responseJSON;
