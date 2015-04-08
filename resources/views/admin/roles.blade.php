@@ -1,7 +1,7 @@
 @extends('admin')
 
 @section('subContent')
-<div id="roles_page">
+<div id="roles_page" class="sub_content">
 	<h2 class="section_header">@choice('main.Role',2)</h2>
 
 	<table id="roles_grid"></table>

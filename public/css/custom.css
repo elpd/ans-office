@@ -1,33 +1,58 @@
+/*
+* Stretching to bottom
+*/
+
+html, body {
+    height: 100%;
+}
+
+.main_content {
+    height: calc(100% - 75px);
+}
+
+.sub_content, .content_main_row, .content_main_row_part  {
+    height: 100%;
+}
+
 /* make sidebar nav vertical */
 
 @media (min-width: 768px) {
-  .sidebar-nav .navbar .navbar-collapse {
-    padding: 0;
-    max-height: none;
-  }
-  .sidebar-nav .navbar ul {
-    float: none;
-  }
-  .sidebar-nav .navbar ul:not {
-    display: block;
-  }
-  .sidebar-nav .navbar li {
-    float: none;
-    display: block;
-  }
-  .sidebar-nav .navbar li a {
-    padding-top: 12px;
-    padding-bottom: 12px;
-  }
-  .sidebar-nav .navbar-nav li > a {
-    /*color: #ffffff;*/
-  }
+    .sidebar-nav .navbar .navbar-collapse {
+        padding: 0;
+        max-height: none;
+    }
+
+    .sidebar-nav .navbar ul {
+        float: none;
+    }
+
+    .sidebar-nav .navbar ul:not {
+        display: block;
+    }
+
+    .sidebar-nav .navbar li {
+        float: none;
+        display: block;
+    }
+
+    .sidebar-nav .navbar li a {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+
+    .sidebar-nav .navbar-nav li > a {
+        /*color: #ffffff;*/
+    }
 }
 
 .new-button {
-  margin-bottom: 10px;
-  min-width: 80%;
+    margin-bottom: 10px;
+    min-width: 80%;
 }
+
+/*
+* Callouts
+*/
 
 .bs-callout {
     padding: 20px;
@@ -50,7 +75,7 @@
     border-radius: 3px
 }
 
-.bs-callout+.bs-callout {
+.bs-callout + .bs-callout {
     margin-top: -5px
 }
 

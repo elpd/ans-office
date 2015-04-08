@@ -35,7 +35,8 @@ class LanguageController extends Controller {
 					'Email' => 'Email',
 					'Slug' => 'Slug',
 					'Description' => 'Description',
-					'password' => 'Password'
+					'password' => 'Password',
+                    'users' => 'Users'
 					]
 			],
 			'he' => [
