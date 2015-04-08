@@ -10,26 +10,27 @@ use Watson\Validating\ValidationException;
 use Illuminate\Contracts\Bus\SelfHandling;
 
 
-class PopulateCsv extends Command implements SelfHandling {
+class PopulateCsv extends Command implements SelfHandling
+{
 
-	/**
-	 * Create a new command instance.
-	 *
-	 * @return void
-	 */
-	public function __construct($filePath, \Illuminate\Console\Command $consoleOutput)
-	{
-		$this->filePath = $filePath;
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct($filePath, \Illuminate\Console\Command $consoleOutput)
+    {
+        $this->filePath = $filePath;
         $this->output = $consoleOutput;
-	}
+    }
 
-	/**
-	 * Execute the command.
-	 *
-	 * @return void
-	 */
-	public function handle()
-	{
+    /**
+     * Execute the command.
+     *
+     * @return void
+     */
+    public function handle()
+    {
         $csv = Reader::createFromPath($this->filePath);
         $csv->setOffset(3); //because we don't want to insert the header
 
@@ -100,7 +101,7 @@ class PopulateCsv extends Command implements SelfHandling {
             $this->output->info('all rows: ' . count($log['rows']));
             $this->output->info('malformed rows count: ' . count($log['malformed_rows']));
         }
-	}
+    }
 
     protected function extractContactFields($source)
     {
@@ -229,7 +230,8 @@ class PopulateCsv extends Command implements SelfHandling {
         return $parentEmail;
     }
 
-    protected function convertFlagFacebookKnowHow($dataStr) {
+    protected function convertFlagFacebookKnowHow($dataStr)
+    {
         $flag = null;
 
         switch ($dataStr) {
@@ -249,7 +251,8 @@ class PopulateCsv extends Command implements SelfHandling {
         return $flag;
     }
 
-    protected function convertFlagCallForFacebookHelp($str) {
+    protected function convertFlagCallForFacebookHelp($str)
+    {
         $flag = false;
 
         switch ($str) {

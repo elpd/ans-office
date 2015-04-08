@@ -8,3 +8,4 @@
 .idea
 composer.lock
 npm-debug.log
+.directory
