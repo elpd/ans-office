@@ -5,6 +5,7 @@ use Request;
 
 trait GeneralRestControlling
 {
+    var $MAX_ROWS_PER_PAGE = 1000;
 
     /**
      * Display a listing of the resource.
@@ -13,13 +14,56 @@ trait GeneralRestControlling
      */
     public function index()
     {
+        $requested_page = \Input::get('page');
+        $requested_rows_per_page = \Input::get('rows');
+        $requested_sorting_index = \Input::get('sidx');
+        $requested_sorting_order = \Input::get('sord');
+
         $class = $this->biClass;
-        $items = $class::all();
+
+        $rows_per_page = $this->MAX_ROWS_PER_PAGE;
+        if (is_nan($requested_rows_per_page) || $requested_rows_per_page > $this->MAX_ROWS_PER_PAGE) {
+            // TODO: log error in input
+        } else {
+            $rows_per_page = $requested_rows_per_page;
+        }
+
+        $page = 1;
+        if (is_nan($requested_page) || $requested_page < 1) {
+            // TODO: log error in input
+        } else {
+            // TODO: standing issue. Can only set req var name globally in PaginationServiceProvider.
+            $page = $requested_page;
+        }
+
+        $sorting_index = null;
+        if ($requested_sorting_index != '') {
+            $sorting_index = $requested_sorting_index;
+        }
+
+        $sorting_order = 'ASC';
+        if (($requested_sorting_order == 'ASC' || $requested_sorting_order == 'DESC')){
+            // TODO: log error in input
+        } else {
+            $sorting_order = $requested_sorting_order;
+        }
+
+        // Query
+
+        if ($sorting_index == '') {
+            $items = $class::paginate($rows_per_page);
+        } else {
+            $items = $class::orderBy($sorting_index, $sorting_order)->paginate($rows_per_page);
+        }
+
         $itemsAsMap = $this->convertItemsToMap($items);
         return [
-            'total' => 1,
-            'page' => 1,
-            'records' => count($items),
+            // Total pages for the query
+            'total' => $items->lastPage(),
+            // Current page
+            'page' => $items->currentPage(),
+            // total number of records for the query
+            'records' => $items->total(),
             'rows' => $itemsAsMap
         ];
     }
