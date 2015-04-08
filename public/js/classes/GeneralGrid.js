@@ -21,6 +21,7 @@ define([
             this.gridId = this.biNamePlural + '_grid';
             this.pagerId = this.gridId + '_pager';
             this.dataRowClass = this.biName + 'Data';
+            this.page_id = this.biNamePlural + '_page';
         },
 
         activate: function () {
@@ -129,6 +130,18 @@ define([
                 lastSelection = id;
             }
         }
+
+        // Set graphical properties behavior.
+
+        $(window).bind('resize', function() {
+            var pageHeight = $('#' + self.page_id).height();
+            var headerHeight = $('.section_header').height();
+
+            var calculatedHeight = pageHeight - headerHeight - 105;
+            var calculatedHeightStr = calculatedHeight + 'px';
+
+            $grid.setGridHeight(calculatedHeightStr);
+        }).trigger('resize');
 
     }
 

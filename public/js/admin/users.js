@@ -19,16 +19,16 @@ define([
                 controllerUrl: '/api/user',
                 biName: 'user',
                 biNamePlural: 'users',
-                caption: lang.getFor('main.cycles'),
+                caption: lang.getFor('main.users'),
                 SubRow: SubRow,
-                onBeforeSubmitData: function(data){
+                onBeforeSubmitData: function (data) {
                     if (data.password) {
                         data.password_confirmation = data.password; // TODO: make user input confirmation.
                     }
 
                     return data;
                 },
-                onBeforeAddSubmit: function(postdata, returnData) {
+                onBeforeAddSubmit: function (postdata, returnData) {
                     // TODO: add password confirmation to form for user.
                     if (postdata.password) {
                         postdata.password_confirmation = postdata.password;
@@ -59,9 +59,7 @@ define([
                     editable: true,
                     //edittype: 'select',
                     //formatter: 'integer',
-                    editoptions: {
-
-                    }
+                    editoptions: {}
                 }]
             });
 

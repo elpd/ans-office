@@ -1,10 +1,10 @@
 @extends('app')
 
 @section('content')
-<div id="admin_section" class="">
-	<div class="row">
+<div id="admin_section" class="main_content">
+	<div class="row content_main_row">
 
-			<div class="col-xs-2">
+			<div class="col-xs-2 content_main_row_part">
 
 				<div class="sidebar-nav" id="admin_nav_menu">
 					<div class="navbar navbar-default" role="navigation">
@@ -37,7 +37,7 @@
 				</div>
 			</div>
 
-			<div class="col-xs-10">
+			<div class="col-xs-10 content_main_row_part">
 				@yield('subContent')
 			</div>
 

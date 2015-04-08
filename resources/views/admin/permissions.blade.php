@@ -1,7 +1,7 @@
 @extends('admin')
 
 @section('subContent')
-<div id="permissions_page">
+<div id="permissions_page" class="sub_content">
 	<h2 class="section_header">@choice('main.Permission',2)</h2>
 
 	<table id="permissions_grid"></table>
