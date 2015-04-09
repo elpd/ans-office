@@ -107,6 +107,7 @@ class PopulateCsv extends Command implements SelfHandling
     {
         $contactFields = [];
 
+        $contactFields['registrationDateStr'] = $source['registrationDateStr'];
         $contactFields['fullNameStr'] = $source['fullNameStr'];
         $contactFields['firstNameStr'] = $source['firstNameStr'];
         $contactFields['lastNameStr'] = $source['lastNameStr'];
@@ -170,7 +171,7 @@ class PopulateCsv extends Command implements SelfHandling
             'first_name' => $firstName,
             'last_name' => $lastName,
             'email' => $contactFields['emailStr'],
-            //'registration_date' => ,
+            'registration_date' => $contactFields['registrationDateStr'],
             'phone' => $contactFields['phoneStr'],
             'facebook' => $contactFields['facebookNameStr'],
             'birth_year' => $birthYear,
