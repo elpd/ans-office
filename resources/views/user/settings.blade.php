@@ -24,7 +24,8 @@
                 <div class="navbar-collapse collapse sidebar-navbar-collapse">
 
                     <ul class="nav navbar-nav">
-                        <li><a href="/user/settings/general" data-action="userSettingsGeneral">General</a></li>
+                        <li><a href="/user/settings/general" data-action="userSettingsGeneral">
+                                @lang('main.menu_general_settings_label')</a></li>
                     </ul>
                 </div>
                 <!--/.nav-collapse -->

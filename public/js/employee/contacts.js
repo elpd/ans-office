@@ -1,4 +1,5 @@
 define([
+        'lodash',
         'classes/utilities',
         'classes/bi/Contact',
         'admin/permissions.SubRow',
@@ -6,7 +7,8 @@ define([
         'classes/LoadingIndicator',
         'classes/GeneralGrid',
     ],
-    function (utilities,
+    function (_,
+              utilities,
               Contact,
               SubRow,
               lang,
@@ -19,7 +21,7 @@ define([
                 controllerUrl: '/api/contact',
                 biName: 'contact',
                 biNamePlural: 'contacts',
-                caption: lang.getFor('main.Contacts'),
+                caption: _.capitalize(lang.get('main.contact')),
                 SubRow: SubRow,
                 colModel: [{
                     label: 'ID',

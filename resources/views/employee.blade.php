@@ -25,11 +25,21 @@
 						<div class="navbar-collapse collapse sidebar-navbar-collapse">
 
 							<ul class="nav navbar-nav">
-								<li><a href="/employee/contacts" id="contacts_section_link">Contacts</a> </li>
-								<li><a href="/employee/cycles" id="cycles_section_link">Cycles</a> </li>
-								<li><a href="/employee/groups" id="groups_section_link">Groups</a></li>
-								<li><a href="/employee/guides" id="guides_section_link">Guides</a></li>
-								<li><a href="/employee/groups-members" id="groups_members_section_link">Groups Members</a></li>
+								<li><a href="/employee/contacts" id="contacts_section_link">
+                                        @lang('main.contacts_list_label')
+                                    </a> </li>
+								<li><a href="/employee/cycles" id="cycles_section_link">
+                                        @lang('main.cycles_list_label')
+                                    </a> </li>
+								<li><a href="/employee/groups" id="groups_section_link">
+                                        @lang('main.groups_list_label')
+                                    </a></li>
+								<li><a href="/employee/guides" id="guides_section_link">
+                                        @lang('main.guides_list_label')
+                                    </a></li>
+								<li><a href="/employee/groups-members" id="groups_members_section_link">
+                                        @lang('main.groups_list_label')
+                                    </a></li>
 							</ul>
 						</div>
 						<!--/.nav-collapse -->

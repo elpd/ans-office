@@ -3,7 +3,7 @@
 @section('subContent')
     <div id="user_settings_general_page">.
 
-        <h2 class="section_header">@lang('main.user-settings-general')</h2>
+        <h2 class="section_header">@lang('main.general_user_settings_label')</h2>
 
         <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
 
@@ -15,7 +15,7 @@
                      aria-controls="section_settings_user_name_content">
                     <h4 class="panel-title">
                         <a>
-                            @lang('main.name')
+                            @lang('main.settings_user_name_label')
                         </a>
                     </h4>
                 </div>
@@ -25,11 +25,13 @@
                     <div class="panel-body">
                         <form id="form_user_name">
                             <div class="form-group">
-                                <label for="inputName">@lang('main.user_name')</label>
+                                <label for="inputName">@lang('main.settings_user_name_label')</label>
                                 <input type="text" class="form-control input_name" id="inputName"
-                                       placeholder="@lang('main.enter_email')">
+                                       placeholder="@lang('main.enter_user_name_sentence')">
                             </div>
-                            <button type="submit" class="btn btn-default input_submit">Submit</button>
+                            <button type="submit" class="btn btn-default input_submit">
+                                @lang('main.settings_submit_button_label')
+                            </button>
                             <div class="message_section bs-callout">
 
                             </div>
@@ -46,7 +48,7 @@
                      aria-controls="section_settings_user_email_content">
                     <h4 class="panel-title">
                         <a>
-                            @lang('main.email')
+                            @lang('main.settings_email_label')
                         </a>
                     </h4>
                 </div>
@@ -55,11 +57,12 @@
                     <div class="panel-body">
                         <form>
                             <div class="form-group">
-                                <label for="inputEmail">@lang('main.user_email')</label>
+                                <label for="inputEmail">@lang('main.settings_email_label')</label>
                                 <input type="text" class="form-control input_email" id="inputEmail"
-                                       placeholder="@lang('main.enter_email')">
+                                       placeholder="@lang('main.enter_user_email_sentence')">
                             </div>
-                            <button type="submit" class="btn btn-default">Submit</button>
+                            <button type="submit" class="btn btn-default">
+                                @lang('main.settings_submit_button_label')</button>
                             <div class="message_section bs-callout">
 
                             </div>
@@ -76,7 +79,7 @@
                         aria-expanded="true"
                         aria-controls="section_settings_user_password_content">
                         <a>
-                            @lang('main.password')
+                            @lang('main.settings_password_label')
                         </a>
                     </h4>
                 </div>
@@ -86,15 +89,18 @@
                     <div class="panel-body">
                         <form id="form_user_password">
                             <div class="form-group">
-                                <label for="inputPassword">@lang('main.user_password')</label>
+                                <label for="inputPassword">@lang('main.settings_password_label')</label>
                                 <input type="text" class="form-control input_password" id="inputPassword"
-                                       placeholder="@lang('main.enter_password')">
-                                <label for="inputPasswordConfirmation">@lang('main.user_password_confirmation')</label>
+                                       placeholder="@lang('main.enter_user_password_sentence')">
+                                <label for="inputPasswordConfirmation">
+                                    @lang('main.settings_password_confirmation_label')</label>
                                 <input type="text" class="form-control input_password_confirmation"
                                        id="inputPasswordConfirmation"
-                                       placeholder="@lang('main.enter_password_confirmation')">
+                                       placeholder="@lang('main.enter_user_password_confirmation_sentence')">
                             </div>
-                            <button type="submit" class="btn btn-default input_submit">Submit</button>
+                            <button type="submit" class="btn btn-default input_submit">
+                                @lang('main.settings_submit_button_label')
+                            </button>
                             <div class="message_section bs-callout">
 
                             </div>
@@ -111,7 +117,7 @@
                         aria-expanded="true"
                         aria-controls="section_settings_user_language_content">
                         <a>
-                            @lang('main.language')
+                            @lang('main.settings_user_language_label')
                         </a>
                     </h4>
                 </div>
@@ -121,12 +127,14 @@
                     <div class="panel-body">
                         <form id="form_user_language">
                             <div class="form-group">
-                                <label for="inputLanguage">@lang('main.language')</label>
+                                <label for="inputLanguage">@lang('main.settings_user_language_label')</label>
                                 <select class="form-control input_language" id="inputLanguage"
-                                        placeholder="@lang('main.enter_language')">
+                                        placeholder="@lang('main.enter_user_language_sentence')">
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-default input_submit">Submit</button>
+                            <button type="submit" class="btn btn-default input_submit">
+                                @lang('main.settings_submit_button_label')
+                            </button>
                             <div class="message_section bs-callout">
 
                             </div>
@@ -143,7 +151,7 @@
                         aria-expanded="true"
                         aria-controls="section_settings_user_ui_theme_content">
                         <a>
-                            @lang('main.ui_theme')
+                            @lang('main.settings_user_theme_label')
                         </a>
                     </h4>
                 </div>
@@ -153,11 +161,13 @@
                     <div class="panel-body">
                         <form id="form_user_ui_theme">
                             <div class="form-group">
-                                <label for="inputUiTheme">@lang('main.ui_theme')</label>
-                                <select class="form-control input_ui_theme" id="inputUiTheme"">
+                                <label for="inputUiTheme">@lang('main.settings_user_theme_label')</label>
+                                <select class="form-control input_ui_theme" id="inputUiTheme">
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-default input_submit">Submit</button>
+                            <button type="submit" class="btn btn-default input_submit">
+                                @lang('main.settings_submit_button_label')
+                            </button>
                             <div class="message_section bs-callout">
 
                             </div>

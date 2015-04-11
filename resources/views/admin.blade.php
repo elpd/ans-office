@@ -25,10 +25,10 @@
 						<div class="navbar-collapse collapse sidebar-navbar-collapse">
 
 							<ul class="nav navbar-nav">
-								<li><a href="/admin/users" data-action="usersList">Users</a> </li>
-								<li><a href="/admin/roles" data-action="rolesList">Roles</a> </li>
+								<li><a href="/admin/users" data-action="usersList">@lang('main.users_list_label')</a> </li>
+								<li><a href="/admin/roles" data-action="rolesList">@lang('main.roles_list_label')</a> </li>
 								<li><a href="/admin/permissions" data-action="permissionsList">
-									Permissions</a>
+									@lang('main.permissions_list_label')</a>
 								</li>
 							</ul>
 						</div>

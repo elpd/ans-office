@@ -7,11 +7,11 @@ define([
 
     var SERVICE_URL = '/api/language';
 
-    var lang = new Language();
-
     // $.getJSON(SERVICE_URL, function(data){
     //   lang.populate(data);
     // });
+
+      var lang = null;
 
     $.ajax({
       dataType: "json",
@@ -19,7 +19,10 @@ define([
       data: null,
       async: false,
       success: function(results) {
-        lang.populate(results);
+          lang = new Language({
+              dataset: results,
+              locale: 'en'
+          })
       }
     });
 

@@ -1,70 +1,114 @@
 define([
-    'lodash'
-  ],
-  function(_) {
+        'lodash'
+    ],
+    function (_) {
 
-    var Class = function Language() {
-      this.languages = {};
-    };
-
-    Class.prototype = {
-      get: function(params) {
-        var selectedLanguage = this.languages[params.language];
-        var selectedTopic = selectedLanguage[params.topic];
-        var selectedSentence = selectedTopic[params.sentence];
-
-        return selectedSentence;
-      },
-
-      getFor: function(key) {
-        var params = this.parseKey(key);
-        return this.get({
-          language: params.language,
-          topic: params.topic,
-          sentence: params.sentence
-        })
-      },
-
-      populate: function(data) {
-        var self = this;
-        _.forEach(data, function(value, key){
-          self.languages[key] = value;
-        });
-      },
-
-      parseKey: function(key) {
-        var language = 'en'; // TODO: default;
-        var topic = 'main'; // TODO: default;
-        var sentence = null;
-
-        var parsedKey = _.words(key, /[^\.]+/g);
-
-        switch (parsedKey.length) {
-          case 1:
-            sentence = parsedKey[0];
-            break;
-          case 2:
-            topic = parsedKey[0];
-            sentence = parsedKey[1];
-            break;
-          case 3:
-            language = parsedKey[0];
-            topic = parsedKey[1];
-            sentence = parsedKey[2];
-            break;
-          default:
-            throw new Error('Unintended code path'); // TODO: standardize.
-        }
-
-        var result = {
-          language: language,
-          topic: topic,
-          sentence: sentence
+        var Class = function Language(params) {
+            this.dataset = params.dataset;
+            this.locale = params.locale ? params.locale : null;
+            this.fallback = params.fallback ? params.fallback : 'en';
         };
 
-        return result;
-      }
-    };
+        Class.prototype = {
+            get: function (key, locale) {
+                var self = this;
+                var parsedKey = self.parseKey(key);
 
-    return Class;
-  });
+                var localesToUse = self.parseLocale(locale);
+                var line = null;
+                _.find(localesToUse, function(localeItem){
+                    line = self.getLine(parsedKey, localeItem);
+                    return (line != null);
+                });
+
+                if (line == null) {
+                    return key;
+                }
+
+                return line;
+            },
+
+            parseKey: function (key) {
+                var key_parts = basicParseKey(key);
+
+                if (key_parts.namespace == null) {
+                    key_parts.namespace = '*';
+                }
+
+                return key_parts;
+            },
+
+            parseLocale: function(locale) {
+                var self = this;
+               if (locale != null) {
+                   return _.without([
+                      locale,
+                       self.fallback
+                   ]);
+               } else {
+                   return _.without([
+                       self.locale,
+                       self.fallback
+                   ], null);
+               }
+
+            },
+
+            getLine: function(parsedKey, locale) {
+                var self = this;
+                if (!self.dataset.hasOwnProperty(parsedKey.namespace)){
+                    return null;
+                }
+                var namespaceData = self.dataset[parsedKey.namespace];
+
+                if (!namespaceData.hasOwnProperty(parsedKey.group)){
+                    return null;
+                }
+                var groupData = namespaceData[parsedKey.group];
+
+                if (!groupData.hasOwnProperty(locale)){
+                    return null;
+                }
+                var localeData = groupData[locale];
+
+                if (!localeData.hasOwnProperty(parsedKey.item)){
+                    return null;
+                }
+                var line = localeData[parsedKey.item];
+
+                if (typeof line == 'string') {
+                    return line;
+                    // TODO: replacments
+                } else {
+                    throw new Exception('unimplemented');
+                }
+            }
+        };
+
+        function basicParseKey(key) {
+            if (key.indexOf('::') < 0) {
+                var parts = key.split('.');
+                var group = parts[0];
+                if (parts.length == 1) {
+                    return {
+                        namespace: null,
+                        group: group,
+                        item: null
+                    };
+                } else {
+                    var item = parts.slice(1).join('.');
+
+                    return {
+                        namespace: null,
+                        group: group,
+                        item: item
+                    };
+                }
+            } else {
+                // TODO: develop same as laravel namespaces
+                throw new Error('unimplemented');
+            }
+        }
+
+        return Class;
+    });

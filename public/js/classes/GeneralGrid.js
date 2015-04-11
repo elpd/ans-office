@@ -37,6 +37,11 @@ define([
             setGrid(self);
             setNavGrid(self);
             setInlineNav(self);
+
+            // TODO: code debug
+            $('#grid_fullscreen_button').click(function(){
+                $('#' + self.page_id).height('100vh');
+            });
         }
     };
 
