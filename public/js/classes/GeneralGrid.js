@@ -17,7 +17,7 @@ define([
         this.onBeforeAddSubmit = params.onBeforeAddSubmit;
 
         if (params.direction) {
-            switch (params.direction){
+            switch (params.direction) {
                 case 'right_to_left':
                     this.direction = 'rtl';
                     break;
@@ -37,6 +37,7 @@ define([
     Class.prototype = {
         setVariables: function () {
             this.gridId = this.biNamePlural + '_grid';
+            this.gridBoxId = 'gbox_' + this.gridId;
             this.pagerId = this.gridId + '_pager';
             this.dataRowClass = this.biName + 'Data';
             this.page_id = this.biNamePlural + '_page';
@@ -53,11 +54,6 @@ define([
             setGrid(self);
             setNavGrid(self);
             setInlineNav(self);
-
-            // TODO: code debug
-            $('#grid_fullscreen_button').click(function () {
-                $('#' + self.page_id).height('100vh');
-            });
         }
     };
 
@@ -69,7 +65,7 @@ define([
 
             colModel: self.colModel,
             viewrecords: true, // show the current page, data rang and total records on the toolbar
-            width: 780,
+            width: 500,
             height: 200,
             // rowNum - number of rows to display
             // options:
@@ -163,21 +159,29 @@ define([
         // Set graphical properties behavior.
 
         $(window).bind('resize', function () {
-            var pageHeight = $('#' + self.page_id).height();
-            var headerHeight = $('.section_header').height();
+            var $gridBox = $('#' + self.gridBoxId);
+            var calcHeight = 0;
+            var calcWidth = 0;
 
-            var calculatedHeight = pageHeight - headerHeight - 105;
-            // Set a minimum for height;
-            calculatedHeight = calculatedHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calculatedHeight;
-            var calculatedHeightStr = calculatedHeight + 'px';
+            if ($gridBox.hasClass('full_screen_grid')) {
+                calcHeight = calcGridHeightWhenFull();
+                calcWidth = calcGridWidthWhenFull();
+                //$gridBox.width(calcHeight);
+            } else {
+                calcHeight = calcGridHeightWhenNormal(self.page_id);
+                calcWidth = calcGridWidthWhenNormal(self.page_id);
+            }
 
-            $grid.setGridHeight(calculatedHeightStr);
+            $grid.setGridHeight(calcHeight + 'px');
+            $grid.setGridWidth(calcWidth + 'px');
+
         }).trigger('resize');
 
     }
 
     function setNavGrid(self) {
-        $('#' + self.gridId).navGrid('#' + self.pagerId,
+        var $grid = $('#' + self.gridId);
+        $grid.navGrid('#' + self.pagerId,
             // the buttons to appear on the toolbar of the grid
             {
                 edit: false,
@@ -236,7 +240,39 @@ define([
                 },
                 reloadAfterSubmit: true
             }
-        );
+        )
+            .navButtonAdd('#' + self.pagerId, {
+                caption: "Full Screen",
+                buttonicon: "ui-icon-arrow-4-diag",
+                onClickButton: function () {
+                    var $gridBox = $('#' + self.gridBoxId);
+                    $gridBox.addClass('full_screen_grid');
+
+                    var calcHeight = calcGridHeightWhenFull();
+                    var calcWidth = calcGridWidthWhenFull();
+
+                    $grid.setGridHeight(calcHeight + 'px');
+                    $grid.setGridWidth(calcWidth + 'px');
+                    //$gridBox.width('100%');
+                },
+                position: "last"
+            })
+            .navButtonAdd('#' + self.pagerId, {
+                caption: "Exit Full Screen",
+                //buttonicon: ,
+                onClickButton: function () {
+                    var $gridBox = $('#' + self.gridBoxId);
+                    $gridBox.removeClass('full_screen_grid');
+
+                    var calcHeight = calcGridHeightWhenNormal(self.page_id);
+                    var calcWidth = calcGridWidthWhenNormal(self.page_id);
+
+                    $grid.setGridHeight(calcHeight + 'px');
+                    $grid.setGridWidth(calcWidth + 'px');
+                    //$gridBox.width(calcWidth);
+                }
+            });
+
     }
 
     function setInlineNav(self) {
@@ -249,6 +285,33 @@ define([
                 keys: true
             }
         });
+    }
+
+    function calcGridHeightWhenNormal(page_id) {
+        var pageHeight = $('#' + page_id).height();
+        var headerHeight = $('.section_header').height();
+
+        var calcHeight = pageHeight - headerHeight - 105;
+        // Set a minimum for height;
+        calcHeight = calcHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calcHeight;
+
+        return calcHeight;
+    }
+
+    function calcGridWidthWhenNormal(page_id) {
+        var calc = $('#' + page_id).width();
+
+        return calc;
+    }
+
+    function calcGridHeightWhenFull() {
+        var calc = $(window).height() - 75;
+        return calc;
+    }
+
+    function calcGridWidthWhenFull() {
+        var calc = ($(window).width());
+        return calc;
     }
 
     return Class;
