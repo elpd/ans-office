@@ -20,7 +20,7 @@ class CycleController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.cycles');
+		return view('employee.cycles')->with('selected_view', 'cycles');;
 	}
 
 }

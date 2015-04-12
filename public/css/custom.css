@@ -1,3 +1,9 @@
+/* global graphics
+*/
+
+h2 {
+    margin-top: 2px;
+}
 /*
 * Stretching to bottom
 */
@@ -45,9 +51,9 @@ html, body {
     }
 }
 
-.new-button {
-    margin-bottom: 10px;
-    min-width: 80%;
+.vertical_navbar_list_right {
+    text-align: right;
+    list-style-position: inside;
 }
 
 /*
@@ -103,3 +109,16 @@ html, body {
     color: #1b809e
 }
 
+/*
+*/
+
+#grid_fullscreen_button {
+
+}
+
+/* language direction
+*/
+
+.right_aligned {
+    text-align: right;
+}

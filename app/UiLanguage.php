@@ -14,6 +14,7 @@ class UiLanguage extends Model
 
     protected $fillable = array(
             'name',
+            'code'
     );
 
     protected $rules = array(
@@ -21,6 +22,10 @@ class UiLanguage extends Model
                     'required',
                     'alpha_dash'
             ),
+            'code' => [
+                'required',
+                'alpha_dash'
+            ]
     );
     
 }

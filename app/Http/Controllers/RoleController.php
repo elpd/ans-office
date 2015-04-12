@@ -20,7 +20,7 @@ class RoleController extends Controller {
 	 */
 	public function index()
 	{
-		return view('admin.roles');
+		return view('admin.roles')->with('selected_view', 'roles');;
 	}
 
 }

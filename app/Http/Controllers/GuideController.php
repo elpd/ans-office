@@ -18,7 +18,7 @@ class GuideController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.guides');
+		return view('employee.guides')->with('selected_view', 'guides');;
 	}
 
 }

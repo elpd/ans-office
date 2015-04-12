@@ -5,58 +5,64 @@ define([
         'services/language',
         'classes/LoadingIndicator',
         'classes/GeneralGrid',
+        'services/userSettings'
     ],
     function (utilities,
               Role,
               SubRow,
               lang,
               LoadingIndicator,
-              GeneralGrid) {
+              GeneralGrid,
+              userSettingsGService) {
 
         $(document).ready(function () {
 
-            var grid = new GeneralGrid({
-                controllerUrl: '/api/role',
-                biName: 'role',
-                biNamePlural: 'roles',
-                caption: lang.getFor('main.Roles'),
-                SubRow: SubRow,
-                colModel: [{
-                    label: lang.getFor('main.Id'),
-                    name: 'id',
-                    width: 30,
-                    key: true
-                }, {
-                    label: lang.getFor('main.Name'),
-                    name: 'name',
-                    editable: true,
-                    //edittype: 'select',
-                    //formatter: 'integer',
-                    editoptions: {}
-                }, {
-                    label: lang.getFor('main.Slug'),
-                    name: 'slug',
-                    editable: true,
-                    //edittype: 'select',
-                    //formatter: 'integer',
-                    editoptions: {}
-                }, {
-                    label: lang.getFor('main.Description'),
-                    name: 'description',
-                    editable: true,
-                    //edittype: 'select',
-                    //formatter: 'integer',
-                    editoptions: {}
-                }, {
-                    label: lang.getFor('main.Level'),
-                    name: 'level',
-                    editable: true,
-                    //edittype: 'select',
-                    formatter: 'integer',
-                    editoptions: {}
-                }]
-            });
+            userSettingsGService.load().then(function () {
 
-            grid.activate();
+                var grid = new GeneralGrid({
+                    controllerUrl: '/api/role',
+                    biName: 'role',
+                    biNamePlural: 'roles',
+                    caption: lang.get('bo.roles'),
+                    SubRow: SubRow,
+                    direction: userSettingsGService.getLanguage().direction,
+                    colModel: [{
+                        label: lang.get('bo.id'),
+                        name: 'id',
+                        width: 30,
+                        key: true
+                    }, {
+                        label: lang.get('bo.role_name'),
+                        name: 'name',
+                        editable: true,
+                        //edittype: 'select',
+                        //formatter: 'integer',
+                        editoptions: {}
+                    }, {
+                        label: lang.get('bo.role_slug'),
+                        name: 'slug',
+                        editable: true,
+                        //edittype: 'select',
+                        //formatter: 'integer',
+                        editoptions: {}
+                    }, {
+                        label: lang.get('bo.role_description'),
+                        name: 'description',
+                        editable: true,
+                        //edittype: 'select',
+                        //formatter: 'integer',
+                        editoptions: {}
+                    }, {
+                        label: lang.get('bo.role_level'),
+                        name: 'level',
+                        editable: true,
+                        //edittype: 'select',
+                        formatter: 'integer',
+                        editoptions: {}
+                    }]
+                });
+
+                grid.activate();
+            });
         });
     });

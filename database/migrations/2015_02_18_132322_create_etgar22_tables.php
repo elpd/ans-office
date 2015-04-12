@@ -18,6 +18,8 @@ class CreateEtgar22Tables extends Migration
             function ($table) {
                 $table->increments('id')->unsigned();
                 $table->string('name', 20);
+                $table->string('code', 2);
+                $table->enum('direction', ['left_to_right', 'right_to_left']);
                 $table->timestamps();
             });
 

@@ -25,8 +25,9 @@
         });
 
         it('should have header', function () {
+            // TODO: extract equal data from language database.
             expect(testPage.getHeader().getText()).toEqual(
-                'General User Settings');
+                'General Settings');
         });
 
         describe('settings sectiongs', function () {

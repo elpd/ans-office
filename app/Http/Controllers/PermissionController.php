@@ -20,7 +20,7 @@ class PermissionController extends Controller {
 	 */
 	public function index()
 	{
-		return view('admin.permissions');
+		return view('admin.permissions')->with('selected_view', 'permissions');;
 	}
 
 }

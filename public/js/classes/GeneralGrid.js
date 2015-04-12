@@ -15,6 +15,22 @@ define([
         this.SubRow = params.SubRow;
         this.onBeforeSubmitData = params.onBeforeSubmitData;
         this.onBeforeAddSubmit = params.onBeforeAddSubmit;
+
+        if (params.direction) {
+            switch (params.direction){
+                case 'right_to_left':
+                    this.direction = 'rtl';
+                    break;
+                case 'left_to_right':
+                    this.direction = 'ltr';
+                    break;
+                default:
+                    throw new Error('unexpected value'); // TODO:
+            }
+        } else {
+            this.direction = 'ltr'
+        }
+
         this.setVariables();
     };
 
@@ -37,6 +53,11 @@ define([
             setGrid(self);
             setNavGrid(self);
             setInlineNav(self);
+
+            // TODO: code debug
+            $('#grid_fullscreen_button').click(function () {
+                $('#' + self.page_id).height('100vh');
+            });
         }
     };
 
@@ -57,8 +78,10 @@ define([
             datatype: 'json',
             url: self.controllerUrl,
             pager: '#' + self.pagerId,
-            rowList:[30,50,100,200, 1000],
+            rowList: [30, 50, 100, 200, 1000],
             caption: self.caption,
+            // Direction: instructs the grid to use RTL settings
+            direction: self.direction,
             //onSelectRow: editRow,
             ondblClickRow: editRow,
             autowidth: true,
@@ -139,7 +162,7 @@ define([
 
         // Set graphical properties behavior.
 
-        $(window).bind('resize', function() {
+        $(window).bind('resize', function () {
             var pageHeight = $('#' + self.page_id).height();
             var headerHeight = $('.section_header').height();
 
@@ -189,17 +212,17 @@ define([
                     //$(this).jqGrid("setGridParam", {datatype: 'json'});
                     return [true, "", response.item_id];
                 },
-                beforeSubmit : function(postdata, formid) {
+                beforeSubmit: function (postdata, formid) {
                     var returnData = {
                         success: true,
                         message: ''
                     }
 
-                    if (self.onBeforeAddSubmit){
+                    if (self.onBeforeAddSubmit) {
                         self.onBeforeAddSubmit(postdata, returnData);
                     }
 
-                    return[returnData.success, returnData.message];
+                    return [returnData.success, returnData.message];
                 }
             },
             // options for the Delete Dailog
