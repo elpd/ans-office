@@ -1,7 +1,7 @@
 @extends('app')
 
 @section('content')
-    <div class="main_content">
+    <div class="main_content container-fluid">
         <div class="row content_main_row">
 
             <div class="col-xs-2 content_main_row_part
