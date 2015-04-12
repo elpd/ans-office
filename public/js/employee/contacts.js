@@ -6,6 +6,7 @@ define([
         'services/language',
         'classes/LoadingIndicator',
         'classes/GeneralGrid',
+        'services/userSettings'
     ],
     function (_,
               utilities,
@@ -13,84 +14,94 @@ define([
               SubRow,
               lang,
               LoadingIndicator,
-              GeneralGrid) {
+              GeneralGrid,
+              userSettingsGService
+              ) {
 
         $(document).ready(function () {
 
-            var grid = new GeneralGrid({
-                controllerUrl: '/api/contact',
-                biName: 'contact',
-                biNamePlural: 'contacts',
-                caption: _.capitalize(lang.get('main.contact')),
-                SubRow: SubRow,
-                colModel: [{
-                    label: 'ID',
-                    name: 'id',
-                    width: 30,
-                    key: true
-                }, {
-                    label: 'Registration Date',
-                    name: 'registration_date',
-                    editable: true,
-                    //edittype: 'select',
-                    formatter: 'date',
-                    editoptions: {
-                        // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
-                        // use it to place a third party control to customize the toolbar
-                        dataInit: function (element) {
-                            $(element).datepicker({
-                                id: 'registrationDate_datePicker',
-                                dateFormat: 'yy-mm-dd',
-                                //minDate: new Date(2010, 0, 1),
-                                maxDate: new Date(2020, 0, 1),
-                                showOn: 'focus'
-                            });
-                        }
-                    }
-                }, {
-                    label: 'Email',
-                    name: 'email',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: 'First Name',
-                    name: 'first_name',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: 'Last Name',
-                    name: 'last_name',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: 'Phone',
-                    name: 'phone',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: 'Facebook',
-                    name: 'facebook',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: 'Birth Year',
-                    name: 'birth_year',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: 'Donate',
-                    name: 'donate',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: 'Blacklisted',
-                    name: 'blacklisted',
-                    editable: true,
-                    editoptions: {}
-                }]
-            });
 
-            grid.activate();
+            userSettingsGService.load().then(function() {
+
+                    var grid = new GeneralGrid({
+                        controllerUrl: '/api/contact',
+                        biName: 'contact',
+                        biNamePlural: 'contacts',
+                        caption: _.capitalize(lang.get('bo.contacts')),
+                        SubRow: SubRow,
+                        direction: userSettingsGService.getLanguage().direction,
+                        colModel: [{
+                            label: lang.get('bo.id'),
+                            name: 'id',
+                            width: 30,
+                            key: true
+                        }, {
+                            label: lang.get('bo.registration_date'),
+                            name: 'registration_date',
+                            editable: true,
+                            //edittype: 'select',
+                            formatter: 'date',
+                            editoptions: {
+                                // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                                // use it to place a third party control to customize the toolbar
+                                dataInit: function (element) {
+                                    $(element).datepicker({
+                                        id: 'registrationDate_datePicker',
+                                        dateFormat: 'yy-mm-dd',
+                                        //minDate: new Date(2010, 0, 1),
+                                        maxDate: new Date(2020, 0, 1),
+                                        showOn: 'focus'
+                                    });
+                                }
+                            }
+                        }, {
+                            label: lang.get('bo.email'),
+                            name: 'email',
+                            editable: true,
+                            editoptions: {}
+                        }, {
+                            label:  lang.get('bo.first_name'),
+                            name: 'first_name',
+                            editable: true,
+                            editoptions: {}
+                        }, {
+                            label: lang.get('bo.last_name'),
+                            name: 'last_name',
+                            editable: true,
+                            editoptions: {}
+                        }, {
+                            label:  lang.get('bo.phone'),
+                            name: 'phone',
+                            editable: true,
+                            editoptions: {}
+                        }, {
+                            label:  lang.get('bo.facebook_account'),
+                            name: 'facebook',
+                            editable: true,
+                            editoptions: {}
+                        }, {
+                            label:  lang.get('bo.birth_year'),
+                            name: 'birth_year',
+                            editable: true,
+                            editoptions: {}
+                        }, {
+                            label:  lang.get('bo.donate'),
+                            name: 'donate',
+                            editable: true,
+                            editoptions: {}
+                        }, {
+                            label:  lang.get('bo.blacklisted'),
+                            name: 'blacklisted',
+                            editable: true,
+                            editoptions: {}
+                        }]
+                    });
+
+                    grid.activate();
+                }
+            )
+            ;
+
         });
     });
 

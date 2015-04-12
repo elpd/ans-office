@@ -11,29 +11,31 @@
 |
 */
 
-Route::get('/', 'HomeController@index');
-
-Route::get('home', 'HomeController@index');
-
 Route::controllers([
 	'auth' => 'Auth\AuthController',
 	'password' => 'Auth\PasswordController',
 ]);
 
-Route::get('user/settings', 'User\SettingsController@index');
-Route::get('user/settings/general', 'User\Settings\GeneralController@index');
+Route::group(['middleware' => 'user.settings'], function() {
+    Route::get('/', 'HomeController@index');
 
-Route::get('employee', 'EmployeeController@index');
-Route::get('employee/contacts', 'ContactController@index');
-Route::get('employee/groups', 'GroupController@index');
-Route::get('employee/guides', 'GuideController@index');
-Route::get('employee/groups-members', 'GroupsMembersController@index');
-Route::get('employee/cycles', 'CycleController@index');
+    Route::get('home', 'HomeController@index');
 
-Route::get('admin', 'AdminController@index');
-Route::get('admin/users', 'UserController@index');
-Route::get('admin/roles', 'RoleController@index');
-Route::get('admin/permissions', 'PermissionController@index');
+    Route::get('user/settings', 'User\SettingsController@index');
+    Route::get('user/settings/general', 'User\Settings\GeneralController@index');
+
+    Route::get('employee', 'EmployeeController@index');
+    Route::get('employee/contacts', 'ContactController@index');
+    Route::get('employee/groups', 'GroupController@index');
+    Route::get('employee/guides', 'GuideController@index');
+    Route::get('employee/groups-members', 'GroupsMembersController@index');
+    Route::get('employee/cycles', 'CycleController@index');
+
+    Route::get('admin', 'AdminController@index');
+    Route::get('admin/users', 'UserController@index');
+    Route::get('admin/roles', 'RoleController@index');
+    Route::get('admin/permissions', 'PermissionController@index');
+});
 
 Route::resource('api/contact', 'api\ContactController');
 Route::resource('api/group', 'api\GroupController');
@@ -60,4 +62,5 @@ Route::put('api/user-settings', 'api\User\SettingsController@update');
 
 Route::get('api/language', 'api\LanguageController@index');
 
+// TODO: remove in production
 Route::get('test/refresh', 'TestController@refresh');

@@ -20,7 +20,7 @@ class LanguageController extends Controller {
 	{
         $namespaces = ['*'];
 		$locales = ['en', 'he'];
-        $groups = ['main', 'pagination', 'passwords', 'validation'];
+        $groups = ['main', 'pagination', 'passwords', 'validation', 'bo'];
         $translations = [];
 
         $loader = $this->app['translation.loader'];

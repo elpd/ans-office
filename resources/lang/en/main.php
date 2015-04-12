@@ -10,28 +10,13 @@ return [
     |
     */
 
-    'contact' => 'contact',
-    'User' => 'User|Users',
-    'Role' => 'Role|Roles',
-    'Roles' => 'Roles',
-    'Permission' => 'Permission|Permissions',
-    'user-settings-general' => 'General User Settings',
-    'name' => 'name',
-    'email' => 'email',
-    'password' => 'password',
-    'language' => 'language',
-    'ui_theme' => 'user interface theme',
-    'user_name' => 'user name',
-    'user_email' => 'user email',
-    'user_password' => 'user password',
-    'user_password_confirmation' => 'password confirmation',
-    'enter_password' => 'Please enter password',
-    'enter_password_confirmation' => 'Please enter password again for confirmation',
-
     'anonymouse_org_short_label' => 'ANS',
     'home_menu_label' => 'Home',
     'admin_menu_label' => 'Admin',
     'employee_menu_label' => 'Employee',
+
+    'menu_settings_label' => 'Settings',
+    'menu_logout_label' => 'Logout',
 
     'users_list_label' => 'Users',
     'roles_list_label' => 'Roles',
@@ -41,7 +26,7 @@ return [
     'cycles_list_label' => 'Cycles',
     'groups_list_label' => 'Groups',
     'guides_list_label' => 'Guides',
-    'groups_list_label' => 'Groups',
+    'groups_members_list_label' => 'Group Members',
 
     'general_user_settings_label' => 'General Settings',
     'settings_user_name_label' => 'User Name',
@@ -57,9 +42,6 @@ return [
     'enter_user_language_sentence' => 'Enter ui language',
     'settings_user_theme_label' => 'Theme',
 
-
     'menu_general_settings_label' => 'General',
 
-    'menu_settings_label' => 'Settings',
-    'menu_logout_label' => 'Logout',
 ];

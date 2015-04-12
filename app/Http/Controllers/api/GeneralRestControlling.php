@@ -224,8 +224,11 @@ trait GeneralRestControlling
      */
     public function show($id)
     {
-        //
-        abort(404);
+        $class = $this->biClass;
+
+        $item = $class::findOrFail($id);
+
+        return $item;
     }
 
     /**

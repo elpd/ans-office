@@ -22,7 +22,17 @@ class ComposerServiceProvider extends ServiceProvider {
 	public function register()
 	{
 		//
-        \View::composer('app', 'App\Http\ViewComposers\AppComposer');
+        \View::composer([
+            'app',
+            'employee',
+            'admin',
+            'admin.users',
+            'admin.roles',
+            'admin.permissions',
+            'user.settings',
+            'user.settings.general',
+            'employee.contacts',
+        ], 'App\Http\ViewComposers\AppComposer');
     }
 
 }

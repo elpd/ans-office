@@ -13,8 +13,8 @@ define([
              AnsApplication,
              AccordionView,
              Controller,
-            UserSettingsService,
-            UiThemeService) {
+             UserSettingsService,
+             UiThemeService) {
 
     var Class = function UiThemeSection() {
 

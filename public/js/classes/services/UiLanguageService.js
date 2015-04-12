@@ -21,6 +21,16 @@ define([
                 });
             };
 
+            self.getById = function(id) {
+                return $.ajax({
+                    dataType: "json",
+                    url: API_URL + '/' + id,
+                    data: {
+                        _token: $_token,
+                    },
+                    success: null
+                });
+            };
         }
 
         Prototype.prototype = new Service();

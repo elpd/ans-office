@@ -3,7 +3,11 @@
 @section('subContent')
     <div id="contacts_page" class="sub_content">
         <div class="row">
-            <h2 class="section_header">@choice('main.Contact',2)</h2>
+            <h2 class="section_header
+                @if($userSettings->ui_language->direction == 'right_to_left')
+			        right_aligned
+			    @endif"
+                    >@lang('bo.Contacts')</h2>
             <button id="grid_fullscreen_button" >
                 <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
             </button>

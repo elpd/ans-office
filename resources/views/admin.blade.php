@@ -4,7 +4,11 @@
 <div id="admin_section" class="main_content">
 	<div class="row content_main_row">
 
-			<div class="col-xs-2 content_main_row_part">
+			<div class="col-xs-2 content_main_row_part
+			    @if($userSettings->ui_language->direction == 'right_to_left')
+			        col-xs-push-10
+			    @endif
+			">
 
 				<div class="sidebar-nav" id="admin_nav_menu">
 					<div class="navbar navbar-default" role="navigation">
@@ -24,7 +28,11 @@
 
 						<div class="navbar-collapse collapse sidebar-navbar-collapse">
 
-							<ul class="nav navbar-nav">
+							<ul class="nav navbar-nav
+							    @if($userSettings->ui_language->direction == 'right_to_left')
+                                    vertical_navbar_list_right
+                                @endif
+							">
 								<li><a href="/admin/users" data-action="usersList">@lang('main.users_list_label')</a> </li>
 								<li><a href="/admin/roles" data-action="rolesList">@lang('main.roles_list_label')</a> </li>
 								<li><a href="/admin/permissions" data-action="permissionsList">
@@ -37,7 +45,11 @@
 				</div>
 			</div>
 
-			<div class="col-xs-10 content_main_row_part">
+			<div class="col-xs-10 content_main_row_part
+			    @if($userSettings->ui_language->direction == 'right_to_left')
+			        col-xs-pull-2
+			    @endif
+			">
 				@yield('subContent')
 			</div>
 

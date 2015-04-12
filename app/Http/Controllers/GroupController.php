@@ -18,7 +18,7 @@ class GroupController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.groups');
+		return view('employee.groups')->with('selected_view', 'groups');;
 	}
 
 }

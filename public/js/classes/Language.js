@@ -82,6 +82,10 @@ define([
                 } else {
                     throw new Exception('unimplemented');
                 }
+            },
+
+            setLocale: function(localeCode) {
+                this.locale = localeCode;
             }
         };
 

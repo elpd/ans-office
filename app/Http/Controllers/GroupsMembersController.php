@@ -19,7 +19,7 @@ class GroupsMembersController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.groupsMembers');
+		return view('employee.groupsMembers')->with('selected_view', 'groups_members');;
 	}
 
 }
