@@ -14,8 +14,8 @@ class UserTableSeeder extends Seeder
     {
         DB::table('users')->delete();
 
-        $initialPassword = 'root';
-        $initialUserPassword = 'user';
+        $initialPassword = \Hash::make('root');
+        $initialUserPassword = \Hash::make('user');
 
         $adminRole = Role::where('slug', '=', 'admin')->firstOrFail();
         $employeeRole = Role::where('slug', '=', 'employee')->firstOrFail();
