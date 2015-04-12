@@ -23,8 +23,15 @@ class PasswordController extends Controller
         $password = $data['password'];
         $password_confirmation = $data['password_confirmation'];
 
-        $user->password = $password;
-        $user->password_confirmation = $password_confirmation;
+        // TODO: standard validation
+        if ($password != $password_confirmation) {
+            return [
+                'success' => false,
+                'messages' => ['passwords dont match']
+            ];
+        }
+
+        $user->password = \Hash::make($password);
 
         if ($user->save()) {
             return [

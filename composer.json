@@ -9,7 +9,8 @@
 		"watson/validating": "dev-master",
 		"illuminate/html": "5.*",
 		"bican/roles": "1.5.*",
-		"league/csv": "~7.0"
+		"league/csv": "~7.0",
+        "guzzlehttp/guzzle": "~4.0"
 	},
 	"require-dev": {
 		"phpunit/phpunit": "~4.0",

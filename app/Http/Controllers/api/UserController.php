@@ -21,8 +21,11 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'password' => 'confirmed',
+            'password' => 'confirmed|alpha_dash|required|between:6,20',
         ]);
+
+        $hashedPassword = \Hash::make($request->get('password'));
+        $request->merge(['password' => $hashedPassword]);
 
         return $this->generalStore();
     }
@@ -45,8 +48,11 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $this->validate($request, [
-            'password' => 'confirmed',
+            'password' => 'confirmed|alpha_dash|between:6,20',
         ]);
+
+        $hashedPassword = \Hash::make($request->get('password'));
+        $request->merge(['password' => $hashedPassword]);
 
         return $this->generalUpdate($id);
     }
