@@ -20,6 +20,13 @@ html, body {
     height: 100%;
 }
 
+.full_screen_grid {
+    position: fixed !important;
+    top: 0px !important;
+    right: 0px !important;
+    width: 102% !important;
+}
+
 /* make sidebar nav vertical */
 
 @media (min-width: 768px) {
@@ -109,12 +116,6 @@ html, body {
     color: #1b809e
 }
 
-/*
-*/
-
-#grid_fullscreen_button {
-
-}
 
 /* language direction
 */

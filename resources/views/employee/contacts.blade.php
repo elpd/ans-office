@@ -8,14 +8,13 @@
 			        right_aligned
 			    @endif"
                     >@lang('bo.Contacts')</h2>
-            <button id="grid_fullscreen_button" >
-                <span class="glyphicon glyphicon-fullscreen" aria-hidden="true"></span>
-            </button>
         </div>
         <div class="row">
 
-            <table id="contacts_grid"></table>
-            <div id="contacts_grid_pager"></div>
+            <div class="col-xs-12">
+                <table id="contacts_grid"></table>
+                <div id="contacts_grid_pager"></div>
+            </div>
         </div>
     </div>
 @endsection
