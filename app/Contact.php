@@ -46,7 +46,9 @@ class Contact extends Model
             'phone:IL',
         ),
         "facebook" => array(),
-        "birth_year" => array(),
+        "birth_year" => [
+            'numeric'
+        ],
         "donate" => array(),
         "blacklisted" => array(),
     );
