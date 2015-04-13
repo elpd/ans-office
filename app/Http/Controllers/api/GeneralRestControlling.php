@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use Request;
+use Illuminate\Http\Request;
 
 trait GeneralRestControlling
 {
@@ -12,12 +12,15 @@ trait GeneralRestControlling
      *
      * @return Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $requested_page = \Input::get('page');
         $requested_rows_per_page = \Input::get('rows');
         $requested_sorting_index = \Input::get('sidx');
         $requested_sorting_order = \Input::get('sord');
+        $is_search = \Input::get('_search');
+        $search_filters_json = \Input::get('filters');
+        $search_filters = \GuzzleHttp\json_decode($search_filters_json);
 
         $class = $this->biClass;
 
@@ -50,11 +53,54 @@ trait GeneralRestControlling
 
         // Query
 
-        if ($sorting_index == '') {
-            $items = $class::paginate($rows_per_page);
-        } else {
-            $items = $class::orderBy($sorting_index, $sorting_order)->paginate($rows_per_page);
+        $queryBuilding = $class::query();
+
+        if ($sorting_index != '') {
+            $queryBuilding = $queryBuilding->orderBy($sorting_index, $sorting_order);
         }
+
+        if ($is_search == 'true') {
+            $searchRoles = $search_filters->rules;
+            foreach ($searchRoles as $rule) {
+                $fieldName = $rule->field;
+                $jqgrid_operator = $rule->op;
+                $searchData = $rule->data;
+
+                // TODO: transaltions and validation on rule attributes.
+
+                switch ($jqgrid_operator) {
+                    // cn: contains
+                    case 'cn' :
+                        $operator = 'LIKE';
+                        $searchData = '%' . $searchData .'%';
+                        break;
+                    case 'eq':
+                        $operator = '=';
+                        break;
+                    case 'ne':
+                        $operator = '<>';
+                        break;
+                    case 'lt':
+                        $operator = '<';
+                        break;
+                    case 'le':
+                        $operator = '<=';
+                        break;
+                    case 'gt':
+                        $operator = '>';
+                        break;
+                    case 'ge':
+                        $operator = '>=';
+                        break;
+                    default:
+                        throw new \Exception('unimplemented search operator');
+                }
+
+                $queryBuilding = $queryBuilding->where($fieldName, $operator, $searchData);
+            }
+        }
+
+        $items = $queryBuilding->paginate($rows_per_page);
 
         $itemsAsMap = $this->convertItemsToMap($items);
         return [
