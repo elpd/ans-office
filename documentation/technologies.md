@@ -17,7 +17,7 @@
 
 ## Unordered
 * https://github.com/trentrichardson/jQuery-Timepicker-Addon
+* http://jqueryui.com/themeroller/#!icons=undefined
 * https://jqueryui.com/datepicker/
 * https://github.com/Propaganistas/Laravel-Phone
 * https://github.com/giggsey/libphonenumber-for-php
-* 
