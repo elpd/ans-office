@@ -74,6 +74,8 @@ return [
 	"url"                  => "The :attribute format is invalid.",
 	"timezone"             => "The :attribute must be a valid zone.",
 
+    "phone" => "The :attribute field contains an invalid phone number.",
+
 	/*
 	|--------------------------------------------------------------------------
 	| Custom Validation Language Lines

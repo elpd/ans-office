@@ -146,6 +146,7 @@ return [
 		'App\Providers\RouteServiceProvider',
 		'Illuminate\Html\HtmlServiceProvider',
 		'Bican\Roles\RolesServiceProvider',
+        'Propaganistas\LaravelPhone\LaravelPhoneServiceProvider',
 
         'App\Providers\ComposerServiceProvider',
 	],

@@ -42,7 +42,7 @@ trait GeneralRestControlling
         }
 
         $sorting_order = 'ASC';
-        if (($requested_sorting_order == 'ASC' || $requested_sorting_order == 'DESC')){
+        if (($requested_sorting_order == 'ASC' || $requested_sorting_order == 'DESC')) {
             // TODO: log error in input
         } else {
             $sorting_order = $requested_sorting_order;
@@ -66,27 +66,6 @@ trait GeneralRestControlling
             'records' => $items->total(),
             'rows' => $itemsAsMap
         ];
-    }
-
-    protected function convertItemsToMap($items)
-    {
-        $map = $this->pluck_array_reduce($items->all());
-        return $map;
-    }
-
-    function pluck_array_reduce($data)
-    {
-        return array_reduce(
-            $data,
-            function ($result, $item) {
-                $itemResult = [];
-                $itemResult['id'] = $item->id;
-                $itemResult['cell'] = $item;
-
-                $result[] = $itemResult;
-
-                return $result;
-            }, array());
     }
 
     /**
@@ -164,7 +143,7 @@ trait GeneralRestControlling
             return response()->json([
                 'success' => false,
                 'errors' => $e->getErrors(),
-            ],400);
+            ], 400);
         } catch (\Exception $e) {
             if (property_exists($e, 'errorInfo')) {
                 $errors = implode(',', $e->errorInfo);
@@ -243,15 +222,37 @@ trait GeneralRestControlling
         abort(404);
     }
 
-    protected  function getOnly($class) {
+    protected function convertItemsToMap($items)
+    {
+        $map = $this->pluck_array_reduce($items->all());
+        return $map;
+    }
+
+    function pluck_array_reduce($data)
+    {
+        return array_reduce(
+            $data,
+            function ($result, $item) {
+                $itemResult = [];
+                $itemResult['id'] = $item->id;
+                $itemResult['cell'] = $item;
+
+                $result[] = $itemResult;
+
+                return $result;
+            }, array());
+    }
+
+    protected function getOnly($class)
+    {
         $inputs = [];
         $object = new $class();
 
         $fillable = $object->getFillable();
         $all = \Request::all();
 
-        foreach($fillable as $key) {
-            if (array_key_exists($key, $all)){
+        foreach ($fillable as $key) {
+            if (array_key_exists($key, $all)) {
                 $inputs[$key] = $all[$key];
             }
         }

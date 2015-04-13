@@ -40,17 +40,21 @@ define([
                             name: 'registration_date',
                             editable: true,
                             //edittype: 'select',
-                            formatter: 'date',
+                            formatter: 'datetime',
                             editoptions: {
                                 // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
                                 // use it to place a third party control to customize the toolbar
                                 dataInit: function (element) {
-                                    $(element).datepicker({
+                                   /*$(element).datepicker({
                                         id: 'registrationDate_datePicker',
                                         dateFormat: 'yy-mm-dd',
                                         //minDate: new Date(2010, 0, 1),
-                                        maxDate: new Date(2020, 0, 1),
+                                        maxDate: new Date(2090, 0, 1),
                                         showOn: 'focus'
+                                    });*/
+                                    $(element).datetimepicker({
+                                        dateFormat: 'yy-mm-dd',
+                                        timeFormat: 'hh:mm:ss'
                                     });
                                 }
                             }
@@ -58,7 +62,13 @@ define([
                             label: lang.get('bo.email'),
                             name: 'email',
                             editable: true,
-                            editoptions: {}
+                            editoptions: {},
+                            //search:true,
+                            //stype:'text',
+                            searchoptions: {
+                                // show search options
+                                //sopt: ["eq"]
+                            }
                         }, {
                             label:  lang.get('bo.first_name'),
                             name: 'first_name',
@@ -88,12 +98,24 @@ define([
                             label:  lang.get('bo.donate'),
                             name: 'donate',
                             editable: true,
-                            editoptions: {}
+                            formatter: 'checkbox',
+                            align: 'center',
+                            width: 50,
+                            edittype: 'checkbox',
+                            editoptions: {
+                                value: "1:0"
+                            }
                         }, {
                             label:  lang.get('bo.blacklisted'),
                             name: 'blacklisted',
                             editable: true,
-                            editoptions: {}
+                            formatter: 'checkbox',
+                            align: 'center',
+                            width: 50,
+                            edittype: 'checkbox',
+                            editoptions: {
+                                value: "1:0"
+                            }
                         }]
                     });
 

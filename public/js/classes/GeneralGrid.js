@@ -111,6 +111,11 @@ define([
             //loadOnce: false
         });
 
+        $grid.jqGrid('filterToolbar',{
+            // instuct the grid toolbar to show the search options
+            searchOperators: true
+        });
+
         var lastSelection;
         var beforeEditData;
 
@@ -131,22 +136,48 @@ define([
                     },
                     mtype: 'PUT',
                     successfunc: function (data) {
+
                         var response = data.responseJSON;
-                        if (!response.success) {
+
+                        //$(this).jqGrid("setGridParam", {datatype: 'json'});
+                        return true; //[true, "", response.item_id];
+                    },
+                    errorfunc: function (rowId, response) {
+
+                        var parsedResponse = response.responseJSON;
+                        if (!parsedResponse.success) {
                             var errorsArray = utilities.errorsObjectToArray(
-                                response.errors);
+                                parsedResponse.errors);
+
                             if (errorsArray.length) {
-                                var errorText = errorsArray[0]; //$.parseJSON(res.responseText).Message;
+                                var errorsParagraph = '<ol>';
+                                errorsArray.forEach(function(error){
+                                    var errorLine = '<li>' + error + '</li>';
+                                    errorsParagraph += errorLine;
+                                });
+                                errorsParagraph += '</ol>'
+
                                 $.jgrid.info_dialog($.jgrid.errors.errcap,
-                                    '<div class="ui-state-error">' + errorText + '</div>',
+                                    '<div class="ui-state-error">' + errorsParagraph + '</div>',
                                     $.jgrid.edit.bClose,
-                                    {buttonalign: 'right'});
+                                    {
+                                        buttonalign: 'right'
+                                    });
 
                                 return false; // [false, errorsArray];
                             }
                         }
-                        //$(this).jqGrid("setGridParam", {datatype: 'json'});
-                        return true; //[true, "", response.item_id];
+
+                        // Default error. When unexpected error response structure.
+                        $.jgrid.info_dialog(
+                            $.jgrid.errors.errcap,
+                            '<div class="ui-state-error">' + response.responseText + '</div>',
+                            $.jgrid.edit.bClose,
+                            {
+                                buttonalign: 'right'
+                            });
+
+                        return false;
                     }
 
                 };
