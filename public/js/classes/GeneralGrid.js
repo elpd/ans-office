@@ -65,7 +65,9 @@ define([
 
             colModel: self.colModel,
             viewrecords: true, // show the current page, data rang and total records on the toolbar
-            width: 500,
+            //width: 500,
+            //width: null,
+            shrinkToFit: false,
             height: 200,
             // rowNum - number of rows to display
             // options:
@@ -111,8 +113,15 @@ define([
             //loadOnce: false
         });
 
+        $grid.jqGrid('filterToolbar', {
+            // instruct the grid toolbar to show the search options
+            searchOperators: true,
+            defaultSearch: 'cn'
+        });
+
         var lastSelection;
         var beforeEditData;
+        self.userOptionShrinkToFit = false;
 
         function editRow(id) {
             if (id && id !== lastSelection) {
@@ -131,22 +140,48 @@ define([
                     },
                     mtype: 'PUT',
                     successfunc: function (data) {
+
                         var response = data.responseJSON;
-                        if (!response.success) {
+
+                        //$(this).jqGrid("setGridParam", {datatype: 'json'});
+                        return true; //[true, "", response.item_id];
+                    },
+                    errorfunc: function (rowId, response) {
+
+                        var parsedResponse = response.responseJSON;
+                        if (!parsedResponse.success) {
                             var errorsArray = utilities.errorsObjectToArray(
-                                response.errors);
+                                parsedResponse.errors);
+
                             if (errorsArray.length) {
-                                var errorText = errorsArray[0]; //$.parseJSON(res.responseText).Message;
+                                var errorsParagraph = '<ol>';
+                                errorsArray.forEach(function (error) {
+                                    var errorLine = '<li>' + error + '</li>';
+                                    errorsParagraph += errorLine;
+                                });
+                                errorsParagraph += '</ol>'
+
                                 $.jgrid.info_dialog($.jgrid.errors.errcap,
-                                    '<div class="ui-state-error">' + errorText + '</div>',
+                                    '<div class="ui-state-error">' + errorsParagraph + '</div>',
                                     $.jgrid.edit.bClose,
-                                    {buttonalign: 'right'});
+                                    {
+                                        buttonalign: 'right'
+                                    });
 
                                 return false; // [false, errorsArray];
                             }
                         }
-                        //$(this).jqGrid("setGridParam", {datatype: 'json'});
-                        return true; //[true, "", response.item_id];
+
+                        // Default error. When unexpected error response structure.
+                        $.jgrid.info_dialog(
+                            $.jgrid.errors.errcap,
+                            '<div class="ui-state-error">' + response.responseText + '</div>',
+                            $.jgrid.edit.bClose,
+                            {
+                                buttonalign: 'right'
+                            });
+
+                        return false;
                     }
 
                 };
@@ -173,7 +208,7 @@ define([
             }
 
             $grid.setGridHeight(calcHeight + 'px');
-            $grid.setGridWidth(calcWidth + 'px');
+            $grid.setGridWidth(calcWidth, self.userOptionShrinkToFit);
 
         }).trigger('resize');
 
@@ -252,7 +287,7 @@ define([
                     var calcWidth = calcGridWidthWhenFull();
 
                     $grid.setGridHeight(calcHeight + 'px');
-                    $grid.setGridWidth(calcWidth + 'px');
+                    $grid.setGridWidth(calcWidth, self.userOptionShrinkToFit);
                     //$gridBox.width('100%');
                 },
                 position: "last"
@@ -268,8 +303,14 @@ define([
                     var calcWidth = calcGridWidthWhenNormal(self.page_id);
 
                     $grid.setGridHeight(calcHeight + 'px');
-                    $grid.setGridWidth(calcWidth + 'px');
+                    $grid.setGridWidth(calcWidth, self.userOptionShrinkToFit);
                     //$gridBox.width(calcWidth);
+                }
+            })
+            .navButtonAdd('#' + self.pagerId, {
+                caption: "Toggle AutoFit",
+                onClickButton: function() {
+                   self.userOptionShrinkToFit = ! self.userOptionShrinkToFit;
                 }
             });
 
@@ -289,9 +330,12 @@ define([
 
     function calcGridHeightWhenNormal(page_id) {
         var pageHeight = $('#' + page_id).height();
-        var headerHeight = $('.section_header').height();
+        var headerHeight = $('.section_header').outerHeight(true);
+        var titleBarHeight = $('.ui-jqgrid-titlebar').outerHeight(true);
+        var headerBoxHeight = $('.ui-jqgrid-hdiv').outerHeight(true);
+        var bottomPagerHeight = $('.ui-jqgrid-pager.ui-corner-bottom').outerHeight(true);
 
-        var calcHeight = pageHeight - headerHeight - 105;
+        var calcHeight = pageHeight - (headerHeight + titleBarHeight + headerBoxHeight + bottomPagerHeight + 5);
         // Set a minimum for height;
         calcHeight = calcHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calcHeight;
 
@@ -305,12 +349,19 @@ define([
     }
 
     function calcGridHeightWhenFull() {
-        var calc = $(window).height() - 75;
+        var windowHeight =  $(window).height();
+        var titleBarHeight = $('.ui-jqgrid-titlebar').outerHeight(true);
+        var headerBoxHeight = $('.ui-jqgrid-hdiv').outerHeight(true);
+        var bottomPagerHeight = $('.ui-jqgrid-pager.ui-corner-bottom').outerHeight(true);
+
+        var calc = windowHeight - (titleBarHeight + headerBoxHeight + bottomPagerHeight);
+
         return calc;
     }
 
     function calcGridWidthWhenFull() {
-        var calc = ($(window).width());
+        var windowWidth = ($(window).width());
+        var calc = windowWidth;
         return calc;
     }
 

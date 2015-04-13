@@ -165,13 +165,15 @@ class PopulateCsv extends Command implements SelfHandling
         $firstName = $nameArray['firstName'];
         $lastName = $nameArray['lastName'];
 
+        $registration_date = $this->convertDateStr($contactFields['registrationDateStr']);
         $birthYear = intval($contactFields['birthYearStr']);
+        $phone = $this->fixPhoneStr($contactFields['phoneStr']);
 
         $contact = new Contact([
             'first_name' => $firstName,
             'last_name' => $lastName,
             'email' => $contactFields['emailStr'],
-            'registration_date' => $contactFields['registrationDateStr'],
+            'registration_date' => $registration_date,
             'phone' => $contactFields['phoneStr'],
             'facebook' => $contactFields['facebookNameStr'],
             'birth_year' => $birthYear,
@@ -269,6 +271,27 @@ class PopulateCsv extends Command implements SelfHandling
         }
 
         return $flag;
+    }
+
+    protected function fixPhoneStr($phoneStr) {
+        $phoneUtil = \libphonenumber\PhoneNumberUtil::getInstance();
+        try {
+            $numberParsed = $phoneUtil->parse($phoneStr, 'IL');
+            //var_dump($numberParsed);
+        } catch (\libphonenumber\NumberParseException $e) {
+            var_dump($e);
+        }
+
+        if ($phoneUtil->isValidNumber($numberParsed)){
+            return $phoneStr;
+        }
+
+        if ($this->output) {
+            $this->output->info('phone number is invalid: ' . $phoneStr);
+            //$this->output->info('Trying to fix phone number: ' . $phoneStr);
+        }
+
+       return $phoneStr;
     }
 
     protected function parseEtgar22Row($row)

@@ -8,6 +8,7 @@
 
     <link rel="stylesheet" media="screen" href="/lib/jquery-ui-1.11.3.custom/jquery-ui.css"/>
     <link rel="stylesheet" media="screen" href="/js/jqGrid/css/trirand/ui.jqgrid.css"/>
+    <link rel="stylesheet" media="screen" href="/js/lib/jQuery-Timepicker-Addon/jquery-ui-timepicker-addon.min.css"/>
 
     {!! HTML::style('lib/bootstrap-3.3.2-dist/css/bootstrap.css') !!}
     @if ($userSettings)

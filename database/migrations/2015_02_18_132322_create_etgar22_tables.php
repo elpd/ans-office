@@ -108,7 +108,9 @@ class CreateEtgar22Tables extends Migration
 
                 $table->foreign('contact_id')
                     ->references('id')
-                    ->on('contacts');
+                    ->on('contacts')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
             });
 
         // Create the groups table
