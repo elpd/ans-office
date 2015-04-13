@@ -217,7 +217,7 @@ trait GeneralRestControlling
         $class = $this->biClass;
 
         if ($id == -1) {
-            $id = Request::get('id');
+            $id = \Request::get('id');
         }
 
         $item = $class::findOrFail($id);
