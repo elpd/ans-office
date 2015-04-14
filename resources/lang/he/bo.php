@@ -52,5 +52,38 @@ return [
     'facebook_account' => 'חשבון פייסבוק',
     'birth_year' => 'שנת לידה',
     'donate' => 'תרומה',
-    'blacklisted' => 'חסום'
+    'blacklisted' => 'חסום',
+
+    // Etgar 22
+// TODO: add to hebrew file
+    'etgar22' => 'אתגר 22',
+    'etgar22_facebook_know_how' => 'יודע להשתמש בפייסבוק',
+    'etgar22_call_for_facebook_help' => 'מבקש עזרה לפייסבוק',
+    'etgar22_registration_date' => 'תאריך רישום',
+    'etgar22_notes' => 'הערות',
+    'etgar22_next_call' => 'התקשרות הבאה',
+    'etgar22_why_go_vegan' => 'למה הפכתי לטבעוני',
+    'etgar22_parent_name' => 'שם הורה',
+    'etgar22_parent_email' => 'דואל הורה',
+
+    // Cycle
+
+    'cycles' => 'מחזורים',
+    'Cycles' => 'מחזורים',
+    'cycle_start_date' => 'תאריך התחלה',
+    'cycle_num' => 'מספר',
+
+    // Group
+
+    'groups' => 'קבוצות',
+    'Groups' => 'קבוצות',
+    'group_cycle' => 'מחזור',
+    'group_name' => 'שם',
+    'group_status' => 'סטאטוס',
+
+    // Guide
+
+    'guides' => 'מדריכים',
+    'Guides' => 'מדריכים',
+    'guide_name' => 'שם',
 ];
