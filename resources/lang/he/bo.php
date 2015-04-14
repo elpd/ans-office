@@ -76,6 +76,8 @@ return [
     // Group
 
     'groups' => 'קבוצות',
+    'Groups' => 'קבוצות',
+    'group_cycle' => 'מחזור',
     'group_name' => 'שם',
     'group_status' => 'סטאטוס',
 

@@ -77,6 +77,8 @@ return [
     // Group
 
     'groups' => 'Groups',
+    'Groups' => 'Groups',
+    'group_cycle' => 'Cycle',
     'group_name' => 'Name',
     'group_status' => 'Status',
 
@@ -85,4 +87,14 @@ return [
     'guides' => 'Guides',
     'Guides' => 'Guides',
     'guide_name' => 'Name',
+
+    // Groups Members
+    // TODO: hebrew translation.
+    'groups_members' => 'Groups Members',
+    'Groups_members' => 'Groups Members',
+    'group_members_group' => 'Group',
+    'group_members_contact' => 'Contact',
+    'group_members_status' => 'Status',
+    'group_members_guide_1' => 'Guide 1',
+    'group_members_guide_2' => 'Guide 2',
 ];
