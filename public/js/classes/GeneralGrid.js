@@ -15,6 +15,13 @@ define([
         this.SubRow = params.SubRow;
         this.onBeforeSubmitData = params.onBeforeSubmitData;
         this.onBeforeAddSubmit = params.onBeforeAddSubmit;
+        this.lang = params.lang;
+        this.userSettingsGService = params.userSettingsGService;
+        this.gridId = params.gridId ? params.gridId : null;
+        this.parentClass = params.parentClass ? params.parentClass : null;
+        this.parentId = params.parentId ? params.parentId : null;
+        this.childParentNick = params.childParentNick ? params.childParentNick : null;
+        this.childParentField = params.childParentField ? params.childParentField : null;
 
         if (params.direction) {
             switch (params.direction) {
@@ -36,7 +43,9 @@ define([
 
     Class.prototype = {
         setVariables: function () {
-            this.gridId = this.biNamePlural + '_grid';
+            if (! this.gridId) {
+                this.gridId = this.biNamePlural + '_grid';
+            }
             this.gridBoxId = 'gbox_' + this.gridId;
             this.pagerId = this.gridId + '_pager';
             this.dataRowClass = this.biName + 'Data';
@@ -48,7 +57,9 @@ define([
             self.loadingIndicator = new LoadingIndicator(self.gridId);
 
             self.subRow = new self.SubRow({
-                parentControllerUrl: self.controllerUrl
+                parentControllerUrl: self.controllerUrl,
+                lang: self.lang,
+                userSettingsGService: self.userSettingsGService
             });
 
             setGrid(self);
@@ -108,6 +119,12 @@ define([
                     }
                 }
                 return processedData;
+            },
+            postData: {
+                parentClass: self.parentClass,
+                parentId: self.parentId,
+                childParentNick: self.childParentNick,
+                childParentField: self.childParentField
             }
 
             //loadOnce: false
@@ -119,12 +136,14 @@ define([
             defaultSearch: 'cn'
         });
 
-        var lastSelection;
+        var lastSelection; // TODO: research if needed.
         var beforeEditData;
         self.userOptionShrinkToFit = false;
 
-        function editRow(id) {
-            if (id && id !== lastSelection) {
+        function editRow(id, iRow, iCol, e) {
+            e.stopPropagation();
+
+            if (id) {
                 var grid = $("#" + self.gridId);
 
                 beforeEditData = grid.getRowData(id);
@@ -237,7 +256,11 @@ define([
                 url: self.controllerUrl,
                 mtype: 'POST',
                 editData: {
-                    _token: $_token
+                    _token: $_token,
+                    parentClass: self.parentClass,
+                    parentId: self.parentId,
+                    childParentNick: self.childParentNick,
+                    childParentField: self.childParentField
                 },
                 afterSubmit: function (data, postdata, oper) {
                     var response = data.responseJSON;
@@ -309,8 +332,8 @@ define([
             })
             .navButtonAdd('#' + self.pagerId, {
                 caption: "Toggle AutoFit",
-                onClickButton: function() {
-                   self.userOptionShrinkToFit = ! self.userOptionShrinkToFit;
+                onClickButton: function () {
+                    self.userOptionShrinkToFit = !self.userOptionShrinkToFit;
                 }
             });
 
@@ -349,7 +372,7 @@ define([
     }
 
     function calcGridHeightWhenFull() {
-        var windowHeight =  $(window).height();
+        var windowHeight = $(window).height();
         var titleBarHeight = $('.ui-jqgrid-titlebar').outerHeight(true);
         var headerBoxHeight = $('.ui-jqgrid-hdiv').outerHeight(true);
         var bottomPagerHeight = $('.ui-jqgrid-pager.ui-corner-bottom').outerHeight(true);

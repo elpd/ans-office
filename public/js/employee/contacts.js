@@ -2,7 +2,7 @@ define([
         'lodash',
         'classes/utilities',
         'classes/bi/Contact',
-        'admin/permissions.SubRow',
+        'employee/contacts.SubRow',
         'services/language',
         'classes/LoadingIndicator',
         'classes/GeneralGrid',
@@ -23,6 +23,8 @@ define([
             userSettingsGService.load().then(function () {
 
                     var grid = new GeneralGrid({
+                        lang: lang,
+                        userSettingsGService: userSettingsGService,
                         controllerUrl: '/api/contact',
                         biName: 'contact',
                         biNamePlural: 'contacts',
@@ -35,7 +37,7 @@ define([
                             width: 30,
                             key: true,
                             searchoptions: {
-                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'],
+                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
                             },
                             searchrules: {
                                 integer: true
@@ -139,6 +141,7 @@ define([
 
         });
 
+        // TODO: make global
         function generateDateTimePicker(element) {
             $(element).datetimepicker({
                 dateFormat: 'yy-mm-dd',

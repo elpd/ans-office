@@ -1,189 +1,127 @@
 define([
-    'classes/utilities',
-    'classes/bi/GroupStatus'
-  ],
-  function(
-    utilities,
-    GroupStatus
-  ) {
+        'lodash',
+        'classes/utilities',
+        'classes/GeneralGrid',
+        'employee/emptySubRow'
+    ],
+    function (_,
+              utilities,
+              GeneralGrid,
+              SubRow) {
 
-    var Class = function SubRow(params) {
-      this.parentControllerUrl = params.parentControllerUrl;
-    };
+        var Class = function SubRow(params) {
+            this.parentControllerUrl = params.parentControllerUrl;
+            this.lang = params.lang;
+            this.userSettingsGService = params.userSettingsGService;
+        };
 
-    Class.prototype = {
-      // the event handler on expanding parent row receives two parameters
-      // the ID of the grid row  and the primary key of the row
-      show: function(parentRowID, parentRowKey) {
-        var self = this;
-        var childGridID = parentRowID + "_table";
-        var childGridPagerID = parentRowID + "_pager";
+        Class.prototype = {
+            // the event handler on expanding parent row receives two parameters
+            // the ID of the grid row  and the primary key of the row
+            show: function (parentRowID, parentRowKey) {
+                var self = this;
 
-        // send the parent row primary key to the server so that we know which
-        // grid to show
-        //var childGridURL = parentRowKey + ".json";
-        //childGridURL = childGridURL + "&parentRowID=" +
-        // encodeURIComponent(parentRowKey)
-        var childGridURL = self.parentControllerUrl + '/' + parentRowKey +
-          '/groups';
+                // Create the sub page. Tabs interface for each wanted child and info.
+                // TODO: active indication
 
-        // add a table and pager HTML elements to the parent grid row -
-        // we will render the child grid here
-        $('#' + parentRowID).append(
-          '<table id=' + childGridID +
-          '></table>' +
-          '<div id=' + childGridPagerID +
-          ' class=scroll></div>' +
-          '<div id=' + childGridID + 'load_indicator' +
-          ' class="load_indicator"></div>');
+                var groupTabId = parentRowID + '_groupTab';
+                var groupTabLinkId = groupTabId + '_link';
+                var groupGridId = groupTabId + '_grid';
+                var groupPagerId = groupGridId + '_pager';
 
-        $("#" + childGridID).jqGrid({
+                $('#' + parentRowID).append(
+                    '<div id="' + parentRowID + '_subcontent" role="tabpanel">' +
 
-          colModel: [{
-              label: 'ID',
-              name: 'id',
-              key: true,
-              width: 75
-            },
-            /*{
-          label: 'Cycle',
-          name: 'cycle_id',
-          width: 100,
-          edittype: 'select',
-          formatter: 'select',
-          editoptions: {
-          value: utilities.generateGetItems('/api/cycle', Cycle)(),
-          dataUrl: '/api/cycle',
-          buildSelect: utilities.generateBuildSelect(Cycle)
+                    '<ul class="nav nav-tabs" role="tablist">' +
+
+                    '<li role="presentation"><a id="' + groupTabLinkId +
+                    '" href="#' + groupTabId + '" aria-controls="' + groupTabId +
+                    '" role="tab" data-toggle="tab">' +
+                    self.lang.get('bo.groups') + '</a></li>' +
+                    '<li role="presentation"><a href="#">Info 2</a></li>' +
+                    '<li role="presentation"><a href="#">Info 3</a></li>' +
+
+                    '</ul>' +
+
+                    '<div class="tab-content">' +
+
+                    '<div role="tabpanel" class="tab-pane" id="' + groupTabId + '">' +
+                    '<table id="' + groupGridId + '"></table>' +
+                    '<div id="' + groupPagerId + '"></div>' +
+                    '</div>' +
+
+                    '<div role="tabpanel" class="tab-pane" id="profile">bbbb</div>' +
+                    '<div role="tabpanel" class="tab-pane" id="messages">cccc</div>' +
+                    '<div role="tabpanel" class="tab-pane" id="settings">dddd</div>' +
+
+                    '</div>' +
+
+                    '</div>'
+                );
+
+                // Bind the tabs
+
+                $('#' + groupTabLinkId).click(function (e) {
+                    e.preventDefault();
+
+                    var grid = new GeneralGrid({
+                        lang: self.lang,
+                        controllerUrl: '/api/group',
+                        parentClass: '\\App\\Cycle',
+                        parentId: parentRowKey,
+                        childParentNick: 'cycle',
+                        childParentField: 'cycle_id',
+                        gridId: groupGridId,
+                        biName: 'group',
+                        biNamePlural: 'groups',
+                        caption: _.capitalize(self.lang.get('bo.groups')),
+                        SubRow: SubRow,
+                        direction: self.userSettingsGService.getLanguage().direction,
+                        colModel: [{
+                            label: self.lang.get('bo.id'),
+                            name: 'id',
+                            width: 30,
+                            key: true,
+                            searchoptions: {
+                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                            },
+                            searchrules: {
+                                integer: true
+                            }
+                        }, {
+                            label: self.lang.get('bo.group_name'),
+                            name: 'name',
+                            editable: true,
+                            editoptions: {}
+                            //search:true,
+                            //stype:'text',
+
+                        },{
+                            // TOOD: value from select (enum)
+                            label: self.lang.get('bo.group_status'),
+                            name: 'status_id',
+                            editable: true,
+                            editoptions: {}
+                            //search:true,
+                            //stype:'text',
+
+                        }]
+                    });
+
+                    grid.activate();
+
+                    $(this).tab('show');
+                });
+            }
+        };
+
+        function generateDateTimePicker(element) {
+            $(element).datetimepicker({
+                dateFormat: 'yy-mm-dd',
+                timeFormat: 'HH:mm:ss'
+            });
         }
-      },*/
-            {
-              label: 'Name',
-              name: 'name',
-              width: 100,
-              editable: true,
-              //edittype: 'select',
-              //formatter: 'text',
-              editoptions: {
 
-              }
-            }, {
-              label: 'Statue',
-              name: 'status_id',
-              width: 75,
-              editable: true,
-              edittype: 'select',
-              formatter: 'select',
-              editoptions: {
-                value: utilities.generateGetItems(
-                  '/api/group-status', GroupStatus)(),
-                dataUrl: '/api/group-status',
-                buildSelect: utilities.generateBuildSelect(
-                  GroupStatus)
-              }
-            }
-          ],
-          //mtype: "GET",
+        return Class;
+    });
 
-          page: 1,
-          //loadonce: true,
-          viewrecords: true,
-          width: 500,
-          height: '100%',
-          datatype: "json",
-          url: childGridURL,
-          pager: "#" + childGridPagerID,
-          autowidth: true,
-          gridComplete: function() {
-            $('#' + childGridID + 'load_indicator').append(
-              '<div class="loadIndicator_finished"></div>');
-          },
-          rowattr: function(rowData, currentObj, rowId) {
-            return {
-              "class": ["dataRow groupData"]
-            };
-          }
-        });
-
-        $('#' + childGridID).navGrid('#' + childGridPagerID,
-          // the buttons to appear on the toolbar of the grid
-          {
-            edit: false,
-            add: true,
-            del: true,
-            refresh: false,
-            view: false
-          },
-          // options for the Edit Dialog
-          {},
-          // options for the Add Dialog
-          {
-            height: 'auto',
-            width: 620,
-            closeAfterAdd: true,
-            recreateForm: true,
-            reloadAfterSubmit: true,
-            url: childGridURL,
-            mtype: 'POST',
-            editData: {
-              _token: $_token
-            },
-            afterSubmit: function(data, postdata, oper) {
-              var response = data.responseJSON;
-              if (!response.success) {
-                var errorsArray = utilities.errorsObjectToArray(
-                  response.errors);
-                if (errorsArray.length) {
-                  return [false, errorsArray];
-                }
-              }
-              //$(this).jqGrid("setGridParam", {datatype: 'json'});
-              return [true, "", response.item_id];
-            }
-          },
-          // options for the Delete Dailog
-          {
-            height: 'auto',
-            width: 620,
-            url: childGridURL + '/-1',
-            mtype: 'DELETE',
-            delData: {
-              _token: $_token
-            },
-            reloadAfterSubmit: true,
-            beforeSubmit: function(postdata, formid) {
-              removeLoadIndicator();
-              return [true];
-            }
-          }
-        );
-
-        $('#' + childGridID).inlineNav('#' + childGridPagerID, {
-          edit: false,
-          add: false,
-          del: true,
-          cancel: true,
-          addParams: {
-            keys: true
-          }
-        });
-
-        $('#' + childGridID).bind("jqGridAddEditClickSubmit", function(e,
-          rowid, orgClickEvent) {
-
-          removeLoadIndicator();
-
-          // if we want to return true, we should test e.result additionally
-          return e.result === undefined ? true : e.result;
-        });
-
-        function removeLoadIndicator() {
-          $load_ind = $('#' + childGridID + 'load_indicator' + ' ' +
-          'div.loadIndicator_finished');
-          $load_ind.remove();
-        }
-      }
-    };
-
-    return Class;
-  });

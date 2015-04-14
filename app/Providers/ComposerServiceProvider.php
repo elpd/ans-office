@@ -32,6 +32,9 @@ class ComposerServiceProvider extends ServiceProvider {
             'user.settings',
             'user.settings.general',
             'employee.contacts',
+            'employee.cycles',
+            'employee.groups',
+            'employee.guides',
         ], 'App\Http\ViewComposers\AppComposer');
     }
 

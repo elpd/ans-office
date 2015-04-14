@@ -21,6 +21,9 @@ trait GeneralRestControlling
         $is_search = \Input::get('_search');
         $search_filters_json = \Input::get('filters');
         $search_filters = \GuzzleHttp\json_decode($search_filters_json);
+        $req_parent_class = \Input::get('parentClass');
+        $requested_parent_id = \Input::get('parentId');
+        $req_child_parent_field = \Input::get('childParentField');
 
         $class = $this->biClass;
 
@@ -57,6 +60,11 @@ trait GeneralRestControlling
 
         if ($sorting_index != '') {
             $queryBuilding = $queryBuilding->orderBy($sorting_index, $sorting_order);
+        }
+
+        if ($req_parent_class) {
+            // TODO: check: parent type against known column on model.
+            $queryBuilding = $queryBuilding->where($req_child_parent_field, '=', $requested_parent_id);
         }
 
         if ($is_search == 'true') {
@@ -124,11 +132,22 @@ trait GeneralRestControlling
         $class = $this->biClass;
 
         $input = $this->getOnly($class);
+        $req_parent_class = \Input::get('parentClass');
+        $requested_parent_id = \Input::get('parentId');
+        $req_child_parent_nick = \Input::get('childParentNick');
 
         $item = new $class($input);
 
         try {
-            \DB::transaction(function () use ($item) {
+            \DB::transaction(function () use ($item, $req_parent_class, $requested_parent_id,
+                $req_child_parent_nick) {
+
+                if ($req_parent_class) {
+                    // Safety check. make array of known parents class;
+                    $parent = $req_parent_class::findOrFail($requested_parent_id);
+                    $item->$req_child_parent_nick()->associate($parent);
+                }
+
                 $item->saveOrFail();
 
                 if (method_exists($this, 'storeChildren')) {
