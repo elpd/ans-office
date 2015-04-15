@@ -26,7 +26,8 @@ define([
                         }
                     });
                     sendPromise.fail(function (result) {
-                        self.displayErrorMessages([]); // TODO: standard way for controller to return exceptions.
+                        var response = result.responseJSON;
+                        self.displayErrorMessages(response.messages);
                     });
                 });
 
@@ -70,18 +71,24 @@ define([
             this.displayErrorMessages = function (messages) {
                 var self = this;
                 var messageSection = self.get$MessageSection();
-                messageSection.text('error in operation'); // TODO: language
+
+                setMessageSectionText(messageSection, messages);
+
                 messageSection.removeClass('bs-callout-info');
                 messageSection.addClass('bs-callout-danger');
+
                 messageSection.show();
             };
 
             this.displaySuccessMessages = function (messages) {
                 var self = this;
                 var messageSection = self.get$MessageSection();
-                messageSection.text('successfull operation'); // TODO: language
+
+                setMessageSectionText(messageSection, messages);
+
                 messageSection.removeClass('bs-callout-danger');
                 messageSection.addClass('bs-callout-info');
+
                 messageSection.show();
             };
         }
@@ -90,6 +97,32 @@ define([
 
         return new Prototype();
     })();
+
+    function generateMessagesHtml(messagesList) {
+        var $html = $('<ul></ul>');
+
+        if (Array.isArray(messagesList)) {
+            messagesList.forEach(function (message) {
+                var $li = $('<li>' + message + '</li>');
+                $html.append($li);
+            });
+        } else {
+            _.forEach(messagesList, function(val, key){
+                var $subField = $('<li>' + key + '</li>')
+                var $subErrors = generateMessagesHtml(val);
+                $subField.append($subErrors);
+                $html.append($subField);
+            });
+        }
+
+        return $html;
+    }
+
+    function setMessageSectionText(section, messages) {
+        var messagesHtml = generateMessagesHtml(messages);
+        section.empty();
+        section.append(messagesHtml);
+    }
 
     return Class;
 });

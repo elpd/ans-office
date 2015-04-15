@@ -1,6 +1,8 @@
 <?php namespace App\Http\Controllers\api\User;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use Watson\Validating\ValidationException;
 
 class PasswordController extends Controller
 {
@@ -16,32 +18,46 @@ class PasswordController extends Controller
         ];
     }*/
 
-    public function update()
+    public function update(Request $request)
     {
         $user = \Auth::user();
         $data = \Request::input('data');
         $password = $data['password'];
-        $password_confirmation = $data['password_confirmation'];
 
-        // TODO: standard validation
-        if ($password != $password_confirmation) {
-            return [
+        $validator = \Validator::make($data, [
+            'password' => 'required|confirmed|min:6',
+        ]);
+
+        if ($validator->fails())
+        {
+            return response()->json([
                 'success' => false,
-                'messages' => ['passwords dont match']
-            ];
+                'messages' => $validator->errors()
+            ], 400);
         }
 
         $user->password = \Hash::make($password);
 
-        if ($user->save()) {
+        try{
+            $user->saveOrFail();
             return [
-                'success' => true
+                'success' => true,
+                'messages' => [
+                    \Lang::get('controller_messages.user_settings_was_changed_successfully')
+                ]
             ];
-        } else {
-            return [
+        }
+        catch (ValidationException $e) {
+            return response()->json([
                 'success' => false,
                 'messages' => $user->getErrors()
-            ];
+            ], 400);
+        }
+        catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'messages' => \Lang::get('controller_messages.general_error')
+            ], 400);
         }
 
     }

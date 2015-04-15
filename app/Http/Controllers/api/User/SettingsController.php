@@ -26,23 +26,35 @@ class SettingsController extends Controller
 
         // TODO: generic for each on fillable
 
-        if(isset($settingsInputs['ui_language_id'])){
+        if (isset($settingsInputs['ui_language_id'])) {
             $userSettings->ui_language_id = $settingsInputs['ui_language_id'];
         }
 
-        if(isset($settingsInputs['ui_theme_id'])){
+        if (isset($settingsInputs['ui_theme_id'])) {
             $userSettings->ui_theme_id = $settingsInputs['ui_theme_id'];
         }
 
-        if ($userSettings->save()) {
+        try {
+            $userSettings->saveOrFail();
             return [
-                'success' => true
+                'success' => true,
+                'messages' => [
+                    \Lang::get('controller_messages.user_settings_was_changed_successfully')
+                ]
             ];
-        } else {
-            return [
+
+        } catch (ValidationException $e) {
+
+            return response()->json([
                 'success' => false,
-                'messages' => $userSettings->getErrors()
-            ];
+                'messages' => $e->getErrors()
+            ], 400);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'messages' => \Lang::get('controller_messages.general_error')
+            ], 400);
         }
     }
 }
