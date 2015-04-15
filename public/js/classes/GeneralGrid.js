@@ -463,15 +463,30 @@ define([
                 },
                 afterSubmit: function (data, postdata, oper) {
                     var response = data.responseJSON;
-                    if (!response.success) {
-                        var errorsArray = utilities.errorsObjectToArray(
-                            response.errors);
-                        if (errorsArray.length) {
-                            return [false, errorsArray];
+                    return [true, "", response.item_id];
+                },
+                errorTextFormat: function (responseRaw) {
+                    var response = responseRaw.responseJSON;
+                    var message = '';
+
+                    if (!response.hasOwnProperty('success')) {
+                        _.forEach(response, function (val, key) {
+                            message += 'field: ' + key + '. errors: ';
+                            _.forEach(val, function(errorMessage){
+                                message += errorMessage + '. ';
+                            });
+                        });
+                    } else {
+                        if (!response.success) {
+                            var errorsArray = utilities.errorsObjectToArray(
+                                response.errors);
+                            if (errorsArray.length) {
+                                return [false, errorsArray];
+                            }
                         }
                     }
-                    //$(this).jqGrid("setGridParam", {datatype: 'json'});
-                    return [true, "", response.item_id];
+
+                    return message;
                 },
                 beforeSubmit: function (postdata, formid) {
                     var returnData = {
