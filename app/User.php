@@ -45,6 +45,14 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     protected $hidden = ['password', 'remember_token'];
 
     protected $rules = [
+        'name' => [
+            'required',
+            'between:4,50'
+        ],
+        'email' => [
+            'required',
+            'email'
+        ],
     ];
 
     public $nullable = [];

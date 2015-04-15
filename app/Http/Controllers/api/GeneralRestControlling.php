@@ -2,6 +2,7 @@
 
 use App\Http\Requests;
 use Illuminate\Http\Request;
+use Watson\Validating\ValidationException;
 
 trait GeneralRestControlling
 {
