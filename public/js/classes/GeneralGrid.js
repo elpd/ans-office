@@ -43,22 +43,21 @@ define([
 
     Class.prototype = {
         setVariables: function () {
+            var self = this;
+
             if (!this.gridId) {
                 this.gridId = this.biNamePlural + '_grid';
             }
             this.gridBoxId = 'gbox_' + this.gridId;
             this.pagerId = this.gridId + '_pager';
             this.dataRowClass = this.biName + 'Data';
-            this.page_id = this.biNamePlural + '_page';
-
-            var gridId = this.gridId;
-            var gridBoxId = this.gridBoxId;
-            var pageId = this.page_id;
+            this.pageId = this.biNamePlural + '_page';
 
             this.pageObject = new PageObject({
-                gridBoxId: gridBoxId,
-                gridId: gridId,
-                pageId: pageId
+                gridBoxId: self.gridBoxId,
+                gridId: self.gridId,
+                pageId: self.pageId,
+                pagerId: self.pagerId
             });
         },
 
@@ -82,15 +81,19 @@ define([
         this.gridBoxId = params.gridBoxId;
         this.gridId = params.gridId;
         this.pageId = params.pageId;
+        this.pagerId = params.pagerId;
     }
 
     PageObject.prototype = {
+        getfullScreenButtonId: function() {
+            return this.pagerId + '_fullscr_button';
+        },
 
-        get$Page: function() {
+        get$Page: function () {
             return $('#' + this.pageId);
         },
 
-        get$SectionHeader: function() {
+        get$SectionHeader: function () {
             return $('.section_header');
         },
 
@@ -102,19 +105,19 @@ define([
             return $('#' + this.gridId);
         },
 
-        get$GridTitleBar: function() {
+        get$GridTitleBar: function () {
             return $('.ui-jqgrid-titlebar');
         },
 
-        get$GridHeaderBox: function() {
+        get$GridHeaderBox: function () {
             return $('.ui-jqgrid-hdiv');
         },
 
-        get$GridBottomPager: function() {
+        get$GridBottomPager: function () {
             return $('.ui-jqgrid-pager.ui-corner-bottom');
         },
 
-        redrawGridDimentions: function(params) {
+        redrawGridDimentions: function (params) {
             var self = this;
             var isShrinkToFit = params.hasOwnProperty('shrinkToFit') ? params.shrinkToFit : false;
 
@@ -128,14 +131,14 @@ define([
                 desiredGridSize = self.calcDesiredGridSize();
 
                 continueRedraw = false;
-                if (!desiredGridSize.equals(oldDesiredGridSize) && laps < 2){
+                if (!desiredGridSize.equals(oldDesiredGridSize) && laps < 2) {
                     continueRedraw = true;
                 }
-                laps ++;
-            } while(continueRedraw);
+                laps++;
+            } while (continueRedraw);
         },
 
-        calcDesiredGridSize: function() {
+        calcDesiredGridSize: function () {
             var self = this;
 
             var calcHeight = 0;
@@ -152,7 +155,7 @@ define([
             return {
                 height: calcHeight,
                 width: calcWidth,
-                equals: function(target) {
+                equals: function (target) {
                     if (this.height == target.height && this.width == target.width) {
                         return true;
                     }
@@ -162,21 +165,21 @@ define([
             };
         },
 
-        redrawGridDimentionsPhase: function(gridSize, isShrinkToFit) {
+        redrawGridDimentionsPhase: function (gridSize, isShrinkToFit) {
             var self = this;
 
             self.get$Grid().setGridHeight(gridSize.height + 'px');
             self.get$Grid().setGridWidth(gridSize.width, isShrinkToFit);
         },
 
-        isGridInFullScreen: function() {
+        isGridInFullScreen: function () {
             var self = this;
             var result = self.get$GridBox().hasClass('full_screen_grid');
 
             return result;
         },
 
-        calcGridHeightWhenFull: function() {
+        calcGridHeightWhenFull: function () {
             var self = this;
 
             var windowHeight = $(window).height();
@@ -189,14 +192,14 @@ define([
             return calc;
         },
 
-        calcGridWidthWhenFull: function() {
+        calcGridWidthWhenFull: function () {
             var windowWidth = ($(window).width());
             var calc = windowWidth;
 
             return calc;
         },
 
-        calcGridHeightWhenNormal: function() {
+        calcGridHeightWhenNormal: function () {
             var self = this;
 
             var pageHeight = self.get$Page().outerHeight(true);
@@ -212,13 +215,13 @@ define([
             return calcHeight;
         },
 
-        calcGridWidthWhenNormal: function() {
+        calcGridWidthWhenNormal: function () {
             var calc = this.get$Page().width();
 
             return calc;
         },
 
-        setGridToFullScreen: function() {
+        setGridToFullScreen: function () {
             var self = this;
             var $gridBox = self.get$GridBox();
             var $grid = self.get$Grid();
@@ -228,7 +231,7 @@ define([
             self.redrawGridDimentions({shrinkToFit: false});
         },
 
-        exitFullScreen: function() {
+        exitFullScreen: function () {
             var self = this;
             var $gridBox = self.get$GridBox();
             var $grid = self.get$Grid();
@@ -236,7 +239,48 @@ define([
             $gridBox.removeClass('full_screen_grid');
 
             self.redrawGridDimentions({shrinkToFit: false});
+        },
+
+        customButtonFullScreen: function() {
+            var self = this;
+            return new CustomButtonFullScreen({
+                id: self.getfullScreenButtonId()
+            });
         }
+    };
+
+    function CustomButtonFullScreen(params) {
+        id = params.id;
+    }
+
+    CustomButtonFullScreen.prototype = {
+        fullScreenIconId: 'ui-icon-arrow-4-diag',
+        exitScreenIconId: 'ui-icon-arrow-1-se',
+
+        get$IconSpan: function() {
+            return this.get$LabelDiv().find('span');
+        },
+
+        get$LabelDiv: function() {
+            return $('#' + self.id + ' div.ui-pg-div');
+        },
+
+        setAppearanceAsEnterFullScreen: function() {
+            var self = this;
+
+            self.get$IconSpan().removeClass(self.exitScreenIconId);
+            self.get$IconSpan().addClass(self.fullScreenIconId);
+            setTextContents(self.get$LabelDiv(),'Full Screen');
+        },
+
+        setAppearanceAsExitFullScreen: function() {
+            var self = this;
+
+            self.get$IconSpan().removeClass(self.fullScreenIconId);
+            self.get$IconSpan().addClass(self.exitScreenIconId);
+            setTextContents(self.get$LabelDiv(),'Exit Full Screen');
+        }
+
     };
 
     function setGrid(self) {
@@ -456,16 +500,16 @@ define([
             .navButtonAdd('#' + self.pagerId, {
                 caption: "Full Screen",
                 buttonicon: "ui-icon-arrow-4-diag",
+                position: 'last',
+                id: self.pageObject.getfullScreenButtonId(),
                 onClickButton: function () {
-                    self.pageObject.setGridToFullScreen();
-                },
-                position: "last"
-            })
-            .navButtonAdd('#' + self.pagerId, {
-                caption: "Exit Full Screen",
-                //buttonicon: ,
-                onClickButton: function () {
-                    self.pageObject.exitFullScreen();
+                    if (self.pageObject.isGridInFullScreen()) {
+                        self.pageObject.exitFullScreen();
+                        self.pageObject.customButtonFullScreen().setAppearanceAsEnterFullScreen();
+                    } else {
+                        self.pageObject.setGridToFullScreen();
+                        self.pageObject.customButtonFullScreen().setAppearanceAsExitFullScreen();
+                    }
                 }
             })
             .navButtonAdd('#' + self.pagerId, {
@@ -485,6 +529,14 @@ define([
             cancel: true,
             addParams: {
                 keys: true
+            }
+        });
+    }
+
+    function setTextContents($elem, text) {
+        $elem.contents().filter(function() {
+            if (this.nodeType == Node.TEXT_NODE) {
+                this.nodeValue = text;
             }
         });
     }
