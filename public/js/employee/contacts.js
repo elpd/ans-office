@@ -105,7 +105,8 @@ define([
                             editable: true,
                             formatter: 'checkbox',
                             align: 'center',
-                            width: 50,
+                            width: 100,
+                            fixed: true,
                             edittype: 'checkbox',
                             editoptions: {
                                 value: "1:0"
@@ -121,7 +122,8 @@ define([
                             editable: true,
                             formatter: 'checkbox',
                             align: 'center',
-                            width: 50,
+                            width: 100,
+                            fixed: true,
                             edittype: 'checkbox',
                             editoptions: {
                                 value: "1:0"
