@@ -43,13 +43,23 @@ define([
 
     Class.prototype = {
         setVariables: function () {
-            if (! this.gridId) {
+            if (!this.gridId) {
                 this.gridId = this.biNamePlural + '_grid';
             }
             this.gridBoxId = 'gbox_' + this.gridId;
             this.pagerId = this.gridId + '_pager';
             this.dataRowClass = this.biName + 'Data';
             this.page_id = this.biNamePlural + '_page';
+
+            var gridId = this.gridId;
+            var gridBoxId = this.gridBoxId;
+            var pageId = this.page_id;
+
+            this.pageObject = new PageObject({
+                gridBoxId: gridBoxId,
+                gridId: gridId,
+                pageId: pageId
+            });
         },
 
         activate: function () {
@@ -65,6 +75,167 @@ define([
             setGrid(self);
             setNavGrid(self);
             setInlineNav(self);
+        }
+    };
+
+    function PageObject(params) {
+        this.gridBoxId = params.gridBoxId;
+        this.gridId = params.gridId;
+        this.pageId = params.pageId;
+    }
+
+    PageObject.prototype = {
+
+        get$Page: function() {
+            return $('#' + this.pageId);
+        },
+
+        get$SectionHeader: function() {
+            return $('.section_header');
+        },
+
+        get$GridBox: function () {
+            return $('#' + this.gridBoxId);
+        },
+
+        get$Grid: function () {
+            return $('#' + this.gridId);
+        },
+
+        get$GridTitleBar: function() {
+            return $('.ui-jqgrid-titlebar');
+        },
+
+        get$GridHeaderBox: function() {
+            return $('.ui-jqgrid-hdiv');
+        },
+
+        get$GridBottomPager: function() {
+            return $('.ui-jqgrid-pager.ui-corner-bottom');
+        },
+
+        redrawGridDimentions: function(params) {
+            var self = this;
+            var isShrinkToFit = params.hasOwnProperty('shrinkToFit') ? params.shrinkToFit : false;
+
+            var desiredGridSize = self.calcDesiredGridSize();
+            var continueRedraw = false;
+            var laps = 0;
+            do {
+                self.redrawGridDimentionsPhase(desiredGridSize, isShrinkToFit);
+
+                var oldDesiredGridSize = desiredGridSize;
+                desiredGridSize = self.calcDesiredGridSize();
+
+                continueRedraw = false;
+                if (!desiredGridSize.equals(oldDesiredGridSize) && laps < 2){
+                    continueRedraw = true;
+                }
+                laps ++;
+            } while(continueRedraw);
+        },
+
+        calcDesiredGridSize: function() {
+            var self = this;
+
+            var calcHeight = 0;
+            var calcWidth = 0;
+
+            if (self.isGridInFullScreen()) {
+                calcHeight = self.calcGridHeightWhenFull();
+                calcWidth = self.calcGridWidthWhenFull();
+            } else {
+                calcHeight = self.calcGridHeightWhenNormal();
+                calcWidth = self.calcGridWidthWhenNormal();
+            }
+
+            return {
+                height: calcHeight,
+                width: calcWidth,
+                equals: function(target) {
+                    if (this.height == target.height && this.width == target.width) {
+                        return true;
+                    }
+
+                    return false;
+                }
+            };
+        },
+
+        redrawGridDimentionsPhase: function(gridSize, isShrinkToFit) {
+            var self = this;
+
+            self.get$Grid().setGridHeight(gridSize.height + 'px');
+            self.get$Grid().setGridWidth(gridSize.width, isShrinkToFit);
+        },
+
+        isGridInFullScreen: function() {
+            var self = this;
+            var result = self.get$GridBox().hasClass('full_screen_grid');
+
+            return result;
+        },
+
+        calcGridHeightWhenFull: function() {
+            var self = this;
+
+            var windowHeight = $(window).height();
+            var titleBarHeight = self.get$GridTitleBar().outerHeight(true);
+            var headerBoxHeight = self.get$GridHeaderBox().outerHeight(true);
+            var bottomPagerHeight = self.get$GridBottomPager().outerHeight(true);
+
+            var calc = windowHeight - (titleBarHeight + headerBoxHeight + bottomPagerHeight);
+
+            return calc;
+        },
+
+        calcGridWidthWhenFull: function() {
+            var windowWidth = ($(window).width());
+            var calc = windowWidth;
+
+            return calc;
+        },
+
+        calcGridHeightWhenNormal: function() {
+            var self = this;
+
+            var pageHeight = self.get$Page().outerHeight(true);
+            var headerHeight = self.get$SectionHeader().outerHeight(true);
+            var titleBarHeight = self.get$GridTitleBar().outerHeight(true);
+            var headerBoxHeight = self.get$GridHeaderBox().outerHeight(true);
+            var bottomPagerHeight = self.get$GridBottomPager().outerHeight(true);
+
+            var calcHeight = pageHeight - (headerHeight + titleBarHeight + headerBoxHeight + bottomPagerHeight + 5);
+            // Set a minimum for height;
+            calcHeight = calcHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calcHeight;
+
+            return calcHeight;
+        },
+
+        calcGridWidthWhenNormal: function() {
+            var calc = this.get$Page().width();
+
+            return calc;
+        },
+
+        setGridToFullScreen: function() {
+            var self = this;
+            var $gridBox = self.get$GridBox();
+            var $grid = self.get$Grid();
+
+            $gridBox.addClass('full_screen_grid');
+
+            self.redrawGridDimentions({shrinkToFit: false});
+        },
+
+        exitFullScreen: function() {
+            var self = this;
+            var $gridBox = self.get$GridBox();
+            var $grid = self.get$Grid();
+
+            $gridBox.removeClass('full_screen_grid');
+
+            self.redrawGridDimentions({shrinkToFit: false});
         }
     };
 
@@ -138,7 +309,6 @@ define([
 
         var lastSelection; // TODO: research if needed.
         var beforeEditData;
-        self.userOptionShrinkToFit = false;
 
         function editRow(id, iRow, iCol, e) {
             e.stopPropagation();
@@ -213,22 +383,7 @@ define([
         // Set graphical properties behavior.
 
         $(window).bind('resize', function () {
-            var $gridBox = $('#' + self.gridBoxId);
-            var calcHeight = 0;
-            var calcWidth = 0;
-
-            if ($gridBox.hasClass('full_screen_grid')) {
-                calcHeight = calcGridHeightWhenFull();
-                calcWidth = calcGridWidthWhenFull();
-                //$gridBox.width(calcHeight);
-            } else {
-                calcHeight = calcGridHeightWhenNormal(self.page_id);
-                calcWidth = calcGridWidthWhenNormal(self.page_id);
-            }
-
-            $grid.setGridHeight(calcHeight + 'px');
-            $grid.setGridWidth(calcWidth, self.userOptionShrinkToFit);
-
+            self.pageObject.redrawGridDimentions({});
         }).trigger('resize');
 
     }
@@ -297,21 +452,12 @@ define([
                     _token: $_token
                 },
                 reloadAfterSubmit: true
-            }
-        )
+            })
             .navButtonAdd('#' + self.pagerId, {
                 caption: "Full Screen",
                 buttonicon: "ui-icon-arrow-4-diag",
                 onClickButton: function () {
-                    var $gridBox = $('#' + self.gridBoxId);
-                    $gridBox.addClass('full_screen_grid');
-
-                    var calcHeight = calcGridHeightWhenFull();
-                    var calcWidth = calcGridWidthWhenFull();
-
-                    $grid.setGridHeight(calcHeight + 'px');
-                    $grid.setGridWidth(calcWidth, self.userOptionShrinkToFit);
-                    //$gridBox.width('100%');
+                    self.pageObject.setGridToFullScreen();
                 },
                 position: "last"
             })
@@ -319,21 +465,13 @@ define([
                 caption: "Exit Full Screen",
                 //buttonicon: ,
                 onClickButton: function () {
-                    var $gridBox = $('#' + self.gridBoxId);
-                    $gridBox.removeClass('full_screen_grid');
-
-                    var calcHeight = calcGridHeightWhenNormal(self.page_id);
-                    var calcWidth = calcGridWidthWhenNormal(self.page_id);
-
-                    $grid.setGridHeight(calcHeight + 'px');
-                    $grid.setGridWidth(calcWidth, self.userOptionShrinkToFit);
-                    //$gridBox.width(calcWidth);
+                    self.pageObject.exitFullScreen();
                 }
             })
             .navButtonAdd('#' + self.pagerId, {
-                caption: "Toggle AutoFit",
+                caption: "Fit To Size",
                 onClickButton: function () {
-                    self.userOptionShrinkToFit = !self.userOptionShrinkToFit;
+                    self.pageObject.redrawGridDimentions({shrinkToFit: true});
                 }
             });
 
@@ -349,43 +487,6 @@ define([
                 keys: true
             }
         });
-    }
-
-    function calcGridHeightWhenNormal(page_id) {
-        var pageHeight = $('#' + page_id).height();
-        var headerHeight = $('.section_header').outerHeight(true);
-        var titleBarHeight = $('.ui-jqgrid-titlebar').outerHeight(true);
-        var headerBoxHeight = $('.ui-jqgrid-hdiv').outerHeight(true);
-        var bottomPagerHeight = $('.ui-jqgrid-pager.ui-corner-bottom').outerHeight(true);
-
-        var calcHeight = pageHeight - (headerHeight + titleBarHeight + headerBoxHeight + bottomPagerHeight + 5);
-        // Set a minimum for height;
-        calcHeight = calcHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calcHeight;
-
-        return calcHeight;
-    }
-
-    function calcGridWidthWhenNormal(page_id) {
-        var calc = $('#' + page_id).width();
-
-        return calc;
-    }
-
-    function calcGridHeightWhenFull() {
-        var windowHeight = $(window).height();
-        var titleBarHeight = $('.ui-jqgrid-titlebar').outerHeight(true);
-        var headerBoxHeight = $('.ui-jqgrid-hdiv').outerHeight(true);
-        var bottomPagerHeight = $('.ui-jqgrid-pager.ui-corner-bottom').outerHeight(true);
-
-        var calc = windowHeight - (titleBarHeight + headerBoxHeight + bottomPagerHeight);
-
-        return calc;
-    }
-
-    function calcGridWidthWhenFull() {
-        var windowWidth = ($(window).width());
-        var calc = windowWidth;
-        return calc;
     }
 
     return Class;
