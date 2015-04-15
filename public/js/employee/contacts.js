@@ -106,7 +106,7 @@ define([
                             formatter: 'checkbox',
                             align: 'center',
                             width: 100,
-                            fixed: 100,
+                            fixed: true,
                             edittype: 'checkbox',
                             editoptions: {
                                 value: "1:0"
