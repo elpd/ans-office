@@ -160,10 +160,10 @@ trait GeneralRestControlling
                 'item_id' => $item->id,
             ];
         } catch (ValidationException $e) {
-            return [
+            return response()->json([
                 'success' => false,
                 'errors' => $e->getErrors(),
-            ];
+            ], 400);
         } catch (\Exception $e) {
             if (property_exists($e, 'errorInfo')) {
                 $errors = implode(',', $e->errorInfo);
@@ -171,11 +171,11 @@ trait GeneralRestControlling
                 $errors = ['general' => ['general error. See exception']];
             }
 
-            return [
+            return response()->json([
                 'success' => false,
                 'errors' => ['general' => $errors],
                 'exception' => $e
-            ];
+            ], 400);
         }
     }
 
