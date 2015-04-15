@@ -85,7 +85,7 @@ define([
     }
 
     PageObject.prototype = {
-        getfullScreenButtonId: function() {
+        getfullScreenButtonId: function () {
             return this.pagerId + '_fullscr_button';
         },
 
@@ -241,7 +241,7 @@ define([
             self.redrawGridDimentions({shrinkToFit: false});
         },
 
-        customButtonFullScreen: function() {
+        customButtonFullScreen: function () {
             var self = this;
             return new CustomButtonFullScreen({
                 id: self.getfullScreenButtonId()
@@ -257,28 +257,28 @@ define([
         fullScreenIconId: 'ui-icon-arrow-4-diag',
         exitScreenIconId: 'ui-icon-arrow-1-se',
 
-        get$IconSpan: function() {
+        get$IconSpan: function () {
             return this.get$LabelDiv().find('span');
         },
 
-        get$LabelDiv: function() {
+        get$LabelDiv: function () {
             return $('#' + self.id + ' div.ui-pg-div');
         },
 
-        setAppearanceAsEnterFullScreen: function() {
+        setAppearanceAsEnterFullScreen: function () {
             var self = this;
 
             self.get$IconSpan().removeClass(self.exitScreenIconId);
             self.get$IconSpan().addClass(self.fullScreenIconId);
-            setTextContents(self.get$LabelDiv(),'Full Screen');
+            setTextContents(self.get$LabelDiv(), 'Full Screen');
         },
 
-        setAppearanceAsExitFullScreen: function() {
+        setAppearanceAsExitFullScreen: function () {
             var self = this;
 
             self.get$IconSpan().removeClass(self.fullScreenIconId);
             self.get$IconSpan().addClass(self.exitScreenIconId);
-            setTextContents(self.get$LabelDiv(),'Exit Full Screen');
+            setTextContents(self.get$LabelDiv(), 'Exit Full Screen');
         }
 
     };
@@ -379,36 +379,12 @@ define([
                         //$(this).jqGrid("setGridParam", {datatype: 'json'});
                         return true; //[true, "", response.item_id];
                     },
-                    errorfunc: function (rowId, response) {
+                    errorfunc: function (rowId, responseRaw) {
+                        var errorMessage = processErrorResponse(responseRaw);
 
-                        var parsedResponse = response.responseJSON;
-                        if (!parsedResponse.success) {
-                            var errorsArray = utilities.errorsObjectToArray(
-                                parsedResponse.errors);
-
-                            if (errorsArray.length) {
-                                var errorsParagraph = '<ol>';
-                                errorsArray.forEach(function (error) {
-                                    var errorLine = '<li>' + error + '</li>';
-                                    errorsParagraph += errorLine;
-                                });
-                                errorsParagraph += '</ol>'
-
-                                $.jgrid.info_dialog($.jgrid.errors.errcap,
-                                    '<div class="ui-state-error">' + errorsParagraph + '</div>',
-                                    $.jgrid.edit.bClose,
-                                    {
-                                        buttonalign: 'right'
-                                    });
-
-                                return false; // [false, errorsArray];
-                            }
-                        }
-
-                        // Default error. When unexpected error response structure.
                         $.jgrid.info_dialog(
                             $.jgrid.errors.errcap,
-                            '<div class="ui-state-error">' + response.responseText + '</div>',
+                            '<div class="ui-state-error">' + errorMessage.html + '</div>',
                             $.jgrid.edit.bClose,
                             {
                                 buttonalign: 'right'
@@ -466,27 +442,8 @@ define([
                     return [true, "", response.item_id];
                 },
                 errorTextFormat: function (responseRaw) {
-                    var response = responseRaw.responseJSON;
-                    var message = '';
-
-                    if (!response.hasOwnProperty('success')) {
-                        _.forEach(response, function (val, key) {
-                            message += 'field: ' + key + '. errors: ';
-                            _.forEach(val, function(errorMessage){
-                                message += errorMessage + '. ';
-                            });
-                        });
-                    } else {
-                        if (!response.success) {
-                            var errorsArray = utilities.errorsObjectToArray(
-                                response.errors);
-                            if (errorsArray.length) {
-                                return [false, errorsArray];
-                            }
-                        }
-                    }
-
-                    return message;
+                    var errorMessage = processErrorResponse(responseRaw);
+                    return errorMessage.html;
                 },
                 beforeSubmit: function (postdata, formid) {
                     var returnData = {
@@ -549,11 +506,47 @@ define([
     }
 
     function setTextContents($elem, text) {
-        $elem.contents().filter(function() {
+        $elem.contents().filter(function () {
             if (this.nodeType == Node.TEXT_NODE) {
                 this.nodeValue = text;
             }
         });
+    }
+
+    function processErrorResponse(responseRaw) {
+        var response = responseRaw.responseJSON;
+        var messageText = '';
+        var $messageHtml = $('<ol></ol>');
+
+        if (!response.hasOwnProperty('success')) {
+            _.forEach(response, function (val, key) {
+                messageText += 'field: ' + key + '. errors: ';
+                var $fieldHtml = $('<li>' + key + '</li>');
+                var $errorsMessagesListHtml = $('<ol></ol>');
+
+                _.forEach(val, function (errorMessage) {
+                    messageText += errorMessage + '. ';
+                    var $errorMessageHtml = $('<li>' + errorMessage + '</li>');
+                    $errorsMessagesListHtml.append($errorMessageHtml);
+                });
+
+                $fieldHtml.append($errorsMessagesListHtml);
+                $messageHtml.append($fieldHtml);
+            });
+        } else {
+            if (!response.success) {
+                _.forEach(response.errors, function (errorValue, errorKey) {
+                    messageText += errorKey + ': ' + errorValue;
+                    var $errorItem = $('<li>' + errorKey + ': ' + errorValue + '</li>');
+                    $messageHtml.append($errorItem);
+                });
+            }
+        }
+
+        return {
+            text: messageText,
+            html: $messageHtml.html()
+        };
     }
 
     return Class;

@@ -13,8 +13,7 @@ define([
               lang,
               LoadingIndicator,
               GeneralGrid,
-              userSettingsGService
-              ) {
+              userSettingsGService) {
 
         $(document).ready(function () {
 
@@ -27,7 +26,7 @@ define([
                     caption: lang.get('bo.Users'),
                     SubRow: SubRow,
                     direction: userSettingsGService.getLanguage().direction,
-                    onBeforeSubmitData: function (data) {
+/*                    onBeforeSubmitData: function (data) {
                         if (data.password) {
                             data.password_confirmation = data.password; // TODO: make user input confirmation.
                         }
@@ -39,7 +38,7 @@ define([
                         if (postdata.password) {
                             postdata.password_confirmation = postdata.password;
                         }
-                    },
+                    },*/
                     colModel: [{
                         label: lang.get('bo.id'),
                         name: 'id',
@@ -58,15 +57,33 @@ define([
                         editable: true,
                         //edittype: 'select',
                         //formatter: 'integer',
-                        editoptions: {}
+                        editoptions: {},
+                        editrules: {
+                            required: true,
+                            email: true
+                        }
                     }, {
                         label: lang.get('bo.user_password'),
                         name: 'password',
                         editable: true,
-                        //edittype: 'select',
-                        //formatter: 'integer',
-                        editoptions: {}
-                    }]
+                        //hidden: true,
+                        edittype: 'password',
+                        editoptions: {},
+                        editrules: {
+                            edithidden: true,
+                            required: true
+                        }
+                    }, {
+                        label: lang.get('bo.user_password_confirmation'),
+                        name: 'password_confirmation',
+                        editable: true,
+                        //hidden: true,
+                        edittype: 'password',
+                        editrules: {
+                            edithidden: true, required: true
+                        }
+                    },
+                    ]
                 });
 
                 grid.activate();
