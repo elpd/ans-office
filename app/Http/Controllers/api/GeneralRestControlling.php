@@ -159,7 +159,7 @@ trait GeneralRestControlling
                 'success' => true,
                 'item_id' => $item->id,
             ];
-        } catch (\Watson\Validating\ValidationException $e) {
+        } catch (ValidationException $e) {
             return [
                 'success' => false,
                 'errors' => $e->getErrors(),

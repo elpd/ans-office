@@ -20,13 +20,39 @@ class EmailController extends Controller
     {
         $user = \Auth::user();
         $data = \Request::input('data');
-        $email = $data['email'];
 
-        $user->email = $email;
-        $user->save();
+        $validator = \Validator::make($data, [
+            'email' => 'required|email',
+        ]);
 
-        return [
-            'success' => true
-        ];
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'messages' => $validator->errors()
+            ], 400);
+        }
+
+        try {
+            $email = $data['email'];
+
+            $user->email = $email;
+            $user->saveOrFail();
+            return [
+                'success' => true,
+                'messages' => [
+                    \Lang::get('controller_messages.user_settings_was_changed_successfully')
+                ]
+            ];
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'messages' => $user->getErrors()
+            ], 400);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'messages' => \Lang::get('controller_messages.general_error')
+            ], 400);
+        }
     }
 }
