@@ -6,15 +6,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>ANS Office System</title>
 
-    <link rel="stylesheet" media="screen" href="/lib/jquery-ui-1.11.3.custom/jquery-ui.css"/>
+    <link rel="stylesheet" media="screen" href="/lib/jquery-ui/jquery-ui.css"/>
+    <link rel="stylesheet" media="screen" href="/lib/jquery-ui/jquery-ui.structure.css"/>
+
     <link rel="stylesheet" media="screen" href="/js/jqGrid/css/trirand/ui.jqgrid.css"/>
     <link rel="stylesheet" media="screen" href="/js/lib/jQuery-Timepicker-Addon/jquery-ui-timepicker-addon.min.css"/>
 
     {!! HTML::style('lib/bootstrap-3.3.2-dist/css/bootstrap.css') !!}
     @if ($userSettings)
-      <link rel="stylesheet" media="screen" href="/lib/bootstrap_themes/{{ $userSettings->ui_theme->css_file }}"/>
+        <link rel="stylesheet" media="screen" href="/lib/jquery-ui-themes/{{ $userSettings->ui_jquery_ui_theme->folder }}/jquery-ui.css"/>
+        <link rel="stylesheet" media="screen" href="/lib/jquery-ui-themes/{{ $userSettings->ui_jquery_ui_theme->folder }}/theme.css"/>
+        <link rel="stylesheet" media="screen" href="/lib/bootstrap_themes/{{ $userSettings->ui_bootstrap_theme->css_file }}"/>
     @else
-       {!! HTML::style('css/app.css') !!}
+        <link rel="stylesheet" media="screen" href="/lib/jquery-ui-themes/redmond//jquery-ui.css"/>
+        <link rel="stylesheet" media="screen" href="/lib/jquery-ui-themes/redmond//theme.css"/>
+        {!! HTML::style('css/app.css') !!}
     @endif
     {!! HTML::style('css/custom.css') !!}
 
@@ -47,7 +53,7 @@
                 @if($userSettings && $userSettings->ui_language->direction == 'right_to_left')
 			        navbar-right
 			    @endif"
-            >
+                    >
                 <li><a href="/" id="home_section_link">@lang('main.home_menu_label')</a></li>
                 @role('admin')
                 <li><a href="/admin" id="admin_section_link">@lang('main.admin_menu_label')</a></li>
@@ -63,25 +69,25 @@
 			    @endif"
                 id="user_nav_menu">
                 @if (Auth::guest())
-                <li><a href="/auth/login">Login</a></li>
+                    <li><a href="/auth/login">Login</a></li>
                 @else
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{
+                    <li class="dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">{{
                         Auth::user()->name }} <span class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu">
-                        <li class="
+                        <ul class="dropdown-menu" role="menu">
+                            <li class="
                             @if($userSettings->ui_language->direction == 'right_to_left')
                             right_aligned
                             @endif"
-                                ><a href="/user/settings">@lang('main.menu_settings_label')</a></li>
-                        <li role="presentation" class="divider"></li>
-                        <li class="
+                                    ><a href="/user/settings">@lang('main.menu_settings_label')</a></li>
+                            <li role="presentation" class="divider"></li>
+                            <li class="
                             @if($userSettings->ui_language->direction == 'right_to_left')
 			                    right_aligned
 			                @endif"
-                                ><a href="/auth/logout">@lang('main.menu_logout_label')</a></li>
-                    </ul>
-                </li>
+                                    ><a href="/auth/logout">@lang('main.menu_logout_label')</a></li>
+                        </ul>
+                    </li>
                 @endif
             </ul>
         </div>

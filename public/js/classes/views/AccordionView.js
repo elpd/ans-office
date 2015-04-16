@@ -29,6 +29,7 @@ define([
                         var response = result.responseJSON;
                         self.displayErrorMessages(response.messages);
                     });
+
                 });
 
                 var $sectionHeading = self.get$PanelHeading();
@@ -107,7 +108,7 @@ define([
                 $html.append($li);
             });
         } else {
-            _.forEach(messagesList, function(val, key){
+            _.forEach(messagesList, function (val, key) {
                 var $subField = $('<li>' + key + '</li>')
                 var $subErrors = generateMessagesHtml(val);
                 $subField.append($subErrors);

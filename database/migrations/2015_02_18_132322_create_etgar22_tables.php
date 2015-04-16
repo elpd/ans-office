@@ -23,12 +23,21 @@ class CreateEtgar22Tables extends Migration
                 $table->timestamps();
             });
 
-        // Create the ui themes table
-        Schema::create('ui_themes',
+        // Create the ui bootstrap themes table
+        Schema::create('ui_bootstrap_themes',
             function ($table) {
                 $table->increments('id')->unsigned();
                 $table->string('name', 20);
                 $table->string('css_file', 50);
+                $table->timestamps();
+            });
+
+        // Create the ui jquery-ui themes table
+        Schema::create('ui_jquery_ui_themes',
+            function ($table) {
+                $table->increments('id')->unsigned();
+                $table->string('name', 20);
+                $table->string('folder', 50);
                 $table->timestamps();
             });
 
@@ -206,7 +215,10 @@ class CreateEtgar22Tables extends Migration
                 $table->integer('ui_language_id')
                     ->unsigned()
                     ->index();
-                $table->integer('ui_theme_id')
+                $table->integer('ui_bootstrap_theme_id')
+                    ->unsigned()
+                    ->index();
+                $table->integer('ui_jquery_ui_theme_id')
                     ->unsigned()
                     ->index();
                 $table->timestamps();
@@ -223,9 +235,14 @@ class CreateEtgar22Tables extends Migration
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
 
-                $table->foreign('ui_theme_id')
+                $table->foreign('ui_bootstrap_theme_id')
                     ->references('id')
-                    ->on('ui_themes')
+                    ->on('ui_bootstrap_themes')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+                $table->foreign('ui_jquery_ui_theme_id')
+                    ->references('id')
+                    ->on('ui_jquery_ui_themes')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
@@ -262,7 +279,8 @@ class CreateEtgar22Tables extends Migration
             function(Blueprint $table){
                 $table->dropForeign('settings_user_user_id_foreign');
                 $table->dropForeign('settings_user_ui_language_id_foreign');
-                $table->dropForeign('settings_user_ui_theme_id_foreign');
+                $table->dropForeign('settings_user_ui_bootstrap_theme_id_foreign');
+                $table->dropForeign('settings_user_ui_jquery_ui_theme_id_foreign');
         });
 
         Schema::drop('contacts');
@@ -275,7 +293,8 @@ class CreateEtgar22Tables extends Migration
         Schema::drop('guides');
         Schema::drop('settings_user');
         Schema::drop('ui_languages');
-        Schema::drop('ui_themes');
+        Schema::drop('ui_bootstrap_themes');
+        Schema::drop('ui_jquery_ui_themes');
     }
 
 }

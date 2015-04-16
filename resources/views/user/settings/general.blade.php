@@ -225,8 +225,15 @@
                                 >
                             <form id="form_user_ui_theme">
                                 <div class="form-group">
-                                    <label for="inputUiTheme">@lang('main.settings_user_theme_label')</label>
-                                    <select class="form-control input_ui_theme
+                                    <label for="inputUiBootstrapTheme">@lang('main.settings_user_bootstrap_theme_label')</label>
+                                    <select class="form-control input_ui_bootstrap_theme
+                                    @if($userSettings->ui_language->direction == 'right_to_left')
+			                            right_aligned
+			                        @endif"
+                                            id="inputUiBootstrapTheme">
+                                    </select>
+                                    <label for="inputUiJqueryUiTheme">@lang('main.settings_user_jquery_ui_theme_label')</label>
+                                    <select class="form-control input_ui_jquery_ui_theme
                                     @if($userSettings->ui_language->direction == 'right_to_left')
 			                            right_aligned
 			                        @endif"

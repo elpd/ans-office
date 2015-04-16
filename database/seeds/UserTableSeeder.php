@@ -4,7 +4,8 @@ use Illuminate\Database\Seeder;
 use Bican\Roles\Models\Role;
 use App\User;
 use App\UiLanguage;
-use App\UiTheme;
+use App\UiBootstrapTheme;
+use App\UiJqueryUiTheme;
 use App\Settings;
 
 class UserTableSeeder extends Seeder
@@ -22,7 +23,8 @@ class UserTableSeeder extends Seeder
 
         $englishUiLanguage = UiLanguage::where('name', '=', 'English')->firstOrFail();
         $hebrewUiLanguage = UiLanguage::where('name', '=', 'Hebrew')->firstOrFail();
-        $lumenUiTheme = UiTheme::where('name', '=', 'lumen')->firstOrFail();
+        $lumenUiTheme = UiBootstrapTheme::where('name', '=', 'lumen')->firstOrFail();
+        $redmondJqUiTheme = UiJqueryUiTheme::where('name', '=', 'redmond')->firstOrFail();
 
         $sampleData = [
             [
@@ -37,7 +39,8 @@ class UserTableSeeder extends Seeder
                 ],
                 'settings' => [
                     'ui_language' => $englishUiLanguage,
-                    'ui_theme' => $lumenUiTheme
+                    'ui_bootstrap_theme' => $lumenUiTheme,
+                    'ui_jquery_ui_theme' => $redmondJqUiTheme,
                 ]
             ],
             [
@@ -51,7 +54,8 @@ class UserTableSeeder extends Seeder
                 ],
                 'settings' => [
                     'ui_language' => $hebrewUiLanguage,
-                    'ui_theme' => $lumenUiTheme
+                    'ui_bootstrap_theme' => $lumenUiTheme,
+                    'ui_jquery_ui_theme' => $redmondJqUiTheme,
                 ]
             ]
         ];
@@ -71,9 +75,13 @@ class UserTableSeeder extends Seeder
                     $selectedLanguage = $settings['ui_language'];
                     $settingsDb->ui_language()->associate($selectedLanguage);
                 }
-                if (isset($settings['ui_theme'])){
-                    $selectedTheme = $settings['ui_theme'];
-                    $settingsDb->ui_theme()->associate($selectedTheme);
+                if (isset($settings['ui_bootstrap_theme'])){
+                    $selectedTheme = $settings['ui_bootstrap_theme'];
+                    $settingsDb->ui_bootstrap_theme()->associate($selectedTheme);
+                }
+                if (isset($settings['ui_jquery_ui_theme'])){
+                    $selectedTheme = $settings['ui_jquery_ui_theme'];
+                    $settingsDb->ui_jquery_ui_theme()->associate($selectedTheme);
                 }
                 $newItem->settings()->save($settingsDb);
             }
