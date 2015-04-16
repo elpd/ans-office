@@ -44,4 +44,6 @@ return [
 
     'menu_general_settings_label' => 'General',
 
+    'settings_user_bootstrap_theme_label' => 'Site theme',
+    'settings_user_jquery_ui_theme_label' => 'Table theme',
 ];

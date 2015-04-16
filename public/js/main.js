@@ -1,7 +1,7 @@
 requirejs.config({
     paths: {
         jquery: '/js/jquery/jquery-1.11.2',
-        'jquery.ui': '/lib/jquery-ui-1.11.3.custom/jquery-ui',
+        'jquery.ui': '/lib/jquery-ui/jquery-ui',
         jqGrid: '/js/jqGrid/src/jquery.jqGrid',
         jqGridLocal: '/js/jqGrid/src/i18n/grid.locale-en',
         jqueryTimepicker : '/js/lib/jQuery-Timepicker-Addon/jquery-ui-timepicker-addon.min',

@@ -44,4 +44,6 @@ return [
 
     'menu_general_settings_label' => 'הגדרות כלליות',
 
+    'settings_user_bootstrap_theme_label' => 'ערכת נושא לאתר',
+    'settings_user_jquery_ui_theme_label' => 'ערכת נושא לטבלאות',
 ];

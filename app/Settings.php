@@ -14,7 +14,8 @@ class Settings extends Model
 
     protected $fillable = array(
         'ui_language_id',
-        'ui_theme_id'
+        'ui_bootstrap_theme_id',
+        'ui_jquery_ui_theme_id',
     );
 
     protected $rules = [
@@ -26,9 +27,14 @@ class Settings extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function ui_theme()
+    public function ui_bootstrap_theme()
     {
-        return $this->belongsTo('App\UiTheme');
+        return $this->belongsTo('App\UiBootstrapTheme');
+    }
+
+    public function ui_jquery_ui_theme()
+    {
+        return $this->belongsTo('App\UiJqueryUiTheme');
     }
 
     public function ui_language()

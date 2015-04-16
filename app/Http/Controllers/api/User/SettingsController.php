@@ -30,8 +30,12 @@ class SettingsController extends Controller
             $userSettings->ui_language_id = $settingsInputs['ui_language_id'];
         }
 
-        if (isset($settingsInputs['ui_theme_id'])) {
-            $userSettings->ui_theme_id = $settingsInputs['ui_theme_id'];
+        if (isset($settingsInputs['ui_bootstrap_theme_id'])) {
+            $userSettings->ui_bootstrap_theme_id = $settingsInputs['ui_bootstrap_theme_id'];
+        }
+
+        if (isset($settingsInputs['ui_jquery_ui_theme_id'])) {
+            $userSettings->ui_jquery_ui_theme_id = $settingsInputs['ui_jquery_ui_theme_id'];
         }
 
         try {
@@ -53,7 +57,9 @@ class SettingsController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'success' => false,
-                'messages' => \Lang::get('controller_messages.general_error')
+                'messages' => [
+                    \Lang::get('controller_messages.general_error')
+                ]
             ], 400);
         }
     }

@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Settings;
 use App\UiLanguage;
-use App\UiTheme;
+use App\UiBootstrapTheme;
+use App\UiJqueryUiTheme;
 
 class UserController extends Controller
 {
@@ -37,10 +38,12 @@ class UserController extends Controller
         // Settings defaults
 
         $englishUiLanguage = UiLanguage::where('name', '=', 'English')->firstOrFail();
-        $lumenUiTheme = UiTheme::where('name', '=', 'lumen')->firstOrFail();
+        $lumenUiTheme = UiBootstrapTheme::where('name', '=', 'lumen')->firstOrFail();
+        $redmondJqUiTheme = UiJqueryUiTheme::where('name', '=', 'redmond')->firstOrFail();
 
         $userSettings->ui_language()->associate($englishUiLanguage);
-        $userSettings->ui_theme()->associate($lumenUiTheme);
+        $userSettings->ui_bootstrap_theme()->associate($lumenUiTheme);
+        $userSettings->ui_jquery_ui_theme()->associate($redmondJqUiTheme);
 
         $user->settings()->save($userSettings);
     }
