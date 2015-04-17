@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder {
         $this->call('UiLanguageTableSeeder');
         $this->call('UiBootstrapThemeTableSeeder');
         $this->call('UiJqueryUiThemeTableSeeder');
+        $this->call('UserActionTypeTableSeeder');
 		$this->call('RoleTableSeeder');
 		$this->call('PermissionTableSeeder');
 		$this->call('UserTableSeeder');
