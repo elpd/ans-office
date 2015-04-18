@@ -1,11 +1,11 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Request;
 use Hash;
 
-class UiBootstrapThemeController extends Controller {
+class UiBootstrapThemeController extends ApiController {
 
 	protected $biClass = 'App\UiBootstrapTheme';
 

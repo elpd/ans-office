@@ -44,7 +44,6 @@ Route::resource('api/group-status', 'api\GroupStatusController');
 Route::resource('api/groups-members', 'api\GroupsMembersController');
 Route::resource('api/group-members-status', 'api\GroupMembersStatusController');
 Route::resource('api/guide', 'api\GuideController');
-Route::resource('api/contact', 'api\ContactController');
 Route::resource('api/cycle', 'api\CycleController');
 Route::resource('api/cycle.groups', 'api\CycleGroupsController');
 Route::resource('api/user', 'api\UserController');

@@ -1,7 +1,7 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
 use App\User;
 use App\Settings;
@@ -9,7 +9,7 @@ use App\UiLanguage;
 use App\UiBootstrapTheme;
 use App\UiJqueryUiTheme;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
 
     protected $biClass = 'App\User';

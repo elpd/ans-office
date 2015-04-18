@@ -1,11 +1,11 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Request;
 use App\GroupsMember;
 
-class GroupsMembersController extends Controller {
+class GroupsMembersController extends ApiController {
 
 	protected $biClass = 'App\GroupsMember';
 

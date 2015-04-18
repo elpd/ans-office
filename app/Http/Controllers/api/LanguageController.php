@@ -1,10 +1,10 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Foundation\Application;
 
-class LanguageController extends Controller {
+class LanguageController extends ApiController {
 
     public function __construct(Application $app)
     {
