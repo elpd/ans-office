@@ -11,5 +11,4 @@ class RoleController extends ApiController {
 	protected $biClass = 'App\Role';
 
 	use GeneralRestControlling;
-
 }

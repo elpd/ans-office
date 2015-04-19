@@ -47,6 +47,7 @@ Route::resource('api/guide', 'api\GuideController');
 Route::resource('api/cycle', 'api\CycleController');
 Route::resource('api/cycle.groups', 'api\CycleGroupsController');
 Route::resource('api/user', 'api\UserController');
+Route::resource('api/role-user', 'api\RoleUserController');
 Route::resource('api/role', 'api\RoleController');
 Route::resource('api/permission', 'api\PermissionController');
 Route::resource('api/ui_language', 'api\UiLanguageController');

@@ -22,7 +22,12 @@ class AuthorizeApi {
         if (! $user->can($actionFullSlug)){
             if ($request->ajax())
             {
-                return response('Unauthorized.', 401);
+                return response()->json([
+                    'success' => false,
+                    'errors' => [
+                        'Unauthorized.'
+                        ]
+                    ], 401);
             }
             else
             {

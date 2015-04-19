@@ -32,6 +32,15 @@ class RoleTableSeeder extends Seeder
             Permission::where('slug', '=', 'api.cycle.index')->firstOrFail(),
         ];
 
+        $employeeWritingPermissions = [
+            Permission::where('slug', 'LIKE', 'api.contact.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.etgar22.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.group.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.groups.members.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.guide.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.cycle.%')->get(),
+        ];
+
         $itemsData = array(
             array(
                 'name' => 'Admin',
@@ -48,7 +57,8 @@ class RoleTableSeeder extends Seeder
                 'description' => '',
                 'level' => 3,
                 'permissions' => [
-                    $employeeReadingPermissions
+                    $employeeReadingPermissions,
+                    $employeeWritingPermissions,
                 ]
             ),
             array(

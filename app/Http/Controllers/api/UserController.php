@@ -3,7 +3,7 @@
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
-use App\User;
+use App\Http\Controllers\api\GeneralRestControlling;
 use App\Settings;
 use App\UiLanguage;
 use App\UiBootstrapTheme;

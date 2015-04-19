@@ -21,6 +21,7 @@ return [
     'user_name' => 'Name',
     'user_email' => 'Email',
     'user_password' => 'Password',
+    'user_password_confirmation' => 'Password Confirmation',
 
     // Role
 

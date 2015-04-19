@@ -7,41 +7,43 @@ define([
     var GRID_HEIGHT_MIN = 200;
 
     var Class = function GeneralGrid(params) {
-        this.controllerUrl = params.controllerUrl;
-        this.biName = params.biName;
-        this.biNamePlural = params.biNamePlural;
-        this.colModel = params.colModel;
-        this.caption = params.caption;
-        this.SubRow = params.SubRow;
-        this.onBeforeSubmitData = params.onBeforeSubmitData;
-        this.onBeforeAddSubmit = params.onBeforeAddSubmit;
-        this.lang = params.lang;
-        this.userSettingsGService = params.userSettingsGService;
-        this.gridId = params.gridId ? params.gridId : null;
-        this.parentClass = params.parentClass ? params.parentClass : null;
-        this.parentId = params.parentId ? params.parentId : null;
-        this.childParentNick = params.childParentNick ? params.childParentNick : null;
-        this.childParentField = params.childParentField ? params.childParentField : null;
-
-        if (params.direction) {
-            switch (params.direction) {
-                case 'right_to_left':
-                    this.direction = 'rtl';
-                    break;
-                case 'left_to_right':
-                    this.direction = 'ltr';
-                    break;
-                default:
-                    throw new Error('unexpected value'); // TODO:
-            }
-        } else {
-            this.direction = 'ltr'
-        }
-
+        this.setParams(params);
         this.setVariables();
     };
 
     Class.prototype = {
+        setParams : function(params) {
+            this.controllerUrl = params.controllerUrl;
+            this.biName = params.biName;
+            this.biNamePlural = params.biNamePlural;
+            this.colModel = params.colModel;
+            this.caption = params.caption;
+            this.SubRow = params.SubRow;
+            this.onBeforeSubmitData = params.onBeforeSubmitData;
+            this.onBeforeAddSubmit = params.onBeforeAddSubmit;
+            this.lang = params.lang;
+            this.userSettingsGService = params.userSettingsGService;
+            this.gridId = params.gridId ? params.gridId : null;
+            this.parentLink = params.parentLink ? params.parentLink : {};
+            this.colModelExtraFunction = params.colModelExtraFunction ?
+                params.colModelExtraFunction : null;
+
+            if (params.direction) {
+                switch (params.direction) {
+                    case 'right_to_left':
+                        this.direction = 'rtl';
+                        break;
+                    case 'left_to_right':
+                        this.direction = 'ltr';
+                        break;
+                    default:
+                        throw new Error('unexpected value'); // TODO:
+                }
+            } else {
+                this.direction = 'ltr'
+            }
+        },
+
         setVariables: function () {
             var self = this;
 
@@ -336,10 +338,12 @@ define([
                 return processedData;
             },
             postData: {
-                parentClass: self.parentClass,
-                parentId: self.parentId,
-                childParentNick: self.childParentNick,
-                childParentField: self.childParentField
+                parentLink: self.parentLink,
+                colModelExtra: function() {
+                    if (self.colModelExtraFunction) {
+                        return self.colModelExtraFunction();
+                    }
+                }
             }
 
             //loadOnce: false
@@ -432,10 +436,7 @@ define([
                 mtype: 'POST',
                 editData: {
                     _token: $_token,
-                    parentClass: self.parentClass,
-                    parentId: self.parentId,
-                    childParentNick: self.childParentNick,
-                    childParentField: self.childParentField
+                    parentLink: self.parentLink
                 },
                 afterSubmit: function (data, postdata, oper) {
                     var response = data.responseJSON;
