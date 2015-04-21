@@ -2,12 +2,11 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
-use Illuminate\Http\Request;
-use App\Contact;
+use App\Http\Controllers\RestControllerTrait;
 
 class ContactController extends ApiController {
 
-	protected $biClass = 'App\Contact';
+	protected $class = 'App\Contact';
 
-	use GeneralRestControlling;
+	use RestControllerTrait;
 }

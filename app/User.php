@@ -66,13 +66,4 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasOne('App\Settings');
     }
 
-    /*
-     * Mutators
-     */
-
-    /*public function setPasswordAttribute($value)
-    {
-        $hashedPassword = \Hash::make($value);
-        $this->attributes['password'] = $hashedPassword;
-    }*/
 }

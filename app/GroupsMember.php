@@ -46,7 +46,61 @@ class GroupsMember extends Model
             )
     );
 
+    protected static $linksInfos = [
+        'status_id' => [
+            'fieldName' => 'status_id',
+            'functionOnChild' => 'status',
+            'linkedTable' => 'group_members_status',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\GroupMembersStatus'
+        ],
+        'contact_id' => [
+            'fieldName' => 'contact_id',
+            'functionOnChild' => 'contact',
+            'linkedTable' => 'contacts',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\Contact'
+        ],
+        'group_id' => [
+            'fieldName' => 'group_id',
+            'functionOnChild' => 'group',
+            'linkedTable' => 'groups',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\Group'
+        ],
+        'guide_id_1' => [
+            'fieldName' => 'guide_id_1',
+            'functionOnChild' => 'guide1',
+            'linkedTable' => 'guides',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\Guide'
+        ],
+        'guide_id_2' => [
+            'fieldName' => 'guide_id_2',
+            'functionOnChild' => 'guide2',
+            'linkedTable' => 'guides',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\Guide'
+        ],
+    ];
+
+    public function status() {
+        return $this->belongsTo('App\GroupMembersStatus');
+    }
+
+    public function contact() {
+        return $this->belongsTo('App\Contact');
+    }
+
     public function group() {
         return $this->belongsTo('App\Group');
+    }
+
+    public function guide1() {
+        return $this->belongsTo('App\Guide', 'guide_id_1');
+    }
+
+    public function guide2() {
+        return $this->belongsTo('App\Guide', 'guide_id_2');
     }
 }

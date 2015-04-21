@@ -2,11 +2,10 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
-use Illuminate\Http\Request;
-use App\Guide;
+use App\Http\Controllers\RestControllerTrait;
 
 class GuideController extends ApiController {
-	protected $biClass = 'App\Guide';
+	protected $class = 'App\Guide';
 
-	use GeneralRestControlling;
+	use RestControllerTrait;
 }

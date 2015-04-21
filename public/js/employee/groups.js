@@ -55,10 +55,6 @@ define([
                                 value: utilities.generateGetItems('/api/cycle', Cycle)(),
                                 dataUrl: '/api/cycle',
                                 buildSelect: utilities.generateBuildSelect(Cycle)
-                            },
-                            searchoptions: {
-                                // show search options
-                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
                             }
                         }, {
                             label: lang.get('bo.group_name'),
@@ -69,21 +65,29 @@ define([
                             //stype:'text',
 
                         }, {
-                            label: 'Statue',
+                            label: lang.get('bo.group_status'),
                             name: 'status_id',
-                            width: 75,
+                            editable: true,
                             edittype: 'select',
                             formatter: 'select',
                             editoptions: {
                                 value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
                                 dataUrl: '/api/group-status',
                                 buildSelect: utilities.generateBuildSelect(GroupStatus)
-                            },
-                            searchoptions: {
-                                // show search options
-                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
                             }
-                        }]
+                        }],
+                        colModelExtraFunction: function () {
+                            return JSON.stringify({
+                                cycle_id: {
+                                    sortOnLinkField: 'startDate',
+                                    searchOnLinkField: 'startDate'
+                                },
+                                status_id: {
+                                    sortOnLinkField: 'status',
+                                    searchOnLinkField: 'status'
+                                }
+                            });
+                        }
                     });
 
                     grid.activate();

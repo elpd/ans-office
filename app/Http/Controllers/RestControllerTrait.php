@@ -2,18 +2,22 @@
 
 use App\Utilities\GeneralUtilities as Utils;
 use Illuminate\Http\Request;
+use Watson\Validating\ValidationException;
 
 trait RestControllerTrait
 {
-    // TODO: search
-
+    protected static $PAGE_TO_SHOW_REQ_PARAM = "page";
     protected static $PARENT_LINK_REQ_PARAM = "parentLink";
     protected static $SORTING_INDEX_REQ_PARAM = "sidx";
     protected static $SORTING_ORDER_REQ_PARAM = "sord";
     protected static $COL_MODEL_EXTRA_REQ_PARAM = 'colModelExtra';
     protected static $SEARCH_REQ_PARAM = '_search';
+    protected static $SORT_ON_LINK_FIELD_REQ_PARAM = 'sortOnLinkField';
+    protected static $SEARCH_ON_LINK_FIELD_REQ_PARAM = 'searchOnLinkField';
 
     protected static $MAX_ROWS_PER_PAGE = 1000;
+
+    protected $existingJoins = [];
 
     public function index(Request $request)
     {
@@ -25,30 +29,205 @@ trait RestControllerTrait
 
         $query = $this->buildQuery($class, $filterParams, $orderParams);
 
-        $items = $query->paginate($rowsPerPage);
+        if ($request->has(self::$PAGE_TO_SHOW_REQ_PARAM)) {
+            $items = $query->paginate($rowsPerPage);
+            $totalPages = $items->lastPage();
+            $currentPage = $items->currentPage();
+            $totalRecords = $items->total();
+        } else {
+            $items = $query->get();
+            $totalPages = 1;
+            $currentPage = 1;
+            $totalRecords = $items->count();
+        }
         $itemsAsMap = Utils::convertItemsToJqgridMap($items);
 
         return [
             // Total pages for the query
-            'total' => $items->lastPage(),
+            'total' => $totalPages,
             // Current page
-            'page' => $items->currentPage(),
+            'page' => $currentPage,
             // total number of records for the query
-            'records' => $items->total(),
+            'records' => $totalRecords,
             'rows' => $itemsAsMap
         ];
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function store(Request $request)
+    {
+        $class = $this->class;
+
+        $input = $this->getOnly($class);
+        $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
+
+        $item = new $class($input);
+
+        try {
+            \DB::transaction(function () use ($class, $item, $parentLink) {
+
+                if ($parentLink) {
+                    $linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
+                    $parentClass = $linkInfo['linkedClass'];
+                    $parent = $parentClass::findOrFail($parentLink['id']);
+                    $item->$linkInfo['functionOnChild']()->associate($parent);
+                }
+
+                $item->saveOrFail();
+
+                if (method_exists($this, 'storeChildren')) {
+                    $this->storeChildren($item);
+                }
+            });
+
+            return [
+                'success' => true,
+                'item_id' => $item->id,
+            ];
+        } catch (ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->getErrors(),
+            ], 400);
+        } catch (\Exception $e) {
+            if (property_exists($e, 'errorInfo')) {
+                $errors = implode(',', $e->errorInfo);
+            } else {
+                $errors = ['general' => ['general error. See exception']];
+            }
+
+            return response()->json([
+                'success' => false,
+                'errors' => ['general' => $errors],
+                'exception' => $e
+            ], 400);
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function destroy($id)
+    {
+        $class = $this->class;
+
+        if ($id == -1) {
+            $id = \Request::get('id');
+        }
+
+        $item = $class::findOrFail($id);
+
+        $item->delete();
+
+        return [
+            'success' => true,
+            'item_id' => $id
+        ];
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function update($id)
+    {
+        $class = $this->class;
+
+        $item = $class::findOrFail($id);
+
+        $input = $this->getOnly($class);
+
+        foreach ($input as $inputKey => $inputValue) {
+            $item->$inputKey = $inputValue;
+        }
+
+        try {
+            $item->saveOrFail();
+
+            return [
+                'success' => true,
+                'item_id' => $item->id,
+            ];
+        } catch (\Watson\Validating\ValidationException $e) {
+            return response()->json([
+                'success' => false,
+                'errors' => $e->getErrors(),
+            ], 400);
+        } catch (\Exception $e) {
+            if (property_exists($e, 'errorInfo')) {
+                $errors = implode(',', $e->errorInfo);
+            } else {
+                $errors = ['general' => ['general error. See exception']];
+            }
+
+            return response()->json([
+                'success' => false,
+                'errors' => ['general' => $errors],
+                'exception' => $e
+            ], 400);
+        }
+
+    }
+
+    protected function getOnly($class)
+    {
+        $inputs = [];
+        $object = new $class();
+
+        $fillable = $object->getFillable();
+        $all = \Request::all();
+
+        foreach ($fillable as $key) {
+            if (array_key_exists($key, $all)) {
+                $inputs[$key] = $all[$key];
+            }
+        }
+
+        return $inputs;
     }
 
     protected function buildQuery($class, $filterParams, $orderParams)
     {
         $query = $class::query();
 
+        $classObject = new $class();
+        $mainTableName = $classObject->getTable();
+
+        $query = $query->select($mainTableName . '.*');
+
         foreach ($filterParams as $filterCondition) {
-            $query = $query->where(
-                $filterCondition['fieldName'],
-                $filterCondition['operator'],
-                $filterCondition['value']
-            );
+            if (isset($filterCondition->isSearchOnParentField) && $filterCondition->isSearchOnParentField) {
+
+                $linkedTableName = $filterCondition->parentTable;
+                $linkedTableConnectionFieldName = 'id';
+
+                $query = $this->createJoinOnQuery($query,
+                    $mainTableName,
+                    $linkedTableName,
+                    $mainTableName . '.' . $filterCondition->fieldName,
+                    '=',
+                    $linkedTableName . '.' . $linkedTableConnectionFieldName);
+
+                $query = $query->where($linkedTableName . '.' . $filterCondition->parentField,
+                    $filterCondition->operator,
+                    $filterCondition->value);
+
+            } else {
+                $query = $query->where(
+                    $mainTableName . '.' . $filterCondition->fieldName,
+                    $filterCondition->operator,
+                    $filterCondition->value
+                );
+            }
         }
 
         if (count($orderParams) > 0) {
@@ -59,12 +238,12 @@ trait RestControllerTrait
 
             if (isset($sortingPrimaryCondition['isSortOnParentField'])) {
 
-                $classObject = new $class();
-                $mainTableName = $classObject->getTable();
                 $linkedTableName = $sortingPrimaryCondition['parentTable'];
                 $linkedTableConnectionFieldName = 'id';
 
-                $query = $query->join($linkedTableName,
+                $query = $this->createJoinOnQuery($query,
+                    $mainTableName,
+                    $linkedTableName,
                     $mainTableName . '.' . $sortingPrimaryCondition['index'],
                     '=',
                     $linkedTableName . '.' . $linkedTableConnectionFieldName);
@@ -75,13 +254,64 @@ trait RestControllerTrait
             } else {
 
                 $query = $query->orderBy(
-                    $sortingPrimaryCondition['index'],
+                    $mainTableName . '.' . $sortingPrimaryCondition['index'],
                     $sortingPrimaryCondition['order']
                 );
             }
         }
 
         return $query;
+    }
+
+    protected function createJoinOnQuery($query, $firstTableName, $secondTableName, $firstTableFieldFullName, $operator,
+                                         $secondTableFieldFullName)
+    {
+        $joinExists = $this->findInExistingJoins($secondTableName,
+            $firstTableFieldFullName,
+            $operator,
+            $secondTableFieldFullName);
+
+        if ($joinExists) {
+            return $query;
+        } else {
+            $this->addJoinToExistingJoins($secondTableName,
+                $firstTableFieldFullName,
+                $operator,
+                $secondTableFieldFullName);
+
+            $resultQuery = $query->join($secondTableName,
+                $firstTableFieldFullName,
+                $operator,
+                $secondTableFieldFullName);
+
+            return $resultQuery;
+        }
+    }
+
+    protected function findInExistingJoins($secondTableName, $firstTableFieldFullName, $operator, $secondTableFieldFullName)
+    {
+        foreach ($this->existingJoins as $join) {
+            if ($join->secondTableName == $secondTableName &&
+                $join->firstTableFieldFullName == $firstTableFieldFullName &&
+                $join->operator == $operator &&
+                $join->secondTableFieldFullName == $secondTableFieldFullName
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function addJoinToExistingJoins($secondTableName, $firstTableFieldFullName, $operator, $secondTableFieldFullName)
+    {
+        $join = new \stdClass();
+        $join->secondTableName = $secondTableName;
+        $join->firstTableFieldFullName = $firstTableFieldFullName;
+        $join->operator = $operator;
+        $join->secondTableFieldFullName = $secondTableFieldFullName;
+
+        $this->existingJoins[] = $join;
     }
 
     protected function calcFilterParams(Request $request, $class)
@@ -108,27 +338,31 @@ trait RestControllerTrait
             $searchRoles = $search_filters->rules;
 
             foreach ($searchRoles as $rule) {
-                $filterParams[] = $this->calcSearchFilterCondition($rule);
+                $filterParams[] = $this->calcSearchFilterCondition($rule, $request, $class);
             }
         }
 
         return $filterParams;
     }
 
-    protected function calcParentFilterCondition($request, $class){
+    protected function calcParentFilterCondition($request, $class)
+    {
+        $filterCondition = new \stdClass();
+
         $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
         $linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
 
-        $filterCondition = [
-            'fieldName' => $linkInfo['fieldName'],
-            'operator' => '=',
-            'value' => $parentLink['id']
-        ];
+        $filterCondition->fieldName = $linkInfo['fieldName'];
+        $filterCondition->operator = '=';
+        $filterCondition->value = $parentLink['id'];
 
         return $filterCondition;
     }
 
-    protected function calcSearchFilterCondition($rule) {
+    protected function calcSearchFilterCondition($rule, $request, $class)
+    {
+        $filterCondition = new \stdClass();
+
         $fieldName = $rule->field;
         $jqgrid_operator = $rule->op;
         $searchData = $rule->data;
@@ -139,7 +373,7 @@ trait RestControllerTrait
             // cn: contains
             case 'cn' :
                 $operator = 'LIKE';
-                $searchData = '%' . $searchData .'%';
+                $searchData = '%' . $searchData . '%';
                 break;
             case 'eq':
                 $operator = '=';
@@ -163,11 +397,26 @@ trait RestControllerTrait
                 throw new \Exception('unimplemented search operator');
         }
 
-        $filterCondition = [
-            'fieldName' => $fieldName,
-            'operator' => $operator,
-            'value' => $searchData
-        ];
+        $colModelExtraStr = $request->get(self::$COL_MODEL_EXTRA_REQ_PARAM);
+
+        if ($colModelExtraStr && $colModelExtraStr != '') {
+            $parentToSearchBy = $this->calcLinkToOperateBy(
+                $colModelExtraStr,
+                $class,
+                self::$SEARCH_ON_LINK_FIELD_REQ_PARAM,
+                $fieldName);
+        }
+
+
+        $filterCondition->fieldName = $fieldName;
+        $filterCondition->operator = $operator;
+        $filterCondition->value = $searchData;
+
+        if (isset($parentToSearchBy) && $parentToSearchBy->exists) {
+            $filterCondition->isSearchOnParentField = $parentToSearchBy->exists;
+            $filterCondition->parentField = $parentToSearchBy->field;
+            $filterCondition->parentTable = $parentToSearchBy->table;
+        }
 
         return $filterCondition;
     }
@@ -175,7 +424,6 @@ trait RestControllerTrait
     protected function calcOrderParams(Request $request, $class)
     {
         $orderParams = [];
-        $isSortOnParentField = false;
         $parentFieldToSortBy = null;
 
         if ($request->has(self::$SORTING_INDEX_REQ_PARAM)) {
@@ -185,20 +433,11 @@ trait RestControllerTrait
             $colModelExtraStr = $request->get(self::$COL_MODEL_EXTRA_REQ_PARAM);
 
             if ($colModelExtraStr && $colModelExtraStr != '') {
-                $colModelExtra = \GuzzleHttp\json_decode($colModelExtraStr);
-
-                if (isset($colModelExtra->$sortingIndex)) {
-                    $fieldExtra = $colModelExtra->$sortingIndex;
-
-                    $attributeName = 'sortOnLinkField';
-                    if (isset($fieldExtra->$attributeName)) {
-                        $isSortOnParentField = true;
-                        $parentFieldToSortBy = $fieldExtra->$attributeName;
-
-                        $linkInfo = $class::getLinkInfo($sortingIndex);
-                        $parentTableToSortBy = $linkInfo['linkedTable'];
-                    }
-                }
+                $parentToSortBy = $this->calcLinkToOperateBy(
+                    $colModelExtraStr,
+                    $class,
+                    self::$SORT_ON_LINK_FIELD_REQ_PARAM,
+                    $sortingIndex);
             }
 
             $orderCondition = [
@@ -206,10 +445,10 @@ trait RestControllerTrait
                 'order' => $sortingOrder,
             ];
 
-            if ($isSortOnParentField) {
-                $orderCondition['isSortOnParentField'] = $isSortOnParentField;
-                $orderCondition['parentField'] = $parentFieldToSortBy;
-                $orderCondition['parentTable'] = $parentTableToSortBy;
+            if (isset($parentToSortBy) && $parentToSortBy->exists) {
+                $orderCondition['isSortOnParentField'] = $parentToSortBy->exists;
+                $orderCondition['parentField'] = $parentToSortBy->field;
+                $orderCondition['parentTable'] = $parentToSortBy->table;
             }
 
             $orderParams[] = $orderCondition;
@@ -218,7 +457,31 @@ trait RestControllerTrait
         return $orderParams;
     }
 
-    protected function calcRowsPerPage(Request $request){
+    protected function calcLinkToOperateBy($colModelExtraStr, $class, $operationReqParam, $fieldName)
+    {
+        $linkData = new \stdClass();
+        $linkData->exists = false;
+
+        $colModelExtra = \GuzzleHttp\json_decode($colModelExtraStr);
+
+        if (isset($colModelExtra->$fieldName)) {
+            $fieldExtra = $colModelExtra->$fieldName;
+
+            $attributeName = $operationReqParam;
+            if (isset($fieldExtra->$attributeName)) {
+                $linkData->exists = true;
+                $linkData->field = $fieldExtra->$attributeName;
+
+                $linkInfo = $class::getLinkInfo($fieldName);
+                $linkData->table = $linkInfo['linkedTable'];
+            }
+        }
+
+        return $linkData;
+    }
+
+    protected function calcRowsPerPage(Request $request)
+    {
         $rows_per_page = self::$MAX_ROWS_PER_PAGE;
 
         $requested_rows_per_page = $request->get('rows');

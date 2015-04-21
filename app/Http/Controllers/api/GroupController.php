@@ -2,11 +2,11 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
-use App\Group;
+use App\Http\Controllers\RestControllerTrait;
 
 class GroupController extends ApiController {
 
-	protected $biClass = 'App\Group';
+	protected $class = 'App\Group';
 
-	use GeneralRestControlling;
+	use RestControllerTrait;
 }

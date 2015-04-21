@@ -5,22 +5,22 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Database\Eloquent\Model;
 use Watson\Validating\ValidatingTrait;
 
-class RoleUser extends Model
+class PermissionUser extends Model
 {
     use ValidatingTrait;
     use GeneralModel;
 
-    protected $table = 'role_user';
+    protected $table = 'permission_user';
 
     protected $fillable = [
-            'role_id',
+            'permission_id',
             'user_id',
     ];
 
     protected $rules = [
-            "role_id" => [
+            "permission_id" => [
                     'required',
-                    'exists:roles,id'
+                    'exists:permissions,id'
             ],
             "user_id" => [
                     'required',
@@ -36,12 +36,12 @@ class RoleUser extends Model
             'linkedField' => 'id',
             'linkedClass' => 'App\User'
         ],
-        'role_id' => [
-            'fieldName' => 'role_id',
-            'functionOnChild' => 'role',
-            'linkedTable' => 'roles',
+        'permission_id' => [
+            'fieldName' => 'permission_id',
+            'functionOnChild' => 'permission',
+            'linkedTable' => 'permissions',
             'linkedField' => 'id',
-            'linkedClass' => 'App\Role'
+            'linkedClass' => 'App\Permission'
         ]
     ];
 
@@ -49,8 +49,8 @@ class RoleUser extends Model
         return $this->belongsTo('App\User');
     }
 
-    public function role() {
-        return $this->belongsTo('App\Role');
+    public function permission() {
+        return $this->belongsTo('App\Permission');
     }
 
 }

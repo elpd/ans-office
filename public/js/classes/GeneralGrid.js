@@ -293,7 +293,7 @@ define([
 
             colModel: self.colModel,
             viewrecords: true, // show the current page, data rang and total records on the toolbar
-            //width: 500,
+            width: 500,
             //width: null,
             shrinkToFit: false,
             height: 200,
@@ -343,6 +343,8 @@ define([
                     if (self.colModelExtraFunction) {
                         return self.colModelExtraFunction();
                     }
+
+                    return JSON.stringify({});
                 }
             }
 
@@ -515,6 +517,13 @@ define([
     }
 
     function processErrorResponse(responseRaw) {
+        if (! responseRaw.hasOwnProperty('responseJSON')){
+            return {
+                text: responseRaw.responseText,
+                html: responseRaw.responseText
+            };
+        }
+
         var response = responseRaw.responseJSON;
         var messageText = '';
         var $messageHtml = $('<ol></ol>');

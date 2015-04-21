@@ -106,7 +106,31 @@ define([
                                 dataUrl: '/api/guide',
                                 buildSelect: utilities.generateBuildSelect(Guide)
                             }
-                        }]
+                        }],
+                        colModelExtraFunction: function () {
+                            return JSON.stringify({
+                                group_id: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                },
+                                contact_id: {
+                                    sortOnLinkField: 'email',
+                                    searchOnLinkField: 'email'
+                                },
+                                status_id: {
+                                    sortOnLinkField: 'status',
+                                    searchOnLinkField: 'status'
+                                },
+                                guide_id_1: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                },
+                                guide_id_2: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                }
+                            });
+                        }
                     });
 
                     grid.activate();

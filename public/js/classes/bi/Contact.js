@@ -12,7 +12,7 @@ define([
     Class.prototype = (function() {
       var Prototype = function Prototype() {
         this.toString = function() {
-          return this.first_name + ' ' + this.last_name;
+          return this.email + this.first_name + ' ' + this.last_name;
         };
       };
 

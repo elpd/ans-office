@@ -1,9 +1,9 @@
 <?php namespace App\Http\Controllers\api;
 
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use App\Http\Controllers\RestControllerTrait;
 
-class RoleUserController extends Controller {
+class RoleUserController extends ApiController {
 
 	protected $class = 'App\RoleUser';
 

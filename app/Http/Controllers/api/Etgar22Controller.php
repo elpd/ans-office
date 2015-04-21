@@ -2,12 +2,11 @@
 
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
-use Illuminate\Http\Request;
-use App\Contact;
+use App\Http\Controllers\RestControllerTrait;
 
 class Etgar22Controller extends ApiController {
 
-	protected $biClass = 'App\Etgar22';
+	protected $class = 'App\Etgar22';
 
-	use GeneralRestControlling;
+	use RestControllerTrait;
 }

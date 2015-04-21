@@ -4,11 +4,11 @@ use App\Http\Requests;
 use App\Http\Controllers\ApiController;
 use Request;
 use Hash;
-use App\Role;
+use App\Http\Controllers\RestControllerTrait;
 
 class RoleController extends ApiController {
 
-	protected $biClass = 'App\Role';
+	protected $class = 'App\Role';
 
-	use GeneralRestControlling;
+	use RestControllerTrait;
 }

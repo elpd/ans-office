@@ -1,15 +1,21 @@
 define([
         'lodash',
         'classes/utilities',
+        'classes/GridTab',
+        'classes/ChildTabsPanel',
         'classes/GeneralGrid',
         'classes/EmptySubRow',
-        'classes/bi/Role'
+        'classes/bi/Role',
+        'classes/bi/Permission'
     ],
     function (_,
               utilities,
+              GridTab,
+              ChildTabsPanel,
               GeneralGrid,
               EmptySubRow,
-              Role) {
+              Role,
+              Permission) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -23,42 +29,30 @@ define([
             show: function (parentRowID, parentRowKey) {
                 var self = this;
 
-                // Create the sub page. Tabs interface for each wanted child and info.
-                // TODO: active indication
-
                 var rolesTab = new GridTab({
-                    parentRowId: parentRowID
+                    parentRowId: parentRowID,
+                    name: 'roles',
+                    lang: self.lang,
+                    langCaption: 'bo.roles'
+                });
+
+                var permissionsTab = new GridTab({
+                    parentRowId: parentRowID,
+                    name: 'permissions',
+                    lang: self.lang,
+                    langCaption: 'bo.permissions'
+                });
+
+                var childTabsPanel = new ChildTabsPanel({
+                    id: parentRowID,
+                    tabs: [
+                        rolesTab,
+                        permissionsTab
+                    ]
                 });
 
                 $('#' + parentRowID).append(
-                    '<div id="' + parentRowID + '_subcontent" role="tabpanel">' +
-
-                    '<ul class="nav nav-tabs" role="tablist">' +
-
-                    '<li role="presentation"><a id="' + rolesTab.tabLinkId +
-                    '" href="#' + rolesTab.tabId + '" aria-controls="' + rolesTab.tabId +
-                    '" role="tab" data-toggle="tab">' +
-                    self.lang.get('bo.roles') + '</a></li>' +
-
-                    '<li role="presentation"><a href="#">Info 2</a></li>' +
-                    '<li role="presentation"><a href="#">Info 3</a></li>' +
-
-                    '</ul>' +
-
-                    '<div class="tab-content">' +
-
-                    '<div role="tabpanel" class="tab-pane" id="' + rolesTab.tabId + '">' +
-                    '<table id="' + rolesTab.gridId + '"></table>' +
-                    '<div id="' + rolesTab.pagerId + '"></div>' +
-                    '</div>' +
-
-                    '<div role="tabpanel" class="tab-pane" id="profile">bbbb</div>' +
-                    '<div role="tabpanel" class="tab-pane" id="messages">cccc</div>' +
-                    '<div role="tabpanel" class="tab-pane" id="settings">dddd</div>' +
-
-                    '</div>' +
-
-                    '</div>'
+                    childTabsPanel.createElement()
                 );
 
                 // Bind the tabs
@@ -68,7 +62,7 @@ define([
 
                     var grid = new GeneralGrid({
                         lang: self.lang,
-                        controllerUrl: '/api/role-user/',
+                        controllerUrl: '/api/role-user',
                         parentLink: {
                             id: parentRowKey,
                             childFieldName: 'user_id'
@@ -102,10 +96,11 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Role)
                             }
                         }],
-                        colModelExtraFunction: function() {
+                        colModelExtraFunction: function () {
                             return JSON.stringify({
                                 role_id: {
-                                    sortOnLinkField: 'name'
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
                                 }
                             });
                         }
@@ -115,26 +110,60 @@ define([
 
                     $(this).tab('show');
                 });
-            }
-        };
 
-        function GridTab(params) {
-            this.setParams(params);
-            this.setVariables();
-        }
+                $('#' + permissionsTab.tabLinkId).click(function (e) {
+                    e.preventDefault();
 
-        GridTab.prototype = {
-            setParams: function (params) {
-                this.parentRowId = params.parentRowId;
-            },
+                    var grid = new GeneralGrid({
+                        lang: self.lang,
+                        controllerUrl: '/api/permission-user',
+                        parentLink: {
+                            id: parentRowKey,
+                            childFieldName: 'user_id'
+                        },
+                        gridId: permissionsTab.gridId,
+                        biName: 'permission-user',
+                        biNamePlural: 'permission-user',
+                        caption: _.capitalize(self.lang.get('bo.user_permissions')),
+                        SubRow: EmptySubRow,
+                        direction: self.userSettingsGService.getLanguage().direction,
+                        colModel: [{
+                            label: self.lang.get('bo.id'),
+                            name: 'id',
+                            width: 30,
+                            key: true,
+                            searchoptions: {
+                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                            },
+                            searchrules: {
+                                integer: true
+                            }
+                        }, {
+                            label: self.lang.get('bo.permission-user_permission'),
+                            name: 'permission_id',
+                            editable: true,
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/permission', Permission)(),
+                                dataUrl: '/api/permission',
+                                buildSelect: utilities.generateBuildSelect(Permission)
+                            }
+                        }],
+                        colModelExtraFunction: function () {
+                            return JSON.stringify({
+                                permission_id: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                }
+                            });
+                        }
+                    });
 
-            setVariables: function () {
-                var self = this;
+                    grid.activate();
 
-                self.tabId = self.parentRowId + '_etgar22Tab';
-                self.tabLinkId = self.tabId + '_link';
-                self.gridId = self.tabId + '_grid';
-                self.pagerId = self.gridId + '_pager';
+                    $(this).tab('show');
+                });
             }
         };
 

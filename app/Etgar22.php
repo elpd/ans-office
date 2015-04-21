@@ -26,6 +26,16 @@ class Etgar22 extends Model
 
     protected $rules = [];
 
+    protected static $linksInfos = [
+        'contact_id' => [
+            'fieldName' => 'contact_id',
+            'functionOnChild' => 'contact',
+            'linkedTable' => 'contacts',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\Contact'
+        ],
+    ];
+
     /*
     * Relationships
     */

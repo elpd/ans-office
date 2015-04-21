@@ -3,11 +3,11 @@
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
 use Request;
-use App\GroupsMember;
+use App\Http\Controllers\RestControllerTrait;
 
 class GroupsMembersController extends ApiController {
 
-	protected $biClass = 'App\GroupsMember';
+	protected $class = 'App\GroupsMember';
 
-	use GeneralRestControlling;
+	use RestControllerTrait;
 }

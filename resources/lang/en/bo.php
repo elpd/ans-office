@@ -98,4 +98,10 @@ return [
     'group_members_status' => 'Status',
     'group_members_guide_1' => 'Guide 1',
     'group_members_guide_2' => 'Guide 2',
+
+    // Role-User
+    'role-user_role' => 'Role',
+
+    // Permission-User
+    'permission-user_permission' => 'Permission',
 ];
