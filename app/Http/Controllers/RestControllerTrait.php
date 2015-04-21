@@ -21,10 +21,6 @@ trait RestControllerTrait
 
     public function index(Request $request)
     {
-        // debug
-        //return response()->json([], 400);
-        throw new \Exception('bbbb');
-
         $class = $this->class;
 
         $filterParams = $this->calcFilterParams($request, $class);
