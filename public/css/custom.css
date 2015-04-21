@@ -123,3 +123,11 @@ html, body {
 .right_aligned {
     text-align: right;
 }
+
+/*
+* Grid
+*/
+
+.row_successful_update {
+    background: rgb(210, 250, 210) !important;
+}

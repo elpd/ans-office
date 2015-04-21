@@ -397,6 +397,9 @@ define([
 
                         var response = data.responseJSON;
 
+                        // debug
+                        grid.jqGrid('setRowData', id, null, 'row_successful_update');
+
                         //$(this).jqGrid("setGridParam", {datatype: 'json'});
                         return true; //[true, "", response.item_id];
                     },
