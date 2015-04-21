@@ -66,5 +66,7 @@ Route::put('api/user-settings', 'api\User\SettingsController@update');
 
 Route::get('api/language', 'api\LanguageController@index');
 
-// TODO: remove in production
-Route::get('test/refresh', 'TestController@refresh');
+if (App::environment('local', 'testing')) {
+    // For testing purpose. Let test clear database.
+    Route::get('test/refresh', 'TestController@refresh');
+}
