@@ -103,4 +103,13 @@ class GroupsMember extends Model
     public function guide2() {
         return $this->belongsTo('App\Guide', 'guide_id_2');
     }
+
+    // Accessors & Mutators
+
+    public function setGuideId2Attribute($value)
+    {
+        $val = ($value === '') ? null : $value;
+
+        $this->attributes['guide_id_2'] = $val;
+    }
 }

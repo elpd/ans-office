@@ -45,7 +45,7 @@ define([], function(){
         var resultAsObject = JSON.parse(result);
         var html = '<select>';
         // Add empty item for null representation.
-        html += "<option value=''></option>";
+        html += "<option></option>";
 
         resultAsObject.rows.forEach(function(element) {
           var bi = new BusinessClass(element.cell);

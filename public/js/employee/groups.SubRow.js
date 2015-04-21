@@ -133,6 +133,7 @@ define([
                                 value: utilities.generateGetItems('/api/guide', Guide)(),
                                 dataUrl: '/api/guide',
                                 buildSelect: utilities.generateBuildSelect(Guide)
+                                //NullIfEmpty: true
                             }
                         }],
                         colModelExtraFunction: function () {
