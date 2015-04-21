@@ -49,6 +49,7 @@ define([
                         }, {
                             label: lang.get('bo.group_cycle'),
                             name: 'cycle_id',
+                            editable: true,
                             edittype: 'select',
                             formatter: 'select',
                             editoptions: {
