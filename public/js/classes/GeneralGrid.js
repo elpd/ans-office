@@ -12,7 +12,7 @@ define([
     };
 
     Class.prototype = {
-        setParams : function(params) {
+        setParams: function (params) {
             this.controllerUrl = params.controllerUrl;
             this.biName = params.biName;
             this.biNamePlural = params.biNamePlural;
@@ -339,13 +339,28 @@ define([
             },
             postData: {
                 parentLink: self.parentLink,
-                colModelExtra: function() {
+                colModelExtra: function () {
                     if (self.colModelExtraFunction) {
                         return self.colModelExtraFunction();
                     }
 
                     return JSON.stringify({});
                 }
+            },
+            loadError: function (xhr, status, error) {
+                $.jgrid.info_dialog(
+                    $.jgrid.errors.errcap,
+                    '<div class="ui-state-error">' +
+                        '<h3>Server Error</h3>' +
+                        '<div>Status: ' + status + '</div>' +
+                        '<div>error: ' + error + '</div>' +
+                        '<div>xhr status: ' + xhr.status + '</div>' +
+                        '<div>xhr status text : ' + xhr.statusText + '</div>' +
+                    '</div>',
+                    $.jgrid.edit.bClose,
+                    {
+                        buttonalign: 'right'
+                    });
             }
 
             //loadOnce: false
@@ -517,7 +532,7 @@ define([
     }
 
     function processErrorResponse(responseRaw) {
-        if (! responseRaw.hasOwnProperty('responseJSON')){
+        if (!responseRaw.hasOwnProperty('responseJSON')) {
             return {
                 text: responseRaw.responseText,
                 html: responseRaw.responseText
