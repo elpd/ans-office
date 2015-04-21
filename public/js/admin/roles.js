@@ -20,6 +20,11 @@ define([
             userSettingsGService.load().then(function () {
 
                 var grid = new GeneralGrid({
+                    // Services
+                    lang: lang,
+                    userSettingsGService: userSettingsGService,
+
+                    //
                     controllerUrl: '/api/role',
                     biName: 'role',
                     biNamePlural: 'roles',

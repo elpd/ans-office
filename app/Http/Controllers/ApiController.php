@@ -4,7 +4,13 @@ use Illuminate\Foundation\Bus\DispatchesCommands;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 
-abstract class Controller extends BaseController {
+abstract class ApiController extends Controller {
 
-	use DispatchesCommands, ValidatesRequests;
+    /**
+     * Instantiate a new instance.
+     */
+    public function __construct()
+    {
+        $this->middleware('authorize.api');
+    }
 }

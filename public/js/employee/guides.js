@@ -2,7 +2,7 @@ define([
         'lodash',
         'classes/utilities',
         'classes/bi/Guide',
-        'employee/emptySubRow',
+        'employee/guides.SubRow',
         'services/language',
         'classes/LoadingIndicator',
         'classes/GeneralGrid',
@@ -47,9 +47,6 @@ define([
                             name: 'name',
                             editable: true,
                             editoptions: {}
-                            //search:true,
-                            //stype:'text',
-
                         }]
                     });
 
@@ -60,13 +57,6 @@ define([
 
         });
 
-        // TODO: make global
-        function generateDateTimePicker(element) {
-            $(element).datetimepicker({
-                dateFormat: 'yy-mm-dd',
-                timeFormat: 'HH:mm:ss'
-            });
-        }
     });
 
 

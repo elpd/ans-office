@@ -1,20 +1,19 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Illuminate\Http\Request;
-use App\User;
+use App\Http\Controllers\RestControllerTrait;
 use App\Settings;
 use App\UiLanguage;
 use App\UiBootstrapTheme;
 use App\UiJqueryUiTheme;
 
-class UserController extends Controller
+class UserController extends ApiController
 {
+    protected $class = 'App\User';
 
-    protected $biClass = 'App\User';
-
-    use GeneralRestControlling {
+    use RestControllerTrait {
         store as generalStore;
         update as generalUpdate;
     }
@@ -28,7 +27,7 @@ class UserController extends Controller
         $hashedPassword = \Hash::make($request->get('password'));
         $request->merge(['password' => $hashedPassword]);
 
-        return $this->generalStore();
+        return $this->generalStore($request);
     }
 
     protected function storeChildren($user)

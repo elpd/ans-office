@@ -1,13 +1,21 @@
 define([
         'lodash',
         'classes/utilities',
+        'classes/GridTab',
+        'classes/ChildTabsPanel',
         'classes/GeneralGrid',
-        'employee/emptySubRow'
+        'classes/EmptySubRow',
+        'classes/GeneralGrid',
+        'classes/bi/GroupStatus'
     ],
     function (_,
               utilities,
+              GridTab,
+              ChildTabsPanel,
               GeneralGrid,
-              SubRow) {
+              EmptySubRow,
+              GeneralGrid,
+              GroupStatus) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -21,61 +29,39 @@ define([
             show: function (parentRowID, parentRowKey) {
                 var self = this;
 
-                // Create the sub page. Tabs interface for each wanted child and info.
-                // TODO: active indication
+                var groupsTabs = new GridTab({
+                    parentRowId: parentRowID,
+                    name: 'groups',
+                    lang: self.lang,
+                    langCaption: 'bo.groups'
+                });
 
-                var groupTabId = parentRowID + '_groupTab';
-                var groupTabLinkId = groupTabId + '_link';
-                var groupGridId = groupTabId + '_grid';
-                var groupPagerId = groupGridId + '_pager';
+                var childTabsPanel = new ChildTabsPanel({
+                    id: parentRowID,
+                    tabs: [
+                        groupsTabs
+                    ]
+                });
 
                 $('#' + parentRowID).append(
-                    '<div id="' + parentRowID + '_subcontent" role="tabpanel">' +
-
-                    '<ul class="nav nav-tabs" role="tablist">' +
-
-                    '<li role="presentation"><a id="' + groupTabLinkId +
-                    '" href="#' + groupTabId + '" aria-controls="' + groupTabId +
-                    '" role="tab" data-toggle="tab">' +
-                    self.lang.get('bo.groups') + '</a></li>' +
-                    '<li role="presentation"><a href="#">Info 2</a></li>' +
-                    '<li role="presentation"><a href="#">Info 3</a></li>' +
-
-                    '</ul>' +
-
-                    '<div class="tab-content">' +
-
-                    '<div role="tabpanel" class="tab-pane" id="' + groupTabId + '">' +
-                    '<table id="' + groupGridId + '"></table>' +
-                    '<div id="' + groupPagerId + '"></div>' +
-                    '</div>' +
-
-                    '<div role="tabpanel" class="tab-pane" id="profile">bbbb</div>' +
-                    '<div role="tabpanel" class="tab-pane" id="messages">cccc</div>' +
-                    '<div role="tabpanel" class="tab-pane" id="settings">dddd</div>' +
-
-                    '</div>' +
-
-                    '</div>'
+                    childTabsPanel.createElement()
                 );
 
-                // Bind the tabs
-
-                $('#' + groupTabLinkId).click(function (e) {
+                $('#' + groupsTabs.tabLinkId).click(function (e) {
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
                         lang: self.lang,
                         controllerUrl: '/api/group',
-                        parentClass: '\\App\\Cycle',
-                        parentId: parentRowKey,
-                        childParentNick: 'cycle',
-                        childParentField: 'cycle_id',
-                        gridId: groupGridId,
+                        parentLink: {
+                            id: parentRowKey,
+                            childFieldName: 'cycle_id'
+                        },
+                        gridId: groupsTabs.gridId,
                         biName: 'group',
                         biNamePlural: 'groups',
                         caption: _.capitalize(self.lang.get('bo.groups')),
-                        SubRow: SubRow,
+                        SubRow: EmptySubRow,
                         direction: self.userSettingsGService.getLanguage().direction,
                         colModel: [{
                             label: self.lang.get('bo.id'),
@@ -93,25 +79,34 @@ define([
                             name: 'name',
                             editable: true,
                             editoptions: {}
-                            //search:true,
-                            //stype:'text',
 
-                        },{
-                            // TOOD: value from select (enum)
+                        }, {
                             label: self.lang.get('bo.group_status'),
                             name: 'status_id',
                             editable: true,
-                            editoptions: {}
-                            //search:true,
-                            //stype:'text',
-
-                        }]
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
+                                dataUrl: '/api/group-status',
+                                buildSelect: utilities.generateBuildSelect(GroupStatus)
+                            }
+                        }],
+                        colModelExtraFunction: function () {
+                            return JSON.stringify({
+                                status_id: {
+                                    sortOnLinkField: 'status',
+                                    searchOnLinkField: 'status'
+                                }
+                            });
+                        }
                     });
 
                     grid.activate();
 
                     $(this).tab('show');
                 });
+
             }
         };
 

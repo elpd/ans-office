@@ -15,11 +15,9 @@ class UserTableSeeder extends Seeder
     {
         DB::table('users')->delete();
 
-        $initialPassword = \Hash::make('root');
-        $initialUserPassword = \Hash::make('user');
-
         $adminRole = Role::where('slug', '=', 'admin')->firstOrFail();
         $employeeRole = Role::where('slug', '=', 'employee')->firstOrFail();
+        $userRole = Role::where('slug', '=', 'user')->firstOrFail();
 
         $englishUiLanguage = UiLanguage::where('name', '=', 'English')->firstOrFail();
         $hebrewUiLanguage = UiLanguage::where('name', '=', 'Hebrew')->firstOrFail();
@@ -31,7 +29,7 @@ class UserTableSeeder extends Seeder
                 'user' => [
                     'name' => 'root',
                     'email' => 'root@example.com',
-                    'password' => $initialPassword,
+                    'password' => \Hash::make('root'),
                 ],
                 'roles' => [
                     $adminRole,
@@ -45,12 +43,27 @@ class UserTableSeeder extends Seeder
             ],
             [
                 'user' => [
-                    'name' => 'user_1',
-                    'email' => 'user_1@example.com',
-                    'password' => $initialUserPassword,
+                    'name' => 'employee',
+                    'email' => 'employee@example.com',
+                    'password' => \Hash::make('employee'),
                 ],
                 'roles' => [
                     $employeeRole
+                ],
+                'settings' => [
+                    'ui_language' => $englishUiLanguage,
+                    'ui_bootstrap_theme' => $lumenUiTheme,
+                    'ui_jquery_ui_theme' => $redmondJqUiTheme,
+                ]
+            ],
+            [
+                'user' => [
+                    'name' => 'user',
+                    'email' => 'user@example.com',
+                    'password' => \Hash::make('user'),
+                ],
+                'roles' => [
+                    $userRole
                 ],
                 'settings' => [
                     'ui_language' => $hebrewUiLanguage,

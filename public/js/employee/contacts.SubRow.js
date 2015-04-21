@@ -1,13 +1,23 @@
 define([
         'lodash',
         'classes/utilities',
+        'classes/GridTab',
+        'classes/ChildTabsPanel',
         'classes/GeneralGrid',
-        'employee/emptySubRow'
+        'classes/EmptySubRow',
+        'classes/bi/Group',
+        'classes/bi/GroupMembersStatus',
+        'classes/bi/Guide'
     ],
     function (_,
               utilities,
+              GridTab,
+              ChildTabsPanel,
               GeneralGrid,
-              SubRow) {
+              EmptySubRow,
+              Group,
+              GroupMembersStatus,
+              Guide) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -21,66 +31,54 @@ define([
             show: function (parentRowID, parentRowKey) {
                 var self = this;
 
-                // Create the sub page. Tabs interface for each wanted child and info.
-                // TODO: active indication
+                var etgar22Tab = new GridTab({
+                    parentRowId: parentRowID,
+                    name: 'etgar22',
+                    lang: self.lang,
+                    langCaption: 'bo.etgar22'
+                });
 
-                var etgar22TabId = parentRowID + '_etgar22Tab';
-                var etgar22TabLinkId = etgar22TabId + '_link';
-                var etgar22GridId = etgar22TabId + '_grid';
-                var etgar22PagerId = etgar22GridId + '_pager';
+                var groupsTabs = new GridTab({
+                    parentRowId: parentRowID,
+                    name: 'groups',
+                    lang: self.lang,
+                    langCaption: 'bo.groups'
+                });
+
+                var childTabsPanel = new ChildTabsPanel({
+                    id: parentRowID,
+                    tabs: [
+                        groupsTabs,
+                        etgar22Tab
+                    ]
+                });
 
                 $('#' + parentRowID).append(
-                    '<div id="' + parentRowID + '_subcontent" role="tabpanel">' +
-
-                    '<ul class="nav nav-tabs" role="tablist">' +
-
-                    '<li role="presentation"><a id="' + etgar22TabLinkId +
-                    '" href="#' + etgar22TabId + '" aria-controls="' + etgar22TabId +
-                    '" role="tab" data-toggle="tab">' +
-                    self.lang.get('bo.etgar22') + '</a></li>' +
-                    '<li role="presentation"><a href="#">Info 2</a></li>' +
-                    '<li role="presentation"><a href="#">Info 3</a></li>' +
-
-                    '</ul>' +
-
-                    '<div class="tab-content">' +
-
-                    '<div role="tabpanel" class="tab-pane" id="' + etgar22TabId + '">' +
-                    '<table id="' + etgar22GridId + '"></table>' +
-                    '<div id="' + etgar22PagerId + '"></div>' +
-                    '</div>' +
-
-                    '<div role="tabpanel" class="tab-pane" id="profile">bbbb</div>' +
-                    '<div role="tabpanel" class="tab-pane" id="messages">cccc</div>' +
-                    '<div role="tabpanel" class="tab-pane" id="settings">dddd</div>' +
-
-                    '</div>' +
-
-                    '</div>'
+                    childTabsPanel.createElement()
                 );
 
                 // Bind the tabs
 
-                $('#' + etgar22TabLinkId).click(function (e) {
+                $('#' + etgar22Tab.tabLinkId).click(function (e) {
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
                         lang: self.lang,
                         controllerUrl: '/api/etgar22',
-                        parentClass: '\\App\\Contact',
-                        parentId: parentRowKey,
-                        childParentNick: 'contact',
-                        childParentField: 'contact_id',
-                        gridId: etgar22GridId,
+                        parentLink: {
+                            id: parentRowKey,
+                            childFieldName: 'contact_id'
+                        },
+                        gridId: etgar22Tab.gridId,
                         biName: 'etgar22',
                         biNamePlural: 'etgar22s',
                         caption: _.capitalize(self.lang.get('bo.etgar22')),
-                        SubRow: SubRow,
+                        SubRow: EmptySubRow,
                         direction: self.userSettingsGService.getLanguage().direction,
                         colModel: [{
                             label: self.lang.get('bo.id'),
                             name: 'id',
-                            width: 30,
+                            width: 50,
                             key: true,
                             searchoptions: {
                                 sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
@@ -94,7 +92,7 @@ define([
                             editable: true,
                             formatter: 'checkbox',
                             align: 'center',
-                            width: 50,
+                            width: 100,
                             edittype: 'checkbox',
                             editoptions: {
                                 value: "1:0"
@@ -110,7 +108,7 @@ define([
                             editable: true,
                             formatter: 'checkbox',
                             align: 'center',
-                            width: 50,
+                            width: 100,
                             edittype: 'checkbox',
                             editoptions: {
                                 value: "1:0"
@@ -193,6 +191,117 @@ define([
                             //stype:'text',
 
                         }]
+                    });
+
+                    grid.activate();
+
+                    $(this).tab('show');
+                });
+
+                $('#' + groupsTabs.tabLinkId).click(function (e) {
+                    e.preventDefault();
+
+                    var grid = new GeneralGrid({
+                        lang: self.lang,
+                        controllerUrl: '/api/groups-members',
+                        parentLink: {
+                            id: parentRowKey,
+                            childFieldName: 'contact_id'
+                        },
+                        gridId: groupsTabs.gridId,
+                        biName: 'groups_members',
+                        biNamePlural: 'groups_members',
+                        caption: _.capitalize(self.lang.get('bo.groups-members')),
+                        SubRow: EmptySubRow,
+                        direction: self.userSettingsGService.getLanguage().direction,
+                        colModel: [{
+                            label: self.lang.get('bo.id'),
+                            name: 'id',
+                            width: 30,
+                            key: true,
+                            searchoptions: {
+                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                            },
+                            searchrules: {
+                                integer: true
+                            }
+                        }, {
+                            label: self.lang.get('bo.group_members_group'),
+                            name: 'group_id',
+                            editable: true,
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/group', Group)(),
+                                dataUrl: '/api/group',
+                                buildSelect: utilities.generateBuildSelect(Group)
+                            }
+                        }, /*{
+                            label: lang.get('bo.group_members_contact'),
+                            name: 'contact_id',
+                            editable: true,
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/contact', Contact)(),
+                                dataUrl: '/api/contact',
+                                buildSelect: utilities.generateBuildSelect(Contact)
+                            }
+                        },*/ {
+                            label: self.lang.get('bo.group_members_status'),
+                            name: 'status_id',
+                            editable: true,
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/group-members-status',
+                                    GroupMembersStatus)(),
+                                dataUrl: '/api/group-members-status',
+                                buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
+                            }
+                        }, {
+                            label: self.lang.get('bo.group_members_guide_1'),
+                            name: 'guide_id_1',
+                            editable: true,
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/guide', Guide)(),
+                                dataUrl: '/api/guide',
+                                buildSelect: utilities.generateBuildSelect(Guide)
+                            }
+                        }, {
+                            label: self.lang.get('bo.group_members_guide_2'),
+                            name: 'guide_id_2',
+                            editable: true,
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/guide', Guide)(),
+                                dataUrl: '/api/guide',
+                                buildSelect: utilities.generateBuildSelect(Guide)
+                            }
+                        }],
+                        colModelExtraFunction: function () {
+                            return JSON.stringify({
+                                group_id: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                },
+                                status_id: {
+                                    sortOnLinkField: 'status',
+                                    searchOnLinkField: 'status'
+                                },
+                                guide_id_1: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                },
+                                guide_id_2: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                }
+                            });
+                        }
                     });
 
                     grid.activate();

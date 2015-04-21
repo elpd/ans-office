@@ -1,12 +1,11 @@
 <?php namespace App\Http\Controllers\api;
 
-use App\Http\Requests;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\RestControllerTrait;
 
-class CycleController extends ApiController {
+class RoleUserController extends ApiController {
 
-	protected $class = 'App\Cycle';
+	protected $class = 'App\RoleUser';
 
 	use RestControllerTrait;
 }

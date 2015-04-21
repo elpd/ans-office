@@ -33,7 +33,28 @@ class Group extends Model
 
     public $nullable = [];
 
+    protected static $linksInfos = [
+        'cycle_id' => [
+            'fieldName' => 'cycle_id',
+            'functionOnChild' => 'cycle',
+            'linkedTable' => 'cycles',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\Cycle'
+        ],
+        'status_id' => [
+            'fieldName' => 'status_id',
+            'functionOnChild' => 'status',
+            'linkedTable' => 'group_status',
+            'linkedField' => 'id',
+            'linkedClass' => 'App\GroupStatus'
+        ],
+    ];
+
     public function cycle() {
       return $this->belongsTo('App\Cycle');
+    }
+
+    public function status() {
+        return $this->belongsTo('App\GroupStatus');
     }
 }

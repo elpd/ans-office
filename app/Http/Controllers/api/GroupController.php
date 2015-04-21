@@ -1,12 +1,12 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
-use App\Group;
+use App\Http\Controllers\ApiController;
+use App\Http\Controllers\RestControllerTrait;
 
-class GroupController extends Controller {
+class GroupController extends ApiController {
 
-	protected $biClass = 'App\Group';
+	protected $class = 'App\Group';
 
-	use GeneralRestControlling;
+	use RestControllerTrait;
 }

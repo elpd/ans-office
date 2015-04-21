@@ -20,25 +20,17 @@ define([
             userSettingsGService.load().then(function () {
 
                 var grid = new GeneralGrid({
+                    // Services
+                    lang: lang,
+                    userSettingsGService: userSettingsGService,
+
+                    //
                     controllerUrl: '/api/user',
                     biName: 'user',
                     biNamePlural: 'users',
                     caption: lang.get('bo.Users'),
                     SubRow: SubRow,
                     direction: userSettingsGService.getLanguage().direction,
-/*                    onBeforeSubmitData: function (data) {
-                        if (data.password) {
-                            data.password_confirmation = data.password; // TODO: make user input confirmation.
-                        }
-
-                        return data;
-                    },
-                    onBeforeAddSubmit: function (postdata, returnData) {
-                        // TODO: add password confirmation to form for user.
-                        if (postdata.password) {
-                            postdata.password_confirmation = postdata.password;
-                        }
-                    },*/
                     colModel: [{
                         label: lang.get('bo.id'),
                         name: 'id',

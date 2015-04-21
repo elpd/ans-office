@@ -6,9 +6,9 @@ define([
         'classes/GeneralGrid',
         'classes/EmptySubRow',
         'classes/bi/Group',
-        'classes/bi/Contact',
         'classes/bi/GroupMembersStatus',
-        'classes/bi/Guide'
+        'classes/bi/Guide',
+        'classes/bi/Contact'
     ],
     function (_,
               utilities,
@@ -17,9 +17,9 @@ define([
               GeneralGrid,
               EmptySubRow,
               Group,
-              Contact,
               GroupMembersStatus,
-              Guide) {
+              Guide,
+              Contact) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -51,6 +51,8 @@ define([
                     childTabsPanel.createElement()
                 );
 
+                // Bind the tabs
+
                 $('#' + groupsTabs.tabLinkId).click(function (e) {
                     e.preventDefault();
 
@@ -59,12 +61,12 @@ define([
                         controllerUrl: '/api/groups-members',
                         parentLink: {
                             id: parentRowKey,
-                            childFieldName: 'group_id'
+                            childFieldName: 'guide_id_1'
                         },
                         gridId: groupsTabs.gridId,
                         biName: 'groups_members',
                         biNamePlural: 'groups_members',
-                        caption: _.capitalize(self.lang.get('bo.groups-members')),
+                        caption: _.capitalize(self.lang.get('bo.groups_members')),
                         SubRow: EmptySubRow,
                         direction: self.userSettingsGService.getLanguage().direction,
                         colModel: [{
@@ -78,18 +80,18 @@ define([
                             searchrules: {
                                 integer: true
                             }
-                        }, /*{
-                         label: self.lang.get('bo.group_members_group'),
-                         name: 'group_id',
-                         editable: true,
-                         edittype: 'select',
-                         formatter: 'select',
-                         editoptions: {
-                         value: utilities.generateGetItems('/api/group', Group)(),
-                         dataUrl: '/api/group',
-                         buildSelect: utilities.generateBuildSelect(Group)
-                         }
-                         }*/ {
+                        }, {
+                            label: self.lang.get('bo.group_members_group'),
+                            name: 'group_id',
+                            editable: true,
+                            edittype: 'select',
+                            formatter: 'select',
+                            editoptions: {
+                                value: utilities.generateGetItems('/api/group', Group)(),
+                                dataUrl: '/api/group',
+                                buildSelect: utilities.generateBuildSelect(Group)
+                            }
+                        }, {
                             label: self.lang.get('bo.group_members_contact'),
                             name: 'contact_id',
                             editable: true,
@@ -137,6 +139,10 @@ define([
                         }],
                         colModelExtraFunction: function () {
                             return JSON.stringify({
+                                group_id: {
+                                    sortOnLinkField: 'name',
+                                    searchOnLinkField: 'name'
+                                },
                                 contact_id: {
                                     sortOnLinkField: 'name',
                                     searchOnLinkField: 'name'
@@ -161,7 +167,6 @@ define([
 
                     $(this).tab('show');
                 });
-
             }
         };
 
@@ -174,4 +179,3 @@ define([
 
         return Class;
     });
-

@@ -21,6 +21,7 @@ return [
     'user_name' => 'Name',
     'user_email' => 'Email',
     'user_password' => 'Password',
+    'user_password_confirmation' => 'Password Confirmation',
 
     // Role
 
@@ -97,4 +98,10 @@ return [
     'group_members_status' => 'Status',
     'group_members_guide_1' => 'Guide 1',
     'group_members_guide_2' => 'Guide 2',
+
+    // Role-User
+    'role-user_role' => 'Role',
+
+    // Permission-User
+    'permission-user_permission' => 'Permission',
 ];

@@ -1,15 +1,14 @@
 <?php namespace App\Http\Controllers\api;
 
 use App\Http\Requests;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\ApiController;
 use Request;
 use Hash;
-use App\Role;
+use App\Http\Controllers\RestControllerTrait;
 
-class RoleController extends Controller {
+class RoleController extends ApiController {
 
-	protected $biClass = 'App\Role';
+	protected $class = 'App\Role';
 
-	use GeneralRestControlling;
-
+	use RestControllerTrait;
 }

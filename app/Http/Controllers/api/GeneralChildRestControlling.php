@@ -4,153 +4,170 @@ use App\Http\Requests;
 use Request;
 use App\Utilities\GeneralUtilities as Utils;
 
-trait GeneralChildRestControlling {
-  /**
-  * Display a listing of the resource.
-  *
-  * @return Response
-  */
-  public function index($parentId)
-  {
-    $parentClass = $this->biParentClass;
-    $parent = $parentClass::findOrFail($parentId);
+trait GeneralChildRestControlling
+{
+    /**
+     * Display a listing of the resource.
+     *
+     * @return Response
+     */
+    public function index($parentId)
+    {
+        $parentClass = $this->parentClass;
+        $functionName = $this->childFunctionNameOnParent;
 
-    $functionName = $this->biClassPFName;
-    $items = $parent->$functionName;
+        $query = $this->buildQuery([
+            'parentClass' => $parentClass,
+            'parentId' => $parentId,
+            'childFunctionOnParent' => $functionName,
+        ]);
 
-    $itemsAsMap = Utils::convertItemsToMap($items);
-    return [
-      'total' => 1,
-      'page' => 1,
-      'records' => count($items),
-      'rows' => $itemsAsMap
-    ];
-  }
+        $items = $query->get();
 
-  /**
-  * Show the form for creating a new resource.
-  *
-  * @return Response
-  */
-  public function create()
-  {
-    //
-    abort('404');
-  }
-
-  /**
-  * Store a newly created resource in storage.
-  *
-  * @return Response
-  */
-  public function store($parentId)
-  {
-    $parentClass = $this->biParentClass;
-    $parent = $parentClass::findOrFail($parentId);
-
-    $childClass = $this->biClass;
-
-    $object = new $childClass();
-    $input = Request::only($object->fillable);
-    foreach ($object->nullable as $nullableField) {
-      if (array_key_exists ($nullableField, $input) && $input[$nullableField] === '' ) {
-        $input[$nullableField] = null;
-      }
+        $itemsAsMap = Utils::convertItemsToJqgridMap($items);
+        return [
+            'total' => 1,
+            'page' => 1,
+            'records' => count($items),
+            'rows' => $itemsAsMap
+        ];
     }
 
-    $item = new $childClass($input);
-
-    //$functionName = $this->biClassPFName;
-    $functionName = $this->biParentFName;
-
-    try {
-      //$item = $parent->$functionName()->save($child);
-      $item->$functionName()->associate($parent);
-      $item->saveOrFail();
-
-      return [
-        'success' => true,
-        'item_id' => $item->id,
-      ];
-    }
-    catch (\Watson\Validating\ValidationException $e) {
-      return [
-        'success' => false,
-        'errors' => $e->getErrors(),
-      ];
-    }
-    catch (\Exception $e) {
-      if (property_exists($e, 'errorInfo')) {
-        $errors = implode(',', $e->errorInfo);
-      } else {
-        throw $e;
-      }
-
-      return [
-        'success' => false,
-        'errors' => ['general' => $errors],
-        'exception' => $e
-      ];
-    }
-  }
-
-  /**
-  * Display the specified resource.
-  *
-  * @param  int  $id
-  * @return Response
-  */
-  public function show($id)
-  {
-    //
-    abort('404');
-  }
-
-  /**
-  * Show the form for editing the specified resource.
-  *
-  * @param  int  $id
-  * @return Response
-  */
-  public function edit($id)
-  {
-    //
-    abort('404');
-  }
-
-  /**
-  * Update the specified resource in storage.
-  *
-  * @param  int  $id
-  * @return Response
-  */
-  public function update($id)
-  {
-    //
-    abort('404');
-  }
-
-  /**
-  * Remove the specified resource from storage.
-  *
-  * @param  int  $id
-  * @return Response
-  */
-  public function destroy($parentId, $id)
-  {
-    $class = $this->biClass;
-
-    if ($id == -1) {
-      $id = Request::get('id');
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return Response
+     */
+    public function create()
+    {
+        //
+        abort('404');
     }
 
-    $item = $class::findOrFail($id);
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @return Response
+     */
+    public function store($parentId)
+    {
+        $parentClass = $this->biParentClass;
+        $parent = $parentClass::findOrFail($parentId);
 
-    $item->delete();
+        $childClass = $this->biClass;
 
-    return [
-      'success' => true,
-      'item_id' => $id
-    ];
-  }
+        $object = new $childClass();
+        $input = Request::only($object->fillable);
+        foreach ($object->nullable as $nullableField) {
+            if (array_key_exists($nullableField, $input) && $input[$nullableField] === '') {
+                $input[$nullableField] = null;
+            }
+        }
+
+        $item = new $childClass($input);
+
+        //$functionName = $this->biClassPFName;
+        $functionName = $this->biParentFName;
+
+        try {
+            //$item = $parent->$functionName()->save($child);
+            $item->$functionName()->associate($parent);
+            $item->saveOrFail();
+
+            return [
+                'success' => true,
+                'item_id' => $item->id,
+            ];
+        } catch (\Watson\Validating\ValidationException $e) {
+            return [
+                'success' => false,
+                'errors' => $e->getErrors(),
+            ];
+        } catch (\Exception $e) {
+            if (property_exists($e, 'errorInfo')) {
+                $errors = implode(',', $e->errorInfo);
+            } else {
+                throw $e;
+            }
+
+            return [
+                'success' => false,
+                'errors' => ['general' => $errors],
+                'exception' => $e
+            ];
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function show($id)
+    {
+        //
+        abort('404');
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function edit($id)
+    {
+        //
+        abort('404');
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function update($id)
+    {
+        //
+        abort('404');
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return Response
+     */
+    public function destroy($parentId, $id)
+    {
+        $class = $this->biClass;
+
+        if ($id == -1) {
+            $id = Request::get('id');
+        }
+
+        $item = $class::findOrFail($id);
+
+        $item->delete();
+
+        return [
+            'success' => true,
+            'item_id' => $id
+        ];
+    }
+
+    protected function buildQuery($queryParams)
+    {
+        $parentClass = $queryParams['parentClass'];
+        $parentId = $queryParams['parentId'];
+        $childFunctionOnParent = $queryParams['childFunctionOnParent'];
+
+        $parent = $parentClass::findOrFail($parentId);
+
+        $query = $parent->$childFunctionOnParent();
+
+        return $query;
+    }
 }
