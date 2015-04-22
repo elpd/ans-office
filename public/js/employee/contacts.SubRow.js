@@ -7,7 +7,8 @@ define([
         'classes/EmptySubRow',
         'classes/bi/Group',
         'classes/bi/GroupMembersStatus',
-        'classes/bi/Guide'
+        'classes/bi/Guide',
+        'classes/GeneralGridSubRowPageObject'
     ],
     function (_,
               utilities,
@@ -17,7 +18,8 @@ define([
               EmptySubRow,
               Group,
               GroupMembersStatus,
-              Guide) {
+              Guide,
+              GeneralGridSubRowPageObject) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -30,6 +32,10 @@ define([
             // the ID of the grid row  and the primary key of the row
             show: function (parentRowID, parentRowKey) {
                 var self = this;
+
+                var page = new GeneralGridSubRowPageObject({
+                    pageId: parentRowID
+                });
 
                 var etgar22Tab = new GridTab({
                     parentRowId: parentRowID,
@@ -63,6 +69,12 @@ define([
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: self.lang,
                         controllerUrl: '/api/etgar22',
                         parentLink: {
@@ -202,6 +214,12 @@ define([
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: self.lang,
                         controllerUrl: '/api/groups-members',
                         parentLink: {

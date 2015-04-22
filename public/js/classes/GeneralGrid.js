@@ -4,7 +4,8 @@ define([
 ], function (LoadingIndicator,
              utilities) {
 
-    var GRID_HEIGHT_MIN = 200;
+    var GRID_HEIGHT_MIN = 100;
+    var GRID_WIDTH_MIN = 800;
 
     var Class = function GeneralGrid(params) {
         this.setParams(params);
@@ -27,6 +28,8 @@ define([
             this.parentLink = params.parentLink ? params.parentLink : {};
             this.colModelExtraFunction = params.colModelExtraFunction ?
                 params.colModelExtraFunction : null;
+            this.getDesiredHeightInContainer = params.getDesiredHeightInContainer;
+            this.getDesiredWidthInContainer = params.getDesiredWidthInContainer;
 
             if (params.direction) {
                 switch (params.direction) {
@@ -59,7 +62,9 @@ define([
                 gridBoxId: self.gridBoxId,
                 gridId: self.gridId,
                 pageId: self.pageId,
-                pagerId: self.pagerId
+                pagerId: self.pagerId,
+                getDesiredHeightInContainer: self.getDesiredHeightInContainer,
+                getDesiredWidthInContainer: self.getDesiredWidthInContainer
             });
         },
 
@@ -84,6 +89,8 @@ define([
         this.gridId = params.gridId;
         this.pageId = params.pageId;
         this.pagerId = params.pagerId;
+        this.getDesiredHeightInContainer = params.getDesiredHeightInContainer;
+        this.getDesiredWidthInContainer = params.getDesiredWidthInContainer;
     }
 
     PageObject.prototype = {
@@ -125,6 +132,7 @@ define([
 
             var desiredGridSize = self.calcDesiredGridSize();
             var continueRedraw = false;
+            // TODO: remove laps. no need after changes made ?
             var laps = 0;
             do {
                 self.redrawGridDimentionsPhase(desiredGridSize, isShrinkToFit);
@@ -133,7 +141,7 @@ define([
                 desiredGridSize = self.calcDesiredGridSize();
 
                 continueRedraw = false;
-                if (!desiredGridSize.equals(oldDesiredGridSize) && laps < 2) {
+                if (!desiredGridSize.equals(oldDesiredGridSize) && laps < 0) {
                     continueRedraw = true;
                 }
                 laps++;
@@ -204,13 +212,12 @@ define([
         calcGridHeightWhenNormal: function () {
             var self = this;
 
-            var pageHeight = self.get$Page().outerHeight(true);
-            var headerHeight = self.get$SectionHeader().outerHeight(true);
+            var desiredHeightInContainer = self.getDesiredHeightInContainer();
             var titleBarHeight = self.get$GridTitleBar().outerHeight(true);
             var headerBoxHeight = self.get$GridHeaderBox().outerHeight(true);
             var bottomPagerHeight = self.get$GridBottomPager().outerHeight(true);
 
-            var calcHeight = pageHeight - (headerHeight + titleBarHeight + headerBoxHeight + bottomPagerHeight + 5);
+            var calcHeight = desiredHeightInContainer - (titleBarHeight + headerBoxHeight + bottomPagerHeight + 5);
             // Set a minimum for height;
             calcHeight = calcHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calcHeight;
 
@@ -218,7 +225,11 @@ define([
         },
 
         calcGridWidthWhenNormal: function () {
-            var calc = this.get$Page().width();
+            var self = this;
+            var calc = self.getDesiredWidthInContainer();
+
+            // Set a minimum for height;
+            calc = calc < GRID_WIDTH_MIN ? GRID_WIDTH_MIN : calc;
 
             return calc;
         },
@@ -304,6 +315,7 @@ define([
             datatype: 'json',
             url: self.controllerUrl,
             pager: '#' + self.pagerId,
+            pagerpos: 'center',
             rowList: [30, 50, 100, 200, 1000],
             caption: self.caption,
             // Direction: instructs the grid to use RTL settings
@@ -491,7 +503,7 @@ define([
                 reloadAfterSubmit: true
             })
             .navButtonAdd('#' + self.pagerId, {
-                caption: "Full Screen",
+                caption: "Full",//"Full Screen",
                 buttonicon: "ui-icon-arrow-4-diag",
                 position: 'last',
                 id: self.pageObject.getfullScreenButtonId(),
@@ -506,7 +518,8 @@ define([
                 }
             })
             .navButtonAdd('#' + self.pagerId, {
-                caption: "Fit To Size",
+                caption: "Fit",//"Fit To Size",
+                position: 'last',
                 onClickButton: function () {
                     self.pageObject.redrawGridDimentions({shrinkToFit: true});
                 }

@@ -6,7 +6,8 @@ define([
         'services/language',
         'classes/LoadingIndicator',
         'classes/GeneralGrid',
-        'services/userSettings'
+        'services/userSettings',
+        'classes/GeneralContentPageObject'
     ],
     function (_,
               utilities,
@@ -15,14 +16,24 @@ define([
               lang,
               LoadingIndicator,
               GeneralGrid,
-              userSettingsGService) {
+              userSettingsGService,
+              GeneralContentPageObject) {
 
         $(document).ready(function () {
 
+            var page = new GeneralContentPageObject({
+                name: 'cycles'
+            });
 
             userSettingsGService.load().then(function () {
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: lang,
                         userSettingsGService: userSettingsGService,
                         controllerUrl: '/api/cycle',

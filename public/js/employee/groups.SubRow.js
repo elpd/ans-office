@@ -8,7 +8,8 @@ define([
         'classes/bi/Group',
         'classes/bi/Contact',
         'classes/bi/GroupMembersStatus',
-        'classes/bi/Guide'
+        'classes/bi/Guide',
+        'classes/GeneralGridSubRowPageObject'
     ],
     function (_,
               utilities,
@@ -19,7 +20,8 @@ define([
               Group,
               Contact,
               GroupMembersStatus,
-              Guide) {
+              Guide,
+              GeneralGridSubRowPageObject) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -32,6 +34,10 @@ define([
             // the ID of the grid row  and the primary key of the row
             show: function (parentRowID, parentRowKey) {
                 var self = this;
+
+                var page = new GeneralGridSubRowPageObject({
+                    pageId: parentRowID
+                });
 
                 var groupsTabs = new GridTab({
                     parentRowId: parentRowID,
@@ -55,6 +61,12 @@ define([
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: self.lang,
                         controllerUrl: '/api/groups-members',
                         parentLink: {
