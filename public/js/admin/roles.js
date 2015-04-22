@@ -5,7 +5,8 @@ define([
         'services/language',
         'classes/LoadingIndicator',
         'classes/GeneralGrid',
-        'services/userSettings'
+        'services/userSettings',
+        'classes/GeneralContentPageObject'
     ],
     function (utilities,
               Role,
@@ -13,13 +14,24 @@ define([
               lang,
               LoadingIndicator,
               GeneralGrid,
-              userSettingsGService) {
+              userSettingsGService,
+              GeneralContentPageObject) {
 
         $(document).ready(function () {
+
+            var page = new GeneralContentPageObject({
+                name: 'roles'
+            });
 
             userSettingsGService.load().then(function () {
 
                 var grid = new GeneralGrid({
+                    getDesiredHeightInContainer: function(){
+                        return page.getGridDesiredHeight();
+                    },
+                    getDesiredWidthInContainer: function() {
+                        return page.getGridDesiredWidth();
+                    },
                     // Services
                     lang: lang,
                     userSettingsGService: userSettingsGService,

@@ -1,17 +1,23 @@
 define([
         'lodash',
         'classes/utilities',
+        'classes/GridTab',
+        'classes/ChildTabsPanel',
         'classes/GeneralGrid',
         'classes/EmptySubRow',
         'classes/bi/User',
-        'classes/bi/Role'
+        'classes/bi/Role',
+        'classes/GeneralGridSubRowPageObject'
     ],
     function (_,
               utilities,
+              GridTab,
+              ChildTabsPanel,
               GeneralGrid,
               EmptySubRow,
               User,
-              Role) {
+              Role,
+              GeneralGridSubRowPageObject) {
 
         var Class = function RolesSubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -25,57 +31,34 @@ define([
             show: function (parentRowID, parentRowKey) {
                 var self = this;
 
-                // Create the sub page. Tabs interface for each wanted child and info.
-                // TODO: active indication
+                var page = new GeneralGridSubRowPageObject({
+                    pageId: parentRowID
+                });
 
                 var usersTab = new GridTab({
                     parentRowId: parentRowID,
-                    name: 'users'
+                    name: 'users',
+                    lang: self.lang,
+                    langCaption: 'bo.users'
                 });
 
                 var rolesTab = new GridTab({
                     parentRowId: parentRowID,
-                    name: 'roles'
+                    name: 'roles',
+                    lang: self.lang,
+                    langCaption: 'bo.roles'
+                });
+
+                var childTabsPanel = new ChildTabsPanel({
+                    id: parentRowID,
+                    tabs: [
+                        usersTab,
+                        rolesTab
+                    ]
                 });
 
                 $('#' + parentRowID).append(
-                    '<div id="' + parentRowID + '_subcontent" role="tabpanel">' +
-
-                    '<ul class="nav nav-tabs" role="tablist">' +
-
-                    '<li role="presentation">' +
-                    '<a id="' + rolesTab.tabLinkId +
-                    '" href="#' + rolesTab.tabId + '" aria-controls="' + rolesTab.tabId +
-                    '" role="tab" data-toggle="tab">' +
-                    self.lang.get('bo.roles') +
-                    '</a>' +
-                    '</li>' +
-
-                    '<li role="presentation">' +
-                    '<a id="' + usersTab.tabLinkId +
-                    '" href="#' + usersTab.tabId + '" aria-controls="' + usersTab.tabId +
-                    '" role="tab" data-toggle="tab">' +
-                    self.lang.get('bo.users') +
-                    '</a>' +
-                    '</li>' +
-
-                    '</ul>' +
-
-                    '<div class="tab-content">' +
-
-                    '<div role="tabpanel" class="tab-pane" id="' + usersTab.tabId + '">' +
-                    '<table id="' + usersTab.gridId + '"></table>' +
-                    '<div id="' + usersTab.pagerId + '"></div>' +
-                    '</div>' +
-
-                    '<div role="tabpanel" class="tab-pane" id="' + rolesTab.tabId + '">' +
-                    '<table id="' + rolesTab.gridId + '"></table>' +
-                    '<div id="' + rolesTab.pagerId + '"></div>' +
-                    '</div>' +
-
-                    '</div>' +
-
-                    '</div>'
+                    childTabsPanel.createElement()
                 );
 
                 // Bind the tabs
@@ -84,6 +67,12 @@ define([
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: self.lang,
                         controllerUrl: '/api/permission-user',
                         parentLink: {
@@ -138,6 +127,12 @@ define([
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: self.lang,
                         controllerUrl: '/api/permission-role',
                         parentLink: {
@@ -187,27 +182,6 @@ define([
 
                     $(this).tab('show');
                 });
-            }
-        };
-
-        function GridTab(params) {
-            this.setParams(params);
-            this.setVariables();
-        }
-
-        GridTab.prototype = {
-            setParams: function (params) {
-                this.parentRowId = params.parentRowId;
-                this.name = params.name;
-            },
-
-            setVariables: function () {
-                var self = this;
-
-                self.tabId = self.parentRowId + '_' + self.name + 'Tab';
-                self.tabLinkId = self.tabId + '_link';
-                self.gridId = self.tabId + '_grid';
-                self.pagerId = self.gridId + '_pager';
             }
         };
 

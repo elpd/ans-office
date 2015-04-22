@@ -6,7 +6,8 @@ define([
         'classes/GeneralGrid',
         'classes/EmptySubRow',
         'classes/bi/Role',
-        'classes/bi/Permission'
+        'classes/bi/Permission',
+        'classes/GeneralGridSubRowPageObject'
     ],
     function (_,
               utilities,
@@ -15,7 +16,8 @@ define([
               GeneralGrid,
               EmptySubRow,
               Role,
-              Permission) {
+              Permission,
+              GeneralGridSubRowPageObject) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -28,6 +30,10 @@ define([
             // the ID of the grid row  and the primary key of the row
             show: function (parentRowID, parentRowKey) {
                 var self = this;
+
+                var page = new GeneralGridSubRowPageObject({
+                    pageId: parentRowID
+                });
 
                 var rolesTab = new GridTab({
                     parentRowId: parentRowID,
@@ -61,6 +67,12 @@ define([
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: self.lang,
                         controllerUrl: '/api/role-user',
                         parentLink: {
@@ -115,6 +127,12 @@ define([
                     e.preventDefault();
 
                     var grid = new GeneralGrid({
+                        getDesiredHeightInContainer: function(){
+                            return page.getGridDesiredHeight();
+                        },
+                        getDesiredWidthInContainer: function() {
+                            return page.getGridDesiredWidth();
+                        },
                         lang: self.lang,
                         controllerUrl: '/api/permission-user',
                         parentLink: {
