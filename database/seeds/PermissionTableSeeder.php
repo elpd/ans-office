@@ -462,6 +462,31 @@ class PermissionTableSeeder extends Seeder
                 'slug' => 'api.permission-role.destroy',
                 'description' => '',
                 'model' => '',
+            ], [
+                'name' => 'api.contact-note.index',
+                'slug' => 'api.contact-note.index',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.contact-note.show',
+                'slug' => 'api.contact-note.show',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.contact-note.store',
+                'slug' => 'api.contact-note.store',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.contact-note.update',
+                'slug' => 'api.contact-note.update',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.contact-note.destroy',
+                'slug' => 'api.contact-note.destroy',
+                'description' => '',
+                'model' => '',
             ],
         ];
 

@@ -111,4 +111,12 @@ return [
     // Permission-Role
     'permission-role_permission' => 'הרשאה',
     'permission-role_role' => 'תפקיד',
+
+    // Contact Note
+    'contact-notes' => 'הערות',
+    'contact-note_contact' => 'איש קשר',
+    'contact-note_user' => 'משתמש',
+    'contact-note_text' => 'הערה',
+    'contact-note_created_at' => 'תאריך יצירה',
+    'contact-note_updated_at' => 'תאריך עדכון',
 ];

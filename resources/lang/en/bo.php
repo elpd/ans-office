@@ -111,4 +111,12 @@ return [
     // Permission-Role
     'permission-role_permission' => 'permission',
     'permission-role_role' => 'role',
+
+    // Contact Note
+    'contact-notes' => 'Notes',
+    'contact-note_contact' => 'contact',
+    'contact-note_user' => 'user',
+    'contact-note_text' => 'text',
+    'contact-note_created_at' => 'created at',
+    'contact-note_updated_at' => 'updated at',
 ];
