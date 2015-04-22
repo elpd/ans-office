@@ -126,11 +126,27 @@ define([
             return $('.ui-jqgrid-pager.ui-corner-bottom');
         },
 
+        get$PagerLeft: function() {
+            var $element =  $('#' + this.pagerId + '_left');
+            return $element;
+        },
+
+        get$PagerCenter: function() {
+            var $element =  $('#' + this.pagerId + '_center');
+            return $element;
+        },
+
+        get$PagerRight: function() {
+            var $element =  $('#' + this.pagerId + '_right');
+            return $element;
+        },
+
         redrawGridDimentions: function (params) {
             var self = this;
-            var isShrinkToFit = params.hasOwnProperty('shrinkToFit') ? params.shrinkToFit : false;
-
             var desiredGridSize = self.calcDesiredGridSize();
+            var isShrinkToFit = params.hasOwnProperty('shrinkToFit') ? params.shrinkToFit : false;
+            isShrinkToFit = (desiredGridSize.width <= GRID_WIDTH_MIN) ? true : isShrinkToFit;
+
             var continueRedraw = false;
             // TODO: remove laps. no need after changes made ?
             var laps = 0;
@@ -177,6 +193,10 @@ define([
 
         redrawGridDimentionsPhase: function (gridSize, isShrinkToFit) {
             var self = this;
+
+            //self.get$PagerLeft().width('');
+            //self.get$PagerCenter().width('');
+            //self.get$PagerRight().width('');
 
             self.get$Grid().setGridHeight(gridSize.height + 'px');
             self.get$Grid().setGridWidth(gridSize.width, isShrinkToFit);
@@ -304,7 +324,7 @@ define([
 
             colModel: self.colModel,
             viewrecords: true, // show the current page, data rang and total records on the toolbar
-            width: 500,
+            width: GRID_WIDTH_MIN,
             //width: null,
             shrinkToFit: false,
             height: 200,
@@ -315,7 +335,7 @@ define([
             datatype: 'json',
             url: self.controllerUrl,
             pager: '#' + self.pagerId,
-            pagerpos: 'center',
+            //pagerpos: 'center',
             rowList: [30, 50, 100, 200, 1000],
             caption: self.caption,
             // Direction: instructs the grid to use RTL settings
@@ -524,6 +544,10 @@ define([
                     self.pageObject.redrawGridDimentions({shrinkToFit: true});
                 }
             });
+
+        // Hack: bug in jqgrid in initial pager left size.
+        var $pagerLeft = $('#' + self.pagerId + '_left');
+        $pagerLeft.width('');
 
     }
 
