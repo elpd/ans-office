@@ -39,6 +39,7 @@ Route::group(['middleware' => 'user.settings'], function() {
 
 Route::resource('api/contact', 'api\ContactController');
 Route::resource('api/etgar22', 'api\Etgar22Controller');
+Route::resource('api/contact-note', 'api\ContactNoteController');
 Route::resource('api/group', 'api\GroupController');
 Route::resource('api/group-status', 'api\GroupStatusController');
 Route::resource('api/groups-members', 'api\GroupsMembersController');
