@@ -43,7 +43,7 @@ define([
                         SubRow: SubRow,
                         direction: userSettingsGService.getLanguage().direction,
                         colModel: [{
-                            label: lang.get('bo.id'),
+                            label: _.capitalize(lang.get('bo.id')),
                             name: 'id',
                             width: 30,
                             key: true,
@@ -54,7 +54,7 @@ define([
                                 integer: true
                             }
                         }, {
-                            label: lang.get('bo.cycle_start_date'),
+                            label: _.capitalize(lang.get('bo.cycle_start_date')),
                             name: 'startDate',
                             editable: true,
                             //edittype: 'select',
@@ -74,7 +74,7 @@ define([
                                 date: true
                             }
                         }, {
-                            label: lang.get('bo.cycle_num'),
+                            label: _.capitalize(lang.get('bo.cycle_num')),
                             name: 'num',
                             editable: true,
                             editoptions: {

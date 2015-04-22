@@ -1,4 +1,4 @@
-define([], function () {
+define(['lodash'], function (_) {
     var Class = function GridTab(params) {
         this.setParams(params);
         this.setVariables();
@@ -29,7 +29,7 @@ define([], function () {
                 '<a id="' + self.tabLinkId +
                 '" href="#' + self.tabId + '" aria-controls="' + self.tabId +
                 '" role="tab" data-toggle="tab">' +
-                self.lang.get(self.langCaption) +
+                _.capitalize(self.lang.get(self.langCaption)) +
                 '</a>' +
                 '</li>');
 

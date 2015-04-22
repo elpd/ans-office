@@ -40,37 +40,37 @@ define([
                     controllerUrl: '/api/role',
                     biName: 'role',
                     biNamePlural: 'roles',
-                    caption: lang.get('bo.roles'),
+                    caption: _.capitalize(lang.get('bo.roles')),
                     SubRow: SubRow,
                     direction: userSettingsGService.getLanguage().direction,
                     colModel: [{
-                        label: lang.get('bo.id'),
+                        label: _.capitalize(lang.get('bo.id')),
                         name: 'id',
                         width: 30,
                         key: true
                     }, {
-                        label: lang.get('bo.role_name'),
+                        label: _.capitalize(lang.get('bo.role_name')),
                         name: 'name',
                         editable: true,
                         //edittype: 'select',
                         //formatter: 'integer',
                         editoptions: {}
                     }, {
-                        label: lang.get('bo.role_slug'),
+                        label: _.capitalize(lang.get('bo.role_slug')),
                         name: 'slug',
                         editable: true,
                         //edittype: 'select',
                         //formatter: 'integer',
                         editoptions: {}
                     }, {
-                        label: lang.get('bo.role_description'),
+                        label: _.capitalize(lang.get('bo.role_description')),
                         name: 'description',
                         editable: true,
                         //edittype: 'select',
                         //formatter: 'integer',
                         editoptions: {}
                     }, {
-                        label: lang.get('bo.role_level'),
+                        label: _.capitalize(lang.get('bo.role_level')),
                         name: 'level',
                         editable: true,
                         //edittype: 'select',

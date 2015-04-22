@@ -6,7 +6,7 @@
                 @if($userSettings->ui_language->direction == 'right_to_left')
 			        right_aligned
 			    @endif"
-                >@lang('bo.Groups_members')
+                >@lang('bo.Group-member')
         </h2>
 
         <div class="row">

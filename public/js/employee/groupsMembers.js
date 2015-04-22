@@ -51,7 +51,7 @@ define([
                         SubRow: SubRow,
                         direction: userSettingsGService.getLanguage().direction,
                         colModel: [{
-                            label: lang.get('bo.id'),
+                            label: _.capitalize(lang.get('bo.id')),
                             name: 'id',
                             width: 30,
                             key: true,
@@ -62,7 +62,7 @@ define([
                                 integer: true
                             }
                         }, {
-                            label: lang.get('bo.group_members_group'),
+                            label: _.capitalize(lang.get('bo.group-member_group')),
                             name: 'group_id',
                             editable: true,
                             edittype: 'select',
@@ -73,7 +73,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Group)
                             }
                         }, {
-                            label: lang.get('bo.group_members_contact'),
+                            label: _.capitalize(lang.get('bo.group-member_contact')),
                             name: 'contact_id',
                             editable: true,
                             edittype: 'select',
@@ -84,7 +84,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Contact)
                             }
                         }, {
-                            label: lang.get('bo.group_members_status'),
+                            label: _.capitalize(lang.get('bo.group-member_status')),
                             name: 'status_id',
                             editable: true,
                             edittype: 'select',
@@ -96,7 +96,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
                             }
                         }, {
-                            label: lang.get('bo.group_members_guide_1'),
+                            label: _.capitalize(lang.get('bo.group-member_guide_1')),
                             name: 'guide_id_1',
                             editable: true,
                             edittype: 'select',
@@ -107,7 +107,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Guide)
                             }
                         }, {
-                            label: lang.get('bo.group_members_guide_2'),
+                            label: _.capitalize(lang.get('bo.group-member_guide_2')),
                             name: 'guide_id_2',
                             editable: true,
                             edittype: 'select',

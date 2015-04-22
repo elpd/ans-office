@@ -47,7 +47,7 @@ define([
                         SubRow: SubRow,
                         direction: userSettingsGService.getLanguage().direction,
                         colModel: [{
-                            label: lang.get('bo.id'),
+                            label: _.capitalize(lang.get('bo.id')),
                             name: 'id',
                             width: 30,
                             key: true,
@@ -58,7 +58,7 @@ define([
                                 integer: true
                             }
                         }, {
-                            label: lang.get('bo.group_cycle'),
+                            label: _.capitalize(lang.get('bo.group_cycle')),
                             name: 'cycle_id',
                             editable: true,
                             edittype: 'select',
@@ -69,7 +69,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Cycle)
                             }
                         }, {
-                            label: lang.get('bo.group_name'),
+                            label: _.capitalize(lang.get('bo.group_name')),
                             name: 'name',
                             editable: true,
                             editoptions: {}
@@ -77,7 +77,7 @@ define([
                             //stype:'text',
 
                         }, {
-                            label: lang.get('bo.group_status'),
+                            label: _.capitalize(lang.get('bo.group_status')),
                             name: 'status_id',
                             editable: true,
                             edittype: 'select',

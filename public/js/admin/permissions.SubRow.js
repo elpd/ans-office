@@ -86,7 +86,7 @@ define([
                         SubRow: EmptySubRow,
                         direction: self.userSettingsGService.getLanguage().direction,
                         colModel: [{
-                            label: self.lang.get('bo.id'),
+                            label: _.capitalize(self.lang.get('bo.id')),
                             name: 'id',
                             width: 30,
                             key: true,
@@ -97,7 +97,7 @@ define([
                                 integer: true
                             }
                         }, {
-                            label: self.lang.get('bo.permission-user_user'),
+                            label: _.capitalize(self.lang.get('bo.permission-user_user')),
                             name: 'user_id',
                             editable: true,
                             edittype: 'select',
@@ -157,7 +157,7 @@ define([
                                 integer: true
                             }
                         }, {
-                            label: self.lang.get('bo.permission-role_role'),
+                            label: _.capitalize(self.lang.get('bo.permission-role_role')),
                             name: 'role_id',
                             editable: true,
                             edittype: 'select',
