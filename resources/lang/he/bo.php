@@ -21,6 +21,7 @@ return [
     'user_name' => 'שם משתמש',
     'user_email' => 'דואל',
     'user_password' => 'ססמה',
+    'user_password_confirmation' => 'וידוי סיסמה',
 
     // Role
 
@@ -30,6 +31,8 @@ return [
     'role_slug' => 'כינוי',
     'role_description' => 'תיאור',
     'role_level' => 'רמה',
+    'role_users' => 'משתמשים',
+    'role_permissions' => 'הרשאות',
 
     // Permission
 
@@ -39,6 +42,8 @@ return [
     'permission_slug' => 'כינוי',
     'permission_description' => 'תיאור',
     'permission_model' => 'מודל',
+    'permission_roles' => 'תפקידים',
+    'permission_users' => 'משתמשים',
 
     // Contacts
 
@@ -55,7 +60,6 @@ return [
     'blacklisted' => 'חסום',
 
     // Etgar 22
-// TODO: add to hebrew file
     'etgar22' => 'אתגר 22',
     'etgar22_facebook_know_how' => 'יודע להשתמש בפייסבוק',
     'etgar22_call_for_facebook_help' => 'מבקש עזרה לפייסבוק',
@@ -86,4 +90,25 @@ return [
     'guides' => 'מדריכים',
     'Guides' => 'מדריכים',
     'guide_name' => 'שם',
+
+    // Groups Members
+    'group-member' => 'חברי קבוצה',
+    'Group-member' => 'חברי קבוצה',
+    'group-member_group' => 'קבוצה',
+    'group-member_contact' => 'איש קשר',
+    'group-member_status' => 'סטאטוס',
+    'group-member_guide_1' => 'מדריך 1',
+    'group-member_guide_2' => 'מדריך 2',
+
+    // Role-User
+    'role-user_role' => 'תפקיד',
+    'role-user_user' => 'משתמש',
+
+    // Permission-User
+    'permission-user_permission' => 'הרשאה',
+    'permission-user_user' => 'משתמש',
+
+    // Permission-Role
+    'permission-role_permission' => 'הרשאה',
+    'permission-role_role' => 'תפקיד',
 ];

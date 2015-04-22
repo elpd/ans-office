@@ -31,6 +31,8 @@ return [
     'role_slug' => 'Slug',
     'role_description' => 'Description',
     'role_level' => 'Level',
+    'role_users' => 'Users',
+    'role_permissions' => 'permissions',
 
     // Permission
 
@@ -40,11 +42,12 @@ return [
     'permission_slug' => 'Slug',
     'permission_description' => 'Description',
     'permission_model' => 'Model',
+    'permission_roles' => 'roles',
+    'permission_users' => 'users',
 
     // Contact
 
     'contacts' => 'contacts',
-    // TODO: general way to capitalize in blade templates.
     'Contacts' => 'Contacts',
     'registration_date' => 'Registration Date',
     'email' => 'Email',
@@ -57,7 +60,6 @@ return [
     'blacklisted' => 'Blacklisted',
 
     // Etgar 22
-// TODO: add to hebrew file
     'etgar22' => 'Etgar22',
     'etgar22_facebook_know_how' => 'Knows To Use Facebook',
     'etgar22_call_for_facebook_help' => 'Call For FB Help',
@@ -90,18 +92,23 @@ return [
     'guide_name' => 'Name',
 
     // Groups Members
-    // TODO: hebrew translation.
-    'groups_members' => 'Groups Members',
-    'Groups_members' => 'Groups Members',
-    'group_members_group' => 'Group',
-    'group_members_contact' => 'Contact',
-    'group_members_status' => 'Status',
-    'group_members_guide_1' => 'Guide 1',
-    'group_members_guide_2' => 'Guide 2',
+    'group-member' => 'Groups Members',
+    'Group-member' => 'Groups Members',
+    'group-member_group' => 'Group',
+    'group-member_contact' => 'Contact',
+    'group-member_status' => 'Status',
+    'group-member_guide_1' => 'Guide 1',
+    'group-member_guide_2' => 'Guide 2',
 
     // Role-User
     'role-user_role' => 'Role',
+    'role-user_user' => 'User',
 
     // Permission-User
     'permission-user_permission' => 'Permission',
+    'permission-user_user' => 'User',
+
+    // Permission-Role
+    'permission-role_permission' => 'permission',
+    'permission-role_role' => 'role',
 ];

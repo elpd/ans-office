@@ -40,37 +40,37 @@ define([
                     controllerUrl: '/api/permission',
                     biName: 'permission',
                     biNamePlural: 'permissions',
-                    caption: lang.get('bo.Permissions'),
+                    caption: _.capitalize(lang.get('bo.Permissions')),
                     SubRow: SubRow,
                     direction: userSettingsGService.getLanguage().direction,
                     colModel: [{
-                        label: lang.get('bo.id'),
+                        label: _.capitalize(lang.get('bo.id')),
                         name: 'id',
                         width: 30,
                         key: true
                     }, {
-                        label: lang.get('bo.permission_name'),
+                        label: _.capitalize(lang.get('bo.permission_name')),
                         name: 'name',
                         editable: true,
                         //edittype: 'select',
                         //formatter: 'integer',
                         editoptions: {}
                     }, {
-                        label: lang.get('bo.permission_slug'),
+                        label: _.capitalize(lang.get('bo.permission_slug')),
                         name: 'slug',
                         editable: true,
                         //edittype: 'select',
                         //formatter: 'integer',
                         editoptions: {}
                     }, {
-                        label: lang.get('bo.permission_description'),
+                        label: _.capitalize(lang.get('bo.permission_description')),
                         name: 'description',
                         editable: true,
                         //edittype: 'select',
                         //formatter: 'integer',
                         editoptions: {}
                     }, {
-                        label: lang.get('bo.permission_model'),
+                        label: _.capitalize(lang.get('bo.permission_model')),
                         name: 'model',
                         editable: true,
                         //edittype: 'select',

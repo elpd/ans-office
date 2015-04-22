@@ -43,7 +43,7 @@ define([
                     parentRowId: parentRowID,
                     name: 'groups_members',
                     lang: self.lang,
-                    langCaption: 'bo.groups_members'
+                    langCaption: 'bo.group-member'
                 });
 
                 var childTabsPanel = new ChildTabsPanel({
@@ -76,11 +76,11 @@ define([
                         gridId: groupsTabs.gridId,
                         biName: 'groups_members',
                         biNamePlural: 'groups_members',
-                        caption: _.capitalize(self.lang.get('bo.groups-members')),
+                        caption: _.capitalize(self.lang.get('bo.group-member')),
                         SubRow: EmptySubRow,
                         direction: self.userSettingsGService.getLanguage().direction,
                         colModel: [{
-                            label: self.lang.get('bo.id'),
+                            label: _.capitalize(self.lang.get('bo.id')),
                             name: 'id',
                             width: 30,
                             key: true,
@@ -102,7 +102,7 @@ define([
                          buildSelect: utilities.generateBuildSelect(Group)
                          }
                          }*/ {
-                            label: self.lang.get('bo.group_members_contact'),
+                            label: _.capitalize(self.lang.get('bo.group-member_contact')),
                             name: 'contact_id',
                             editable: true,
                             edittype: 'select',
@@ -113,7 +113,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Contact)
                             }
                         }, {
-                            label: self.lang.get('bo.group_members_status'),
+                            label: _.capitalize(self.lang.get('bo.group-member_status')),
                             name: 'status_id',
                             editable: true,
                             edittype: 'select',
@@ -125,7 +125,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
                             }
                         }, {
-                            label: self.lang.get('bo.group_members_guide_1'),
+                            label: _.capitalize(self.lang.get('bo.group-member_guide_1')),
                             name: 'guide_id_1',
                             editable: true,
                             edittype: 'select',
@@ -136,7 +136,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Guide)
                             }
                         }, {
-                            label: self.lang.get('bo.group_members_guide_2'),
+                            label: _.capitalize(self.lang.get('bo.group-member_guide_2')),
                             name: 'guide_id_2',
                             editable: true,
                             edittype: 'select',

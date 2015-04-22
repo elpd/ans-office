@@ -43,7 +43,7 @@ define([
                         SubRow: SubRow,
                         direction: userSettingsGService.getLanguage().direction,
                         colModel: [{
-                            label: lang.get('bo.id'),
+                            label: _.capitalize(lang.get('bo.id')),
                             name: 'id',
                             width: 30,
                             key: true,
@@ -54,7 +54,7 @@ define([
                                 integer: true
                             }
                         },  {
-                            label: lang.get('bo.guide_name'),
+                            label: _.capitalize(lang.get('bo.guide_name')),
                             name: 'name',
                             editable: true,
                             editoptions: {}

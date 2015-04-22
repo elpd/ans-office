@@ -229,7 +229,7 @@ define([
                         gridId: groupsTabs.gridId,
                         biName: 'groups_members',
                         biNamePlural: 'groups_members',
-                        caption: _.capitalize(self.lang.get('bo.groups-members')),
+                        caption: _.capitalize(self.lang.get('bo.group-member')),
                         SubRow: EmptySubRow,
                         direction: self.userSettingsGService.getLanguage().direction,
                         colModel: [{
@@ -244,7 +244,7 @@ define([
                                 integer: true
                             }
                         }, {
-                            label: self.lang.get('bo.group_members_group'),
+                            label: self.lang.get('bo.group-member_group'),
                             name: 'group_id',
                             editable: true,
                             edittype: 'select',
@@ -266,7 +266,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Contact)
                             }
                         },*/ {
-                            label: self.lang.get('bo.group_members_status'),
+                            label: self.lang.get('bo.group-member_status'),
                             name: 'status_id',
                             editable: true,
                             edittype: 'select',
@@ -278,7 +278,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
                             }
                         }, {
-                            label: self.lang.get('bo.group_members_guide_1'),
+                            label: self.lang.get('bo.group-member_guide_1'),
                             name: 'guide_id_1',
                             editable: true,
                             edittype: 'select',
@@ -289,7 +289,7 @@ define([
                                 buildSelect: utilities.generateBuildSelect(Guide)
                             }
                         }, {
-                            label: self.lang.get('bo.group_members_guide_2'),
+                            label: self.lang.get('bo.group-member_guide_2'),
                             name: 'guide_id_2',
                             editable: true,
                             edittype: 'select',

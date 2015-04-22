@@ -76,7 +76,7 @@ define([
                         SubRow: EmptySubRow,
                         direction: self.userSettingsGService.getLanguage().direction,
                         colModel: [{
-                            label: self.lang.get('bo.id'),
+                            label: _.capitalize(self.lang.get('bo.id')),
                             name: 'id',
                             width: 30,
                             key: true,
@@ -87,13 +87,13 @@ define([
                                 integer: true
                             }
                         }, {
-                            label: self.lang.get('bo.group_name'),
+                            label: _.capitalize(self.lang.get('bo.group_name')),
                             name: 'name',
                             editable: true,
                             editoptions: {}
 
                         }, {
-                            label: self.lang.get('bo.group_status'),
+                            label: _.capitalize(self.lang.get('bo.group_status')),
                             name: 'status_id',
                             editable: true,
                             edittype: 'select',
