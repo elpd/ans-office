@@ -1,6 +1,6 @@
-@extends('app')
+@extends('logged')
 
-@section('content')
+@section('main_content')
 <div id="user_section" class="container-fluid">
 	<div class="row">
 
