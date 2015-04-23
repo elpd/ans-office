@@ -27,18 +27,32 @@ class EventServiceProvider extends ServiceProvider {
 	{
 		parent::boot($events);
 
-		//
+		if (\Config::get('database.log', false))
+		{
+			\DB::listen(function($query, $bindings, $time, $name)
+			{
+				$data = compact('bindings', 'time', 'name');
 
-        /*
-        \Event::listen('eloquent.validated: App\User', function($model, $event)
-        {
-            if ($event === 'passed') {
-                if (isset($model->password_confirmation)) {
-                    unset($model['password_confirmation']);
-                }
-            }
-        });
-        */
+				// Format binding data for sql insertion
+				foreach ($bindings as $i => $binding)
+				{
+					if ($binding instanceof \DateTime)
+					{
+						$bindings[$i] = $binding->format('\'Y-m-d H:i:s\'');
+					}
+					else if (is_string($binding))
+					{
+						$bindings[$i] = "'$binding'";
+					}
+				}
+
+				// Insert bindings into query
+				$query = str_replace(array('%', '?'), array('%%', '%s'), $query);
+				$query = vsprintf($query, $bindings);
+
+				\Log::info($query, $data);
+			});
+		}
 	}
 
 }

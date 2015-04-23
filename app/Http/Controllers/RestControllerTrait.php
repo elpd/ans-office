@@ -84,6 +84,11 @@ trait RestControllerTrait
                 }
             });
 
+            \Log::info('record creation', [
+                'class ' => $class,
+                'user' => \Auth::user()->email,
+                'record_id' => $item->id]);
+
             return [
                 'success' => true,
                 'item_id' => $item->id,
@@ -126,6 +131,11 @@ trait RestControllerTrait
 
         $item->delete();
 
+        \Log::info('record deletion', [
+            'class ' => $class,
+            'user' => \Auth::user()->email,
+            'record_id' => $item->id]);
+
         return [
             'success' => true,
             'item_id' => $id
@@ -152,6 +162,11 @@ trait RestControllerTrait
 
         try {
             $item->saveOrFail();
+
+            \Log::info('record update', [
+                'class ' => $class,
+                'user' => \Auth::user()->email,
+                'record_id' => $item->id]);
 
             return [
                 'success' => true,
