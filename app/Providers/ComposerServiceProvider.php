@@ -24,6 +24,7 @@ class ComposerServiceProvider extends ServiceProvider {
 		//
         \View::composer([
             'app',
+            'logged',
             'employee',
             'admin',
             'admin.users',
