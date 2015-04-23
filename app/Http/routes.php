@@ -71,3 +71,5 @@ if (App::environment('local', 'testing')) {
     // For testing purpose. Let test clear database.
     Route::get('test/refresh', 'TestController@refresh');
 }
+
+
