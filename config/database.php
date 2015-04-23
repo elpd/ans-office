@@ -131,5 +131,5 @@ return [
 	|
 	*/
 
-	'log' => env(LOG_DATABASE, false),
+	'log' => env('LOG_DATABASE', false),
 ];
