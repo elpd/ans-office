@@ -71,4 +71,11 @@ class Contact extends Model
         'donate' => 'boolean',
         'blacklisted' => 'boolean',
     ];
+
+    public function scopeSingular($query, $email, $firstName)
+    {
+        return $query->where('email', '=', $email)
+            ->where('first_name', '=', $firstName);
+    }
+
 }
