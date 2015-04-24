@@ -13,6 +13,8 @@ return [
     // General
 
     'id' => 'ID',
+    'general_id' => 'ID',
+    'general_created_at' => 'Created At',
 
     // User
 
@@ -119,4 +121,21 @@ return [
     'contact-note_text' => 'text',
     'contact-note_created_at' => 'created at',
     'contact-note_updated_at' => 'updated at',
+
+    // etgar-22-registration-requests
+
+    'etgar-22-registration-requests' => 'Etgar 22 Registration Requests',
+    'Etgar-22-registration-requests' => 'Etgar 22 Registration Requests',
+    'etgar-22-registration-request_full_name' => 'Full Name',
+    'etgar-22-registration-request_facebook_account_name' => 'Facebook',
+    'etgar-22-registration-request_email' => 'Email',
+    'etgar-22-registration-request_phone' => 'Phone',
+    'etgar-22-registration-request_birth_year' => 'Birth Year',
+    'etgar-22-registration-request_call_for_donation' => 'Donate',
+    'etgar-22-registration-request_facebook_know_how' => 'Knows To Use Facebook',
+    'etgar-22-registration-request_call_for_facebook_help' => 'Call For FB Help',
+    'etgar-22-registration-request_why_go_vegan' => 'Why Go Vegan Answer',
+    'etgar-22-registration-request_parent_name' => 'Parent Name',
+    'etgar-22-registration-request_parent_email' => 'Parent Email',
+    'etgar-22-registration-request_status' => 'Request Status',
 ];

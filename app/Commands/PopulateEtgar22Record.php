@@ -31,28 +31,13 @@ class PopulateEtgar22Record extends Command implements SelfHandling {
 
 	protected function findOutContact() {
 		$recordContact = $this->etgar22Record->getRecordContact();
-		$contact = $this->findContact($recordContact);
+		$contact = Contact::findByEmailName($recordContact->getEmail(),
+			$recordContact->getCalcFirstName());
 		if ($contact == null) {
 			$contact = $this->createContact($recordContact);
 		}
 
 		return $contact;
-	}
-
-	protected function findContact($recordContact) {
-		$contact = Contact::singular($recordContact->getEmail(),
-			$recordContact->getCalcFirstName())->get();
-
-		switch($contact->count()) {
-			case 0:
-				return null;
-			case 1:
-				return $contact[0];
-			default:
-				throw new \Exception(
-					'Multiple raw contacts with same email and first name'); // TODO: custom exception.
-		}
-
 	}
 
 	protected function createContact($recordContact) {

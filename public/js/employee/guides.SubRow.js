@@ -50,7 +50,8 @@ define([
                     id: parentRowID,
                     tabs: [
                         groupsTabs
-                    ]
+                    ],
+                    direction: self.userSettingsGService.getLanguage().direction
                 });
 
                 $('#' + parentRowID).append(

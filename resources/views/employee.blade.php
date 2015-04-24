@@ -54,6 +54,10 @@
                                     <a href="/employee/groups-members" id="groups_members_section_link">
                                         @lang('main.groups_members_list_label')
                                     </a></li>
+                                <li class=" @if(isset($selected_view) && $selected_view == 'etgar22_registration_requests') active @endif">
+                                    <a href="/employee/etgar22-registration-requests" id="etgar22_registration_requests_section_link">
+                                        @lang('main.etgar22_registration_requests_list_label')
+                                    </a></li>
                             </ul>
                         </div>
                         <!--/.nav-collapse -->

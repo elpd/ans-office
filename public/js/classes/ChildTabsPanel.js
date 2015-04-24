@@ -7,6 +7,7 @@ define([], function(){
         setParams: function(params) {
             this.id = params.id;
             this.tabs = params.tabs;
+            this.direction = params.direction ? params.direction : 'left_to_right';
         },
 
         createElement: function() {
@@ -39,6 +40,10 @@ define([], function(){
                 '<ul class="nav nav-tabs" role="tablist">' +
                 '</ul>'
             );
+
+            if (self.direction == 'right_to_left'){
+                $element.addClass('navbar-right');
+            }
 
             self.tabs.forEach(function(tab){
                 $element.append(tab.createTabElement());

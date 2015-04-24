@@ -44,13 +44,7 @@ class Etgar22RecordContact {
         $contactNames->lastName = $this->lastNameStr;
 
         if ($contactNames->firstName  == '' && $contactNames->lastName == '') {
-            $tempArray = explode(' ', $this->fullNameStr);
-            if (count($tempArray) > 0) {
-                $contactNames->firstName = $tempArray[0];
-            }
-            if (count($tempArray) > 1) {
-                $contactNames->lastName = $tempArray[1];
-            }
+            $contactNames = Contact::translateFullName($this->fullNameStr);
         }
 
         return $contactNames;

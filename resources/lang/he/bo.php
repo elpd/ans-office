@@ -13,6 +13,8 @@ return [
     // General
 
     'id' => 'מזהה',
+    'general_id' => 'מזהה',
+    'general_created_at' => 'תאריך יצירה',
 
     // User
 
@@ -119,4 +121,21 @@ return [
     'contact-note_text' => 'הערה',
     'contact-note_created_at' => 'תאריך יצירה',
     'contact-note_updated_at' => 'תאריך עדכון',
+
+    // etgar-22-registration-requests
+
+    'etgar-22-registration-requests' => 'בקשות לרישום לאתגר 22',
+    'Etgar-22-registration-requests' => 'בקשות לרישום לאתגר 22',
+    'etgar-22-registration-request_full_name' => 'שם מלא',
+    'etgar-22-registration-request_facebook_account_name' => 'פייסבוק',
+    'etgar-22-registration-request_email' => 'דואל',
+    'etgar-22-registration-request_phone' => 'טלפון',
+    'etgar-22-registration-request_birth_year' => 'שנת לידה',
+    'etgar-22-registration-request_call_for_donation' => 'תרומה',
+    'etgar-22-registration-request_facebook_know_how' => 'יודע להשתמש בפייסבוק',
+    'etgar-22-registration-request_call_for_facebook_help' => 'מבקש עזרה לפייסבוק',
+    'etgar-22-registration-request_why_go_vegan' => 'למה להפול לטבעוני',
+    'etgar-22-registration-request_parent_name' => 'שם ההורה',
+    'etgar-22-registration-request_parent_email' => 'דואל ההורה',
+    'etgar-22-registration-request_status' => 'סטאטוס בקשה',
 ];

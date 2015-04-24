@@ -12,7 +12,7 @@ class RequestStatusTableSeeder extends Seeder
 
         $itemsData = [
             [
-                'name' => 'opened',
+                'name' => 'new',
             ],
             [
                 'name' => 'in_process',

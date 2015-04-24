@@ -68,7 +68,7 @@ trait RestControllerTrait
         $item = new $class($input);
 
         try {
-            \DB::transaction(function () use ($class, $item, $parentLink) {
+            \DB::transaction(function () use ($class, $item, $parentLink, $request) {
 
                 if ($parentLink) {
                     $linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
@@ -81,6 +81,10 @@ trait RestControllerTrait
 
                 if (method_exists($this, 'storeChildren')) {
                     $this->storeChildren($item);
+                }
+
+                if (method_exists($this, 'afterStore')) {
+                    $this->afterStore($request, $item);
                 }
             });
 

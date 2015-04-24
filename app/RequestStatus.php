@@ -16,5 +16,13 @@ class RequestStatus extends Model
             'name',
     );
     
-    protected $rules = array();    
+    protected $rules = [
+        'name' => [
+            'required'
+        ]
+    ];
+
+    public function scopeStatusNew($query) {
+        return $query->where('name', '=', 'new');
+    }
 }

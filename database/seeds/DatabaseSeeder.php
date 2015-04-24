@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call('GuideTableSeeder');
         $this->call('GroupsMembersTableSeeder');
         $this->call('ContactNotesTableSeeder');
+        $this->call('Etgar22RegistrationRequestTableSeeder');
     }
 
 }

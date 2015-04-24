@@ -54,7 +54,8 @@ define([
                     tabs: [
                         usersTab,
                         permissionsTab
-                    ]
+                    ],
+                    direction: self.userSettingsGService.getLanguage().direction
                 });
 
                 $('#' + parentRowID).append(

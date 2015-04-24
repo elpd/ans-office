@@ -4,6 +4,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Guard;
 use Illuminate\Contracts\Auth\Registrar;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
+use Illuminate\Http\Request;
 
 class AuthController extends Controller {
 
@@ -18,7 +19,10 @@ class AuthController extends Controller {
 	|
 	*/
 
-	use AuthenticatesAndRegistersUsers;
+	use AuthenticatesAndRegistersUsers {
+		getLogin as generalGetLogin;
+		postLogin as generalPostLogin;
+	}
 
 	/**
 	 * Create a new authentication controller instance.
@@ -35,4 +39,39 @@ class AuthController extends Controller {
 		$this->middleware('guest', ['except' => 'getLogout']);
 	}
 
+	public function getLogin(Request $request){
+		if ($request->ajax()){
+			return response()->json([], 200);
+		} else {
+			return $this->generalGetLogin();
+		}
+	}
+
+	public function postLogin(Request $request){
+		if ($request->ajax()){
+			return $this->postLoginAjax($request);
+		} else {
+			return $this->generalPostLogin($request);
+		}
+	}
+
+	protected function postLoginAjax(Request $request){
+		$this->validate($request, [
+			'email' => 'required|email', 'password' => 'required',
+		]);
+
+		$credentials = $request->only('email', 'password');
+
+		if ($this->auth->attempt($credentials, $request->has('remember')))
+		{
+			return response()->json([
+				'success' => true
+			], 200);
+
+		} else {
+			return response()->json([
+				'success' => false
+			], 401);
+		}
+	}
 }

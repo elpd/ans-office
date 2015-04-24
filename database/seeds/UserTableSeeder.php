@@ -18,6 +18,7 @@ class UserTableSeeder extends Seeder
         $adminRole = Role::where('slug', '=', 'admin')->firstOrFail();
         $employeeRole = Role::where('slug', '=', 'employee')->firstOrFail();
         $userRole = Role::where('slug', '=', 'user')->firstOrFail();
+        $etgar22registratorRole = Role::where('slug', '=', 'etgar22registrator')->firstOrFail();
 
         $englishUiLanguage = UiLanguage::where('name', '=', 'English')->firstOrFail();
         $hebrewUiLanguage = UiLanguage::where('name', '=', 'Hebrew')->firstOrFail();
@@ -70,7 +71,22 @@ class UserTableSeeder extends Seeder
                     'ui_bootstrap_theme' => $lumenUiTheme,
                     'ui_jquery_ui_theme' => $redmondJqUiTheme,
                 ]
-            ]
+            ],
+            [
+                'user' => [
+                    'name' => 'user1_etgar22registrator',
+                    'email' => 'user1_etgar22registrator@anonymous.org.il',
+                    'password' => \Hash::make('user1_etgar22registrator'),
+                ],
+                'roles' => [
+                    $etgar22registratorRole
+                ],
+                'settings' => [
+                    'ui_language' => $hebrewUiLanguage,
+                    'ui_bootstrap_theme' => $lumenUiTheme,
+                    'ui_jquery_ui_theme' => $redmondJqUiTheme,
+                ]
+            ],
         ];
 
         foreach ($sampleData as $sampleUser) {
