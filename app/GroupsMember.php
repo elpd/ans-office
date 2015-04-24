@@ -16,13 +16,10 @@ class GroupsMember extends Model
             'group_id',
             'contact_id',
             'status_id',
-            'guide_id_1',
-            'guide_id_2',
     );
 
     public $nullable = array(
-      'guide_id_1',
-      'guide_id_2'
+
     );
 
     protected $rules = array(
@@ -38,12 +35,6 @@ class GroupsMember extends Model
                     'required',
                     'exists:group_members_status,id'
             ),
-            "guide_id_1" => array(
-                    'exists:guides,id'
-            ),
-            "guide_id_2" => array(
-                    'exists:guides,id'
-            )
     );
 
     protected static $linksInfos = [
@@ -68,20 +59,6 @@ class GroupsMember extends Model
             'linkedField' => 'id',
             'linkedClass' => 'App\Group'
         ],
-        'guide_id_1' => [
-            'fieldName' => 'guide_id_1',
-            'functionOnChild' => 'guide1',
-            'linkedTable' => 'guides',
-            'linkedField' => 'id',
-            'linkedClass' => 'App\Guide'
-        ],
-        'guide_id_2' => [
-            'fieldName' => 'guide_id_2',
-            'functionOnChild' => 'guide2',
-            'linkedTable' => 'guides',
-            'linkedField' => 'id',
-            'linkedClass' => 'App\Guide'
-        ],
     ];
 
     public function status() {
@@ -96,20 +73,7 @@ class GroupsMember extends Model
         return $this->belongsTo('App\Group');
     }
 
-    public function guide1() {
-        return $this->belongsTo('App\Guide', 'guide_id_1');
-    }
-
-    public function guide2() {
-        return $this->belongsTo('App\Guide', 'guide_id_2');
-    }
-
-    // Accessors & Mutators
-
-    public function setGuideId2Attribute($value)
-    {
-        $val = ($value === '') ? null : $value;
-
-        $this->attributes['guide_id_2'] = $val;
+    public function guides() {
+        return $this->belongsToMany('App\User', 'groups_members_guides');
     }
 }

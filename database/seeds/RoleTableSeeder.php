@@ -55,7 +55,7 @@ class RoleTableSeeder extends Seeder
                 'name' => 'Admin',
                 'slug' => 'admin',
                 'description' => '',
-                'level' => 4,
+                'level' => 100,
                 'permissions' => [
                     $allApiPermissions
                 ]
@@ -64,17 +64,35 @@ class RoleTableSeeder extends Seeder
                 'name' => 'Employee',
                 'slug' => 'employee',
                 'description' => '',
-                'level' => 3,
+                'level' => 20,
                 'permissions' => [
                     $employeeReadingPermissions,
                     $employeeWritingPermissions,
                 ]
-            ),
+            ), [
+                'name' => 'Guide',
+                'slug' => 'guide',
+                'description' => '',
+                'level' => 20,
+                'permissions' => [
+                    $employeeReadingPermissions,
+                    $employeeWritingPermissions,
+                ]
+            ],
+            [
+                'name' => 'etgar22registrator',
+                'slug' => 'etgar22registrator',
+                'description' => 'api account for etgar22 registration',
+                'level' => 20,
+                'permissions' => [
+                    $etgar22registratorPermissions
+                ]
+            ],
             array(
                 'name' => 'User',
                 'slug' => 'user',
                 'description' => '',
-                'level' => 2,
+                'level' => 10,
                 'permissions' => [
                     $basicEnumPermissions
                 ]
@@ -88,15 +106,7 @@ class RoleTableSeeder extends Seeder
 
                 ]
             ),
-            [
-                'name' => 'etgar22registrator',
-                'slug' => 'etgar22registrator',
-                'description' => 'api account for etgar22 registration',
-                'level' => 3,
-                'permissions' => [
-                    $etgar22registratorPermissions
-                ]
-            ]
+
         );
 
         foreach ($itemsData as $itemData) {

@@ -90,14 +90,6 @@ class CreateEtgar22Tables extends Migration
                 $table->timestamps();
             });
 
-        // Create the guides table
-        Schema::create('guides',
-            function ($table) {
-                $table->increments('id')->unsigned();
-                $table->string('name', 20);
-                $table->timestamps();
-            });
-
         // Create the etgar22 table
         Schema::create('etgar22',
             function ($table) {
@@ -159,13 +151,6 @@ class CreateEtgar22Tables extends Migration
                 $table->integer('status_id')
                     ->unsigned()
                     ->index();
-                $table->integer('guide_id_1')
-                    ->unsigned()
-                    ->index();
-                $table->integer('guide_id_2')
-                    ->unsigned()
-                    ->nullable()
-                    ->index();
                 $table->timestamps();
 
                 $table->unique(
@@ -191,19 +176,32 @@ class CreateEtgar22Tables extends Migration
                     ->on('group_members_status')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
-
-                $table->foreign('guide_id_1')
-                    ->references('id')
-                    ->on('guides')
-                    ->onUpdate('cascade')
-                    ->onDelete('cascade');
-
-                $table->foreign('guide_id_2')
-                    ->references('id')
-                    ->on('guides')
-                    ->onUpdate('cascade')
-                    ->onDelete('cascade');
             });
+
+        // Create the groups members - guides table
+        Schema::create('groups_members_guides', function (Blueprint $table) {
+            $table->increments('id')->unsigned();
+            $table->integer('groups_member_id')->unsigned();
+            $table->integer('user_id')->unsigned();
+
+            $table->foreign('groups_member_id')
+                ->references('id')
+                ->on('groups_members')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
+
+            $table->unique(
+                array(
+                    'groups_member_id',
+                    'user_id'
+                ));
+        });
 
         // Create the user settings table
         Schema::create('settings_user',
@@ -268,19 +266,22 @@ class CreateEtgar22Tables extends Migration
 
         Schema::table('groups_members',
             function (Blueprint $table) {
-                $table->dropForeign('groups_members_guide_id_1_foreign');
-                $table->dropForeign('groups_members_guide_id_2_foreign');
                 $table->dropForeign('groups_members_group_id_foreign');
                 $table->dropForeign('groups_members_contact_id_foreign');
                 $table->dropForeign('groups_members_status_id_foreign');
             });
 
         Schema::table('settings_user',
-            function(Blueprint $table){
+            function (Blueprint $table) {
                 $table->dropForeign('settings_user_user_id_foreign');
                 $table->dropForeign('settings_user_ui_language_id_foreign');
                 $table->dropForeign('settings_user_ui_bootstrap_theme_id_foreign');
                 $table->dropForeign('settings_user_ui_jquery_ui_theme_id_foreign');
+            });
+
+        Schema::table('groups_members_guides', function(Blueprint $table){
+            $table->dropForeign('groups_members_guides_groups_member_id_foreign');
+            $table->dropForeign('groups_members_guides_user_id_foreign');
         });
 
         Schema::drop('contacts');
@@ -290,11 +291,11 @@ class CreateEtgar22Tables extends Migration
         Schema::drop('groups_members');
         Schema::drop('group_members_status');
         Schema::drop('group_status');
-        Schema::drop('guides');
         Schema::drop('settings_user');
         Schema::drop('ui_languages');
         Schema::drop('ui_bootstrap_themes');
         Schema::drop('ui_jquery_ui_themes');
+        Schema::drop('groups_members_guides');
     }
 
 }

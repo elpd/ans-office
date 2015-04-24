@@ -5,12 +5,12 @@ use App\GroupsMember;
 use App\Group;
 use App\Contact;
 use App\GroupMembersStatus;
-use App\Guide;
+use App\User;
 
 class GroupsMembersTableSeeder extends Seeder
 {
 
-    public function run ()
+    public function run()
     {
         DB::table('groups_members')->delete();
 
@@ -19,27 +19,41 @@ class GroupsMembersTableSeeder extends Seeder
         $contact1 = Contact::where('email', '=', 'contact1@example.com')->firstOrFail();
         $contact2 = Contact::where('email', '=', 'contact2@example.com')->firstOrFail();
         $status1 = GroupMembersStatus::where('status', '=', 'new')->firstOrFail();
-        $guide1 = Guide::where('name', '=', 'israel')->firstOrFail();
-        $guide2 = Guide::where('name', '=', 'john')->firstOrFail();
+        $guide1 = User::where('name', '=', 'guide1')->firstOrFail();
+        $guide2 = User::where('name', '=', 'guide2')->firstOrFail();
 
         $itemsData = array(
-                array(
-                        'group_id' => $group1->id,
-                        'contact_id' => $contact1->id,
-                        'status_id' => $status1->id,
-                        'guide_id_1' => $guide1->id
-                ),
-                array(
-                        'group_id' => $group2->id,
-                        'contact_id' => $contact2->id,
-                        'status_id' => $status1->id,
-                        'guide_id_1' => $guide2->id,
-                )
+            array(
+                'group' => [
+                    'group_id' => $group1->id,
+                    'contact_id' => $contact1->id,
+                    'status_id' => $status1->id,
+                ],
+                'guides' => [
+                    $guide1,
+                    $guide2,
+                ]
+            ),
+            array(
+                'group' => [
+                    'group_id' => $group2->id,
+                    'contact_id' => $contact2->id,
+                    'status_id' => $status1->id,
+                ],
+                'guides' => [
+                    $guide1,
+                ]
+            )
         );
 
         foreach ($itemsData as $itemData) {
+            $groupData = $itemData['group'];
+            $newItem = GroupsMember::create($groupData);
 
-            $newItem = GroupsMember::create($itemData);
+            $guidesData = $itemData['guides'];
+            foreach ($guidesData as $guide) {
+                $newItem->guides()->save($guide);
+            }
 
             $errors = $newItem->getErrors();
             if (count($errors) > 0) {
