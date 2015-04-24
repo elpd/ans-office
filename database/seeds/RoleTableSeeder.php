@@ -14,33 +14,40 @@ class RoleTableSeeder extends Seeder
         $allApiPermissions = Permission::where('slug', 'LIKE', 'api.%')->get();
 
         $basicEnumPermissions = [
-            Permission::where('slug', '=', 'api.group.status.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.group.members.status.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.uilanguage.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.uilanguage.show')->firstOrFail(),
-            Permission::where('slug', '=', 'api.uibootstraptheme.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.uijqueryuitheme.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.language.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.group.status.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.group.members.status.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.uilanguage.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.uilanguage.action.show')->firstOrFail(),
+            Permission::where('slug', '=', 'api.uibootstraptheme.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.uijqueryuitheme.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.language.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.request.status.action.index')->firstOrFail(),
         ];
 
         $employeeReadingPermissions = [
-            Permission::where('slug', '=', 'api.contact.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.etgar22.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.contact.note.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.group.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.groups.members.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.guide.index')->firstOrFail(),
-            Permission::where('slug', '=', 'api.cycle.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.user.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.contact.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.etgar22.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.contact.note.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.group.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.groups.members.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.guide.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.cycle.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.etgar22.registration.request.action.index')->firstOrFail(),
         ];
 
         $employeeWritingPermissions = [
-            Permission::where('slug', 'LIKE', 'api.contact.%')->get(),
-            Permission::where('slug', 'LIKE', 'api.etgar22.%')->get(),
-            Permission::where('slug', 'LIKE', 'api.contact.note.%')->get(),
-            Permission::where('slug', 'LIKE', 'api.group.%')->get(),
-            Permission::where('slug', 'LIKE', 'api.groups.members.%')->get(),
-            Permission::where('slug', 'LIKE', 'api.guide.%')->get(),
-            Permission::where('slug', 'LIKE', 'api.cycle.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.contact.action.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.etgar22.action.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.contact.note.action.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.group.action.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.groups.members.action.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.guide.action.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.cycle.action.%')->get(),
+        ];
+
+        $etgar22registratorPermissions = [
+            Permission::where('slug', '=', 'api.etgar22.registration.request.action.store')->get(),
         ];
 
         $itemsData = array(
@@ -77,7 +84,19 @@ class RoleTableSeeder extends Seeder
                 'slug' => 'guest',
                 'description' => '',
                 'level' => 1,
+                'permissions' => [
+
+                ]
             ),
+            [
+                'name' => 'etgar22registrator',
+                'slug' => 'etgar22registrator',
+                'description' => 'api account for etgar22 registration',
+                'level' => 3,
+                'permissions' => [
+                    $etgar22registratorPermissions
+                ]
+            ]
         );
 
         foreach ($itemsData as $itemData) {
@@ -102,12 +121,13 @@ class RoleTableSeeder extends Seeder
         };
     }
 
-    protected function attachPermissionsToModel($model, $permissionsTree) {
-        foreach($permissionsTree as $permissionsNode) {
-            if ($permissionsNode instanceof \App\Permission){
-               $model->permissions()->attach($permissionsNode);
+    protected function attachPermissionsToModel($model, $permissionsTree)
+    {
+        foreach ($permissionsTree as $permissionsNode) {
+            if ($permissionsNode instanceof \App\Permission) {
+                $model->permissions()->attach($permissionsNode);
 
-            } elseif (is_array($permissionsNode) || $permissionsNode instanceof Collection){
+            } elseif (is_array($permissionsNode) || $permissionsNode instanceof Collection) {
                 $this->attachPermissionsToModel($model, $permissionsNode);
 
             } else {

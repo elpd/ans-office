@@ -1,12 +1,12 @@
 <?php namespace App\Console\Commands;
 
-use App\Commands\PopulateCsv;
+use App\Commands\PopulateCsv as PopulateCsvCommand;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
 use Illuminate\Foundation\Bus\DispatchesCommands;
 
-class Populate extends Command
+class PopulateCsv extends Command
 {
     use DispatchesCommands;
 
@@ -43,7 +43,7 @@ class Populate extends Command
     {
         $filePath = $this->option('path');
 
-        $this->dispatch(new PopulateCsv($filePath, $this));
+        $this->dispatch(new PopulateCsvCommand($filePath, $this));
 
 
         //$this->table(['date', 'group', 'full name'], $rows);

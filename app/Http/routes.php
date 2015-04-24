@@ -30,6 +30,7 @@ Route::group(['middleware' => 'user.settings'], function() {
     Route::get('employee/guides', 'GuideController@index');
     Route::get('employee/groups-members', 'GroupsMembersController@index');
     Route::get('employee/cycles', 'CycleController@index');
+    Route::get('employee/etgar22-registration-requests', 'Etgar22RegistrationRequestController@index');
 
     Route::get('admin', 'AdminController@index');
     Route::get('admin/users', 'UserController@index');
@@ -56,6 +57,8 @@ Route::resource('api/permission', 'api\PermissionController');
 Route::resource('api/ui_language', 'api\UiLanguageController');
 Route::resource('api/ui_bootstrap_theme', 'api\UiBootstrapThemeController');
 Route::resource('api/ui_jquery_ui_theme', 'api\UiJqueryUiThemeController');
+Route::resource('api/etgar22-registration-request', 'api\Etgar22RegistrationRequestController');
+Route::resource('api/request-status', 'api\RequestStatusController');
 
 Route::get('api/user-name', 'api\User\NameController@show');
 Route::put('api/user-name', 'api\User\NameController@update');
@@ -66,6 +69,8 @@ Route::get('api/user-settings', 'api\User\SettingsController@show');
 Route::put('api/user-settings', 'api\User\SettingsController@update');
 
 Route::get('api/language', 'api\LanguageController@index');
+
+
 
 if (App::environment('local', 'testing')) {
     // For testing purpose. Let test clear database.

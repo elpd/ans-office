@@ -27,6 +27,7 @@ return [
     'groups_list_label' => 'Groups',
     'guides_list_label' => 'Guides',
     'groups_members_list_label' => 'Group Members',
+    'etgar22_registration_requests_list_label' => 'Etgar 22 Registration Requests',
 
     'general_user_settings_label' => 'General Settings',
     'settings_user_name_label' => 'User Name',

@@ -66,7 +66,8 @@ define([
                         groupsTabs,
                         etgar22Tab,
                         notesTab
-                    ]
+                    ],
+                    direction: self.userSettingsGService.getLanguage().direction
                 });
 
                 $('#' + parentRowID).append(

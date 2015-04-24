@@ -27,6 +27,7 @@ return [
     'groups_list_label' => 'קבוצות',
     'guides_list_label' => 'מדריכים',
     'groups_members_list_label' => 'משתתפים בקבוצות',
+    'etgar22_registration_requests_list_label' => 'בקשות לרישום לאתגר 22',
 
     'general_user_settings_label' => 'הגדרות כלליות',
     'settings_user_name_label' => 'שם משתמש',

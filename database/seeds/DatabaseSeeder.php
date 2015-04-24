@@ -18,6 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call('UiLanguageTableSeeder');
         $this->call('UiBootstrapThemeTableSeeder');
         $this->call('UiJqueryUiThemeTableSeeder');
+        $this->call('RequestStatusTableSeeder');
         $this->call('PermissionTableSeeder');
         $this->call('RoleTableSeeder');
         $this->call('UserTableSeeder');
@@ -29,6 +30,7 @@ class DatabaseSeeder extends Seeder
         $this->call('GuideTableSeeder');
         $this->call('GroupsMembersTableSeeder');
         $this->call('ContactNotesTableSeeder');
+        $this->call('Etgar22RegistrationRequestTableSeeder');
     }
 
 }

@@ -1,8 +1,11 @@
 <?php namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Http\Request;
 
 class AuthorizeApi {
+
+    protected static $CONTROLLER_ACTIONS_NAMES = ['index', 'show', 'store', 'update', 'destroy'];
 
 	/**
 	 * Handle an incoming request.
@@ -14,12 +17,9 @@ class AuthorizeApi {
 	public function handle($request, Closure $next)
 	{
         $user = $request->user();
-        $routeResolver = $request->getRouteResolver();
-        $route = $routeResolver();
-        $actionFull = $route->getAction()['as'];
-        $actionFullSlug = str_slug($actionFull, \Config::get('roles.separator'));
+        $action = $this->calcRequestedAction($request);
 
-        if (! $user->can($actionFullSlug)){
+        if (! $user->can($action)){
             if ($request->ajax())
             {
                 return response()->json([
@@ -37,5 +37,27 @@ class AuthorizeApi {
 
 		return $next($request);
 	}
+
+    protected function calcRequestedAction(Request $request){
+        $routeResolver = $request->getRouteResolver();
+        $route = $routeResolver();
+
+        $action = $route->getAction();
+        $actionFull = $action['as'];
+        $actionFullSlug = str_slug($actionFull, \Config::get('roles.separator'));
+
+        $actionsNamesParts = explode('.', $actionFullSlug);
+        $lastPartIndex = count($actionsNamesParts) - 1;
+        $controllerActionName = $actionsNamesParts[$lastPartIndex];
+        if (! in_array($controllerActionName, self::$CONTROLLER_ACTIONS_NAMES)){
+            return '';
+        }
+
+        $controllerNamesParts = array_slice($actionsNamesParts, 0, $lastPartIndex);
+        $constructedAction = implode('.', $controllerNamesParts);
+        $constructedAction = $constructedAction . '.action.' . $controllerActionName;
+
+        return $constructedAction;
+    }
 
 }
