@@ -10,6 +10,7 @@ define(['lodash'], function (_) {
             this.name = params.name;
             this.langCaption = params.langCaption;
             this.lang = params.lang;
+            this.gridInitialization = params.gridInitialization;
         },
 
         setVariables: function () {
@@ -24,16 +25,32 @@ define(['lodash'], function (_) {
         createTabElement: function () {
             var self = this;
 
-            var $element = $(
-                '<li role="presentation">' +
+            var $elementListItem = $(
+                '<li role="presentation"></li>');
+
+            var $elementTabLink = $(
                 '<a id="' + self.tabLinkId +
                 '" href="#' + self.tabId + '" aria-controls="' + self.tabId +
                 '" role="tab" data-toggle="tab">' +
                 _.capitalize(self.lang.get(self.langCaption)) +
-                '</a>' +
-                '</li>');
+                '</a>'
+            );
 
-            return $element;
+            $elementTabLink.click(function (e) {
+                e.preventDefault();
+
+                var grid = self.gridInitialization(
+                    self.lang,
+                    self.userSettingsGService,
+                    self.gridId);
+
+                grid.activate();
+                $(this).tab('show');
+            });
+
+            $elementListItem.append($elementTabLink);
+
+            return $elementListItem;
         },
 
         createTabGridContentElement: function () {

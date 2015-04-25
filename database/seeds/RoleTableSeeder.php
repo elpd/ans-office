@@ -42,7 +42,6 @@ class RoleTableSeeder extends Seeder
             Permission::where('slug', 'LIKE', 'api.contact.note.action.%')->get(),
             Permission::where('slug', 'LIKE', 'api.group.action.%')->get(),
             Permission::where('slug', 'LIKE', 'api.groups.members.action.%')->get(),
-            Permission::where('slug', 'LIKE', 'api.guide.action.%')->get(),
             Permission::where('slug', 'LIKE', 'api.cycle.action.%')->get(),
         ];
 

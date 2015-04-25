@@ -1,7 +1,6 @@
 <?php namespace App;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Config;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Watson\Validating\ValidatingTrait;
 
@@ -53,4 +52,14 @@ class RoleUser extends Model
         return $this->belongsTo('App\Role');
     }
 
+    /*
+     * Scopes
+     */
+
+    public function scopeWhoAreGuides(Builder $query){
+        return $query->whereHas('role', function($q)
+        {
+            $q->where('name', '=', 'guide');
+        });
+    }
 }

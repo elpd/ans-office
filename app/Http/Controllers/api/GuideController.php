@@ -3,9 +3,14 @@
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\RestControllerTrait;
+use Illuminate\Database\Eloquent\Builder;
 
 class GuideController extends ApiController {
-	protected $class = 'App\Guide';
+	protected $class = 'App\RoleUser';
 
 	use RestControllerTrait;
+
+	protected function setAdditionalQueryFilters(Builder $query){
+		return $query->whoAreGuides();
+	}
 }

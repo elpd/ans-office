@@ -223,6 +223,10 @@ trait RestControllerTrait
 
         $query = $query->select($mainTableName . '.*');
 
+        if (method_exists($this, 'setAdditionalQueryFilters')){
+            $query = $this->setAdditionalQueryFilters($query);
+        }
+
         foreach ($filterParams as $filterCondition) {
             if (isset($filterCondition->isSearchOnParentField) && $filterCondition->isSearchOnParentField) {
 

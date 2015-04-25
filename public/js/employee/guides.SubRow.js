@@ -9,7 +9,8 @@ define([
         'classes/bi/GroupMembersStatus',
         'classes/bi/Guide',
         'classes/bi/Contact',
-        'classes/GeneralGridSubRowPageObject'
+        'classes/GeneralGridSubRowPageObject',
+        'classes/grids/GroupsMembersGuideGrid'
     ],
     function (_,
               utilities,
@@ -21,7 +22,8 @@ define([
               GroupMembersStatus,
               Guide,
               Contact,
-              GeneralGridSubRowPageObject) {
+              GeneralGridSubRowPageObject,
+              GroupsMembersGuideGrid) {
 
         var Class = function SubRow(params) {
             this.parentControllerUrl = params.parentControllerUrl;
@@ -39,17 +41,26 @@ define([
                     pageId: parentRowID
                 });
 
-                var groupsTabs = new GridTab({
+                var groupsMembersAssociationTabs = new GridTab({
                     parentRowId: parentRowID,
                     name: 'groups_members',
                     lang: self.lang,
-                    langCaption: 'bo.group-member'
+                    langCaption: 'bo.group-member',
+                    gridInitialization: function(lang, userSettingsGService,
+                        gridId) {
+                        var grid = new GroupsMembersGuideGrid({
+                            lang: lang,
+                            userSettingsGService: userSettingsGService,
+                            gridId: gridId
+                        });
+                        return grid;
+                    }
                 });
 
                 var childTabsPanel = new ChildTabsPanel({
                     id: parentRowID,
                     tabs: [
-                        groupsTabs
+                        groupsMembersAssociationTabs
                     ],
                     direction: self.userSettingsGService.getLanguage().direction
                 });
@@ -59,11 +70,19 @@ define([
                 );
 
                 // Bind the tabs
-
+/*
                 $('#' + groupsTabs.tabLinkId).click(function (e) {
                     e.preventDefault();
 
-                    var grid = new GeneralGrid({
+                    var grid = new GroupsMembersGuideGrid({
+
+                    });
+
+                    grid.activate();
+
+                    $(this).tab('show');
+
+                    var grid2 = new GeneralGrid({
                         getDesiredHeightInContainer: function(){
                             return page.getGridDesiredHeight();
                         },
@@ -74,7 +93,7 @@ define([
                         controllerUrl: '/api/groups-members',
                         parentLink: {
                             id: parentRowKey,
-                            childFieldName: 'guide_id_1'
+                            childFieldName: 'user_id'
                         },
                         gridId: groupsTabs.gridId,
                         biName: 'groups_members',
@@ -176,19 +195,11 @@ define([
                         }
                     });
 
-                    grid.activate();
 
-                    $(this).tab('show');
                 });
+                */
             }
         };
-
-        function generateDateTimePicker(element) {
-            $(element).datetimepicker({
-                dateFormat: 'yy-mm-dd',
-                timeFormat: 'HH:mm:ss'
-            });
-        }
 
         return Class;
     });
