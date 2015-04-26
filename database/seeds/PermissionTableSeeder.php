@@ -542,7 +542,32 @@ class PermissionTableSeeder extends Seeder
                 'slug' => 'api.request-status.action.destroy',
                 'description' => '',
                 'model' => '',
-            ],
+            ], [
+                'name' => 'api.group-member-guide.action.index',
+                'slug' => 'api.group-member-guide.action.index',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.group-member-guide.action.show',
+                'slug' => 'api.group-member-guide.action.show',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.group-member-guide.action.store',
+                'slug' => 'api.group-member-guide.action.store',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.group-member-guide.action.update',
+                'slug' => 'api.group-member-guide.action.update',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.group-member-guide.action.destroy',
+                'slug' => 'api.group-member-guide.action.destroy',
+                'description' => '',
+                'model' => '',
+            ]
         ];
 
         foreach ($itemsData as $itemData) {

@@ -1,11 +1,17 @@
 define([
-    'classes/EmptySubRow'
-], function (EmptySubRow) {
+    'classes/AttributesObject',
+    'classes/SubRow'
+], function (AttributesObject,
+             EmptySubRow) {
 
-    var GRID_HEIGHT_MIN = 100;
-    var GRID_WIDTH_MIN = 500;
+    var GRID_HEIGHT_MIN = 150;
+    var GRID_WIDTH_MIN = 700;
+    var FULL_SCREEN_GRID_BOX_CLASS = 'full_screen_grid';
+    var GRID_TITLE_BAR_CLASS = 'ui-jqgrid-titlebar';
+    var GRID_HEADER_BOX_CLASS = 'ui-jqgrid-hdiv';
+    var GRID_BOTTOM_PAGER_CLASS = 'ui-jqgrid-pager.ui-corner-bottom';
 
-    var classAttributes = {
+    var attributesRules = {
         gridId: {
             required: true
         },
@@ -62,25 +68,78 @@ define([
         colModel: {
             required: true
         },
-        lang: {
+        gridBoxId: {
+            required: true,
+            defaults: {
+                dependencies: ['gridId'],
+                calculation: function (gridId) {
+                    return 'gbox_' + gridId;
+                }
+            }
+        },
+
+        pagerLeftId: {
+            required: true,
+            defaults: {
+                dependencies: ['pagerId'],
+                calculation: function (pagerId) {
+                    return pagerId + '_left';
+                }
+            }
+        },
+
+        pagerCenterId: {
+            required: true,
+            defaults: {
+                dependencies: ['pagerId'],
+                calculation: function (pagerId) {
+                    return pagerId + '_center';
+                }
+            }
+        },
+
+        pagerRightId: {
+            required: true,
+            defaults: {
+                dependencies: ['pagerId'],
+                calculation: function (pagerId) {
+                    return pagerId + '_right';
+                }
+            }
+        },
+
+        calcDesiredHeightInContainer: {
             required: true
         },
-        userSettingsGService: {
+        calcDesiredWidthInContainer: {
             required: true
+        },
+        fullScreenButtonId: {
+            required: true,
+            defaults: {
+                dependencies: ['pagerId'],
+                calculation: function (pagerId) {
+                    return pagerId + '_fullscr_button';
+                }
+            }
         }
     }
 
     var Class = function (params) {
-        setAttributes(this, classAttributes, params);
+        AttributesObject.call(this, params, attributesRules);
     };
 
-    Class.prototype = Object.create(Object.prototype, {
-        activate: {
+    Class.prototype = Object.create(AttributesObject.prototype, {
+        execute: {
             value: function () {
                 var self = this;
                 setGridComponent(self);
                 setFilterToolbarComponent(self);
                 setNavigationComponents(self);
+                setGeneralBehavior(self);
+
+                // Make grid resize on first activation.
+                $(window).trigger('resize');
             }
         },
 
@@ -89,74 +148,250 @@ define([
                 var self = this;
                 return $('#' + self.gridId);
             }
+        },
+
+        get$GridBox: {
+            value: function () {
+                var self = this;
+                return $('#' + self.gridBoxId);
+            }
+        },
+
+        get$GridTitleBar: {
+            value: function () {
+                var self = this;
+                return self.get$GridBox().find('.' + GRID_TITLE_BAR_CLASS);
+            }
+        },
+
+        get$GridHeaderBox: {
+            value: function () {
+                var self = this;
+                return self.get$GridBox().find('.' + GRID_HEADER_BOX_CLASS);
+            }
+        },
+
+        get$GridBottomPager: {
+            value: function () {
+                var self = this;
+                return self.get$GridBox().find('.' + GRID_BOTTOM_PAGER_CLASS);
+            }
+        },
+
+        get$PagerLeft: {
+            value: function () {
+                var self = this;
+                return $('#' + self.pagerLeftId);
+            }
+        },
+
+        get$PagerCenter: {
+            value: function () {
+                var self = this;
+                return $('#' + self.pagerCenterId);
+            }
+        },
+
+        get$PagerRight: {
+            value: function () {
+                var self = this;
+                return $('#' + self.pagerRightId);
+            }
+        },
+
+        redrawGridDimensions: {
+            value: function (params) {
+                var self = this;
+                var desiredGridSize = self.calcDesiredGridSize();
+
+                var isShrinkToFit = params.hasOwnProperty('shrinkToFit') ?
+                    params.shrinkToFit : false;
+                isShrinkToFit = (desiredGridSize.width <= GRID_WIDTH_MIN) ?
+                    true : isShrinkToFit;
+
+                self.redrawGridDimensionsPhase(desiredGridSize, isShrinkToFit);
+            }
+        },
+
+        calcDesiredGridSize: {
+            value: function () {
+                var self = this;
+
+                var calcHeight = 0;
+                var calcWidth = 0;
+
+                if (self.isGridInFullScreen()) {
+                    calcHeight = self.calcGridHeightWhenFull();
+                    calcWidth = self.calcGridWidthWhenFull();
+                } else {
+                    calcHeight = self.calcGridHeightWhenNormal();
+                    calcWidth = self.calcGridWidthWhenNormal();
+                }
+
+                // todo: refactor to Rectangle class.
+                return {
+                    height: calcHeight,
+                    width: calcWidth,
+                    equals: function (target) {
+                        if (this.height == target.height && this.width == target.width) {
+                            return true;
+                        }
+
+                        return false;
+                    }
+                };
+            }
+        },
+
+        isGridInFullScreen: {
+            value: function () {
+                var self = this;
+                var result = self.get$GridBox().hasClass(FULL_SCREEN_GRID_BOX_CLASS);
+
+                return result;
+            }
+        },
+
+        calcGridHeightWhenFull: {
+            value: function () {
+                var self = this;
+
+                var windowHeight = $(window).height();
+                var titleBarHeight = self.get$GridTitleBar().outerHeight(true);
+                var headerBoxHeight = self.get$GridHeaderBox().outerHeight(true);
+                var bottomPagerHeight = self.get$GridBottomPager().outerHeight(true);
+
+                var calc = windowHeight - (titleBarHeight + headerBoxHeight + bottomPagerHeight);
+
+                return calc;
+            }
+        },
+
+        calcGridWidthWhenFull: {
+            value: function () {
+                var self = this;
+                var windowWidth = $(window).width();
+                var calc = windowWidth;
+
+                return calc;
+            }
+        },
+
+        calcGridHeightWhenNormal: {
+            value: function () {
+                var self = this;
+
+                var desiredHeightInContainer = self.calcDesiredHeightInContainer();
+                var titleBarHeight = self.get$GridTitleBar().outerHeight(true);
+                var headerBoxHeight = self.get$GridHeaderBox().outerHeight(true);
+                var bottomPagerHeight = self.get$GridBottomPager().outerHeight(true);
+
+                var calcHeight = desiredHeightInContainer - (titleBarHeight + headerBoxHeight + bottomPagerHeight + 5);
+                // Set a minimum for height;
+                calcHeight = calcHeight < GRID_HEIGHT_MIN ? GRID_HEIGHT_MIN : calcHeight;
+
+                return calcHeight;
+            }
+        },
+
+        calcGridWidthWhenNormal: {
+            value: function () {
+                var self = this;
+                var calc = self.calcDesiredWidthInContainer();
+
+                // Set a minimum for height;
+                calc = calc < GRID_WIDTH_MIN ? GRID_WIDTH_MIN : calc;
+
+                return calc;
+            }
+        },
+
+        redrawGridDimensionsPhase: {
+            value: function (gridSize, isShrinkToFit) {
+                var self = this;
+
+                self.get$Grid().setGridHeight(gridSize.height + 'px');
+                self.get$Grid().setGridWidth(gridSize.width, isShrinkToFit);
+            }
+        },
+
+        setGridToFullScreen: {
+            value: function() {
+                var self = this;
+                var $gridBox = self.get$GridBox();
+
+                $gridBox.addClass(FULL_SCREEN_GRID_BOX_CLASS);
+
+                self.redrawGridDimensions({shrinkToFit: false});
+            }
+        },
+
+        exitFullScreen: {
+            value: function () {
+                var self = this;
+                var $gridBox = self.get$GridBox();
+
+                $gridBox.removeClass(FULL_SCREEN_GRID_BOX_CLASS);
+
+                self.redrawGridDimensions({shrinkToFit: false});
+            }
+        },
+
+        customButtonFullScreen: {
+            value: function () {
+                var self = this;
+                return new CustomButtonFullScreen({
+                    id: self.fullScreenButtonId
+                });
+            }
         }
+
     });
 
-    function setAttributes(self, attributes, params) {
-        var attList = createAttributesListByDependencies(attributes);
-        _.forEach(attList, function (attDef, attKey) {
-            setAttribute(self, attDef, attKey, params);
+    function CustomButtonFullScreen(params) {
+        id = params.id;
+    }
+
+    CustomButtonFullScreen.prototype = {
+        fullScreenIconId: 'ui-icon-arrow-4-diag',
+        exitScreenIconId: 'ui-icon-arrow-1-se',
+
+        get$IconSpan: function () {
+            return this.get$LabelDiv().find('span');
+        },
+
+        get$LabelDiv: function () {
+            return $('#' + self.id + ' div.ui-pg-div');
+        },
+
+        setAppearanceAsEnterFullScreen: function () {
+            var self = this;
+
+            self.get$IconSpan().removeClass(self.exitScreenIconId);
+            self.get$IconSpan().addClass(self.fullScreenIconId);
+            setTextContents(self.get$LabelDiv(), 'Full Screen');
+        },
+
+        setAppearanceAsExitFullScreen: function () {
+            var self = this;
+
+            self.get$IconSpan().removeClass(self.fullScreenIconId);
+            self.get$IconSpan().addClass(self.exitScreenIconId);
+            setTextContents(self.get$LabelDiv(), 'Exit Full Screen');
+        }
+
+    };
+
+    function setTextContents($elem, text) {
+        $elem.contents().filter(function () {
+            if (this.nodeType == Node.TEXT_NODE) {
+                this.nodeValue = text;
+            }
         });
-    }
-
-    function createAttributesListByDependencies(attributes) {
-        // TODO
-        return attributes;
-    }
-
-    function setAttribute(self, attDef, attKey, params) {
-        var required = calcRequired(self, attDef);
-
-        if (params.hasOwnProperty(attKey)) {
-            self[attKey] = params[attKey];
-
-        } else if (attDef.defaults && required) {
-            self[attKey] = calcAttributeDefault(self, attDef);
-
-        } else if (required) {
-            throw new Error('Initialization of object failed. Missing required attribute: ' +
-                attKey
-            );
-        }
-    }
-
-    function calcRequired(self, attDef) {
-        if (!attDef.hasOwnProperty('required')) {
-            return false;
-        }
-        if (_.isFunction(attDef.required)) {
-            attDef.required.apply(self, null);
-
-        } else {
-            return attDef.required;
-        }
-    }
-
-    function calcAttributeDefault(self, attDef) {
-        var dependenciesValues = [];
-        var defaults = attDef.defaults;
-
-        if (defaults.hasOwnProperty('dependencies')) {
-
-            _.forEach(attDef.defaults.dependencies, function (depName) {
-                if (!self.hasOwnProperty(depName)) {
-                    throw new Error('something wrong in attributes dependencies list');
-                }
-                dependenciesValues.push(self[depName]);
-            });
-        }
-
-        if (_.isFunction(defaults.calculation)) {
-            return defaults.calculation.apply(self, dependenciesValues);
-        } else {
-            return defaults.calculation;
-        }
     }
 
     function calcGridParamsOnActivation(self) {
         var params = {};
-
-        var subRow = self.hasSubGrid ? createSubRow(self) : null;
 
         params.url = self.controllerUrl;
         params.colModel = self.colModel;
@@ -185,7 +420,16 @@ define([
 
         if (self.hasSubGrid) {
             params.subGrid = self.hasSubGrid;
-            params.subGridRowExpanded = subRow.show.bind(self.subRow);
+            params.subGridRowExpanded = function(subgrid_id, row_id) {
+
+                var subRow = new self.SubRow({
+                    parentGridId: self.gridId,
+                    subRowId: subgrid_id,
+                    rowId: row_id
+                });
+
+                subRow.execute();
+            }
         }
 
         /*
@@ -245,16 +489,6 @@ define([
         return params;
     }
 
-    function createSubRow(self) {
-        var subRow = new self.SubRow({
-            parentControllerUrl: self.controllerUrl,
-            lang: self.lang,
-            userSettingsGService: self.userSettingsGService // TODO
-        });
-
-        return subRow;
-    }
-
     function setGridComponent(self) {
         var gridParams = calcGridParamsOnActivation(self);
         var $grid = self.get$Grid();
@@ -272,15 +506,165 @@ define([
 
     function setNavigationComponents(self) {
         var $grid = self.get$Grid();
+
+        var toolbarSettings = calcNavToolbarSettings(self);
+        var editSettings = calcNavEditSettings(self);
+        var addSettings = calcNavAddSettings(self);
+        var deleteSettings = calcNavDeleteSettings(self);
+
         $grid.navGrid('#' + self.pagerId,
-            // the buttons to appear on the toolbar of the grid
-            {
-                edit: false,
-                add: true,
-                del: true,
-                refresh: false,
-                view: false
+            toolbarSettings,
+            editSettings,
+            addSettings,
+            deleteSettings
+        );
+
+        $grid.navGrid('#' + self.pagerId)
+            .navButtonAdd('#' + self.pagerId, {
+                caption: "Full",//"Full Screen",
+                buttonicon: "ui-icon-arrow-4-diag",
+                position: 'last',
+                id: self.fullScreenButtonId,
+                onClickButton: function () {
+                    if (self.isGridInFullScreen()) {
+                        self.exitFullScreen();
+                        self.customButtonFullScreen().setAppearanceAsEnterFullScreen();
+                    } else {
+                        self.setGridToFullScreen();
+                        self.customButtonFullScreen().setAppearanceAsExitFullScreen();
+                    }
+                }
+            })
+            .navButtonAdd('#' + self.pagerId, {
+                caption: "Fit",//"Fit To Size",
+                position: 'last',
+                onClickButton: function () {
+                    self.redrawGridDimensions({shrinkToFit: true});
+                }
             });
+
+    }
+
+    function calcNavToolbarSettings(self) {
+        var settings = {
+            edit: false,
+            add: true,
+            del: true,
+            refresh: false,
+            view: false
+        };
+
+        return settings;
+    }
+
+    function calcNavEditSettings(self) {
+        var settings = {};
+        return settings;
+    }
+
+    function calcNavAddSettings(self) {
+        var settings = {
+            height: 'auto',
+            width: 620,
+            closeAfterAdd: true,
+            recreateForm: true,
+            reloadAfterSubmit: true,
+            url: self.controllerUrl,
+            mtype: 'POST',
+            editData: {
+                _token: $_token, // todo: AMD
+                parentLink: self.parentLink
+            },
+            afterSubmit: function (data, postdata, oper) {
+                var response = data.responseJSON;
+                return [true, "", response.item_id];
+            },
+            errorTextFormat: function (responseRaw) {
+                var errorMessage = processErrorResponse(responseRaw);
+                return errorMessage.html;
+            },
+            beforeSubmit: function (postdata, formid) {
+                var returnData = {
+                    success: true,
+                    message: ''
+                }
+
+                if (self.onBeforeAddSubmit) {
+                    self.onBeforeAddSubmit(postdata, returnData);
+                }
+
+                return [returnData.success, returnData.message];
+            }
+        };
+
+        return settings;
+    }
+
+    function calcNavDeleteSettings(self) {
+        var settings = {
+            height: 'auto',
+            width: 620,
+            url: self.controllerUrl + '/-1',
+            mtype: 'DELETE',
+            delData: {
+                _token: $_token
+            },
+            reloadAfterSubmit: true
+        };
+
+        return settings;
+    }
+
+    function processErrorResponse(responseRaw) {
+        if (!responseRaw.hasOwnProperty('responseJSON')) {
+            return {
+                text: responseRaw.responseText,
+                html: responseRaw.responseText
+            };
+        }
+
+        var response = responseRaw.responseJSON;
+        var messageText = '';
+        var $messageHtml = $('<ol></ol>');
+
+        if (!response.hasOwnProperty('success')) {
+            _.forEach(response, function (val, key) {
+                messageText += 'field: ' + key + '. errors: ';
+                var $fieldHtml = $('<li>' + key + '</li>');
+                var $errorsMessagesListHtml = $('<ol></ol>');
+
+                _.forEach(val, function (errorMessage) {
+                    messageText += errorMessage + '. ';
+                    var $errorMessageHtml = $('<li>' + errorMessage + '</li>');
+                    $errorsMessagesListHtml.append($errorMessageHtml);
+                });
+
+                $fieldHtml.append($errorsMessagesListHtml);
+                $messageHtml.append($fieldHtml);
+            });
+        } else {
+            if (!response.success) {
+                _.forEach(response.errors, function (errorValue, errorKey) {
+                    messageText += errorKey + ': ' + errorValue;
+                    var $errorItem = $('<li>' + errorKey + ': ' + errorValue + '</li>');
+                    $messageHtml.append($errorItem);
+                });
+            }
+        }
+
+        return {
+            text: messageText,
+            html: $messageHtml.html()
+        };
+    }
+
+    function setGeneralBehavior(self) {
+
+        // Grid size: automatic follow of window container.
+
+        $(window).bind('resize', function () {
+            self.redrawGridDimensions({});
+        });
     }
 
     return Class;

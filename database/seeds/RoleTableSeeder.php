@@ -34,6 +34,7 @@ class RoleTableSeeder extends Seeder
             Permission::where('slug', '=', 'api.guide.action.index')->firstOrFail(),
             Permission::where('slug', '=', 'api.cycle.action.index')->firstOrFail(),
             Permission::where('slug', '=', 'api.etgar22.registration.request.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.group.member.guide.action.index')->firstOrFail(),
         ];
 
         $employeeWritingPermissions = [
@@ -43,6 +44,7 @@ class RoleTableSeeder extends Seeder
             Permission::where('slug', 'LIKE', 'api.group.action.%')->get(),
             Permission::where('slug', 'LIKE', 'api.groups.members.action.%')->get(),
             Permission::where('slug', 'LIKE', 'api.cycle.action.%')->get(),
+            Permission::where('slug', 'LIKE', 'api.group.member.guide.action.%')->firstOrFail(),
         ];
 
         $etgar22registratorPermissions = [

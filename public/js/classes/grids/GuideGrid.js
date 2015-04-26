@@ -2,19 +2,19 @@ define([
     'lodash',
     'classes/utilities',
     'classes/Grid',
-    'classes/bi/GroupsMembers',
     'classes/bi/User',
+    'classes/bi/Role',
     'services/language',
     'services/userSettings'
 ], function (_,
              utilities,
              Grid,
-             GroupsMembers,
              User,
+             Role,
              lang,
              userSettingService) {
 
-    var CONTROLLER_URL = '/api/group-member-guide';
+    var CONTROLLER_URL = '/api/guide';
 
     var Class = function (params) {
         var colModel = [{
@@ -29,19 +29,9 @@ define([
                 integer: true
             }
         }, {
-            label: _.capitalize(lang.get('bo.group-member-guide_group_member')),
-            name: 'groups_member_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
-                dataUrl: '/api/groups-members',
-                buildSelect: utilities.generateBuildSelect(GroupsMembers)
-            }
-        }, {
-            label: _.capitalize(lang.get('bo.group-member-guide_user')),
+            label: lang.get('bo.role-user_user'),
             name: 'user_id',
+            width: 200,
             editable: true,
             edittype: 'select',
             formatter: 'select',
@@ -50,10 +40,36 @@ define([
                 dataUrl: '/api/user',
                 buildSelect: utilities.generateBuildSelect(User)
             }
+        }, {
+            label: lang.get('bo.role-user_role'),
+            name: 'role_id',
+            width: 200,
+            editable: true,
+            edittype: 'select',
+            formatter: 'select',
+            editoptions: {
+                value: utilities.generateGetItems('/api/role', Role)(),
+                dataUrl: '/api/user',
+                buildSelect: utilities.generateBuildSelect(Role)
+            }
         }];
+        var colModelExtraFunction = function () {
+            return JSON.stringify({
+                user_id: {
+                    sortOnLinkField: 'name',
+                    searchOnLinkField: 'name'
+                },
+                role_id: {
+                    sortOnLinkField: 'name',
+                    searchOnLinkField: 'name'
+                }
+            });
+        };
 
+        // todo: standard way to add params in inheritance.
         var processedParams = setParamsColModel(params, colModel);
         processedParams.controllerUrl = CONTROLLER_URL;
+        processedParams.colModelExtraFunction = colModelExtraFunction;
 
         Grid.call(this, processedParams);
     };
