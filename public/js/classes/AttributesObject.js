@@ -10,7 +10,8 @@ define([], function () {
                 var self = this;
                 var attList = createAttributesListByDependencies(attributes);
                 _.forEach(attList, function (attDef, attKey) {
-                    setAttribute(self, attDef, attKey, params);
+                    setMutatorsForAttribute(self, attDef, attKey);
+                    setInitialValueForAttribute(self, attDef, attKey, params);
                 });
             }
         }
@@ -21,7 +22,19 @@ define([], function () {
         return attributes;
     }
 
-    function setAttribute(self, attDef, attKey, params) {
+    function setMutatorsForAttribute(self, attDef, attKey) {
+        if (attDef.mutators) {
+            var mutators = attDef.mutators;
+            if (mutators.setget){
+                Object.defineProperty(self, attKey, {
+                    set: mutators.setget.set,
+                    get: mutators.setget.get
+                });
+            }
+        }
+    }
+
+    function setInitialValueForAttribute(self, attDef, attKey, params) {
         var required = calcRequired(self, attDef);
 
         if (params.hasOwnProperty(attKey)) {

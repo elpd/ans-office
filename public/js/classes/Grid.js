@@ -1,8 +1,10 @@
 define([
     'classes/AttributesObject',
-    'classes/SubRow'
+    'classes/SubRow',
+    'classes/LoadingIndicator'
 ], function (AttributesObject,
-             EmptySubRow) {
+             EmptySubRow,
+             LoadingIndicator) {
 
     var GRID_HEIGHT_MIN = 150;
     var GRID_WIDTH_MIN = 700;
@@ -10,6 +12,16 @@ define([
     var GRID_TITLE_BAR_CLASS = 'ui-jqgrid-titlebar';
     var GRID_HEADER_BOX_CLASS = 'ui-jqgrid-hdiv';
     var GRID_BOTTOM_PAGER_CLASS = 'ui-jqgrid-pager.ui-corner-bottom';
+    var POST_DATA_OPERATION_EDIT = 'edit';
+    var ROW_SUCCESSFUL_UPDATE_CLASS = 'row_successful_update';
+
+    var JQGRID_FN_GET_ROW_DATA = 'getRowData';
+    var JQGRID_FN_RESTORE_ROW = 'restoreRow';
+    var JQGRID_FN_EDIT_ROW = 'editRow';
+    var JQGRID_FN_SET_ROW_DATA = 'setRowData';
+
+    var GRID_LOADING_COMPLETE_EVENT_ID = 'grid_events:loading_complete';
+    var GRID_LOADING_STARTED_EVENT_ID = 'grid_events:loading_started';
 
     var attributesRules = {
         gridId: {
@@ -25,7 +37,36 @@ define([
             required: true
         },
         caption: {},
-        direction: {},
+        direction: {
+            mutators: {
+                setget: {
+                    set: function (val) {
+                        var modifiedVal = null;
+                        switch (val) {
+                            case 'right_to_left':
+                                modifiedVal = 'rtl';
+                                break;
+                            case 'left_to_right':
+                                modifiedVal = 'ltr';
+                                break;
+                            case 'rtl':
+                                modifiedVal = 'rtl';
+                                break;
+                            case 'ltr':
+                                modifiedVal = 'ltr';
+                                break;
+                            default:
+                                throw new Error('unexpected value'); // TODO:
+                        }
+
+                        this._direction = modifiedVal;
+                    },
+                    get: function () {
+                        return this._direction;
+                    }
+                }
+            }
+        },
         hasSubGrid: {
             required: true,
             defaults: {
@@ -122,8 +163,14 @@ define([
                     return pagerId + '_fullscr_button';
                 }
             }
+        },
+        beforeEditGridData: {
+            required: true,
+            defaults: {
+                calculation: {}
+            }
         }
-    }
+    };
 
     var Class = function (params) {
         AttributesObject.call(this, params, attributesRules);
@@ -136,6 +183,7 @@ define([
                 setGridComponent(self);
                 setFilterToolbarComponent(self);
                 setNavigationComponents(self);
+                setLoadingIndicator(self);
                 setGeneralBehavior(self);
 
                 // Make grid resize on first activation.
@@ -196,6 +244,13 @@ define([
             value: function () {
                 var self = this;
                 return $('#' + self.pagerRightId);
+            }
+        },
+
+        getRowData: {
+            value: function (rowBusinessObjectId) {
+                var self = this;
+                return self.get$Grid().jqGrid(JQGRID_FN_GET_ROW_DATA, rowBusinessObjectId);
             }
         },
 
@@ -310,13 +365,18 @@ define([
             value: function (gridSize, isShrinkToFit) {
                 var self = this;
 
+                // Bug in jqGrid. not enough space on pager. all to the left.
+                self.get$PagerLeft().width('');
+                self.get$PagerCenter().width('');
+                self.get$PagerRight().width('');
+
                 self.get$Grid().setGridHeight(gridSize.height + 'px');
                 self.get$Grid().setGridWidth(gridSize.width, isShrinkToFit);
             }
         },
 
         setGridToFullScreen: {
-            value: function() {
+            value: function () {
                 var self = this;
                 var $gridBox = self.get$GridBox();
 
@@ -420,7 +480,7 @@ define([
 
         if (self.hasSubGrid) {
             params.subGrid = self.hasSubGrid;
-            params.subGridRowExpanded = function(subgrid_id, row_id) {
+            params.subGridRowExpanded = function (subgrid_id, row_id) {
 
                 var subRow = new self.SubRow({
                     parentGridId: self.gridId,
@@ -450,12 +510,22 @@ define([
          * Grid Events
          */
 
-        params.ondblClickRow = function (id, iRow, iCol, e) {
-            // TODO: logic from general grid.
+        params.ondblClickRow = function (rowBusinuessObjectId, rowIndex,
+                                         columnIndex, e) {
+            e.stopPropagation();
+            openRowForInlineEditing(self, rowBusinuessObjectId);
+        };
+
+        params.beforeRequest = function () {
+            $grid = self.get$Grid();
+            $grid.trigger(GRID_LOADING_STARTED_EVENT_ID);
+
+            // Values: false: stop request. true - continue with request;
+            return true;
         };
 
         params.gridComplete = function () {
-            // TODO: loading indicator
+            self.get$Grid().trigger(GRID_LOADING_COMPLETE_EVENT_ID);
         };
 
         params.rowattr = function (rowData, currentObj, rowId) {
@@ -465,8 +535,12 @@ define([
         };
 
         params.serializeRowData = function (postdata) {
-            // TODO: from general grid logic.
             var processedData = postdata;
+            if (postdata.oper && postdata.oper == POST_DATA_OPERATION_EDIT) {
+                processedData = calcOnlyModifiedFields(postdata, self.beforeEditGridData);
+                processedData.oper = postdata.oper;
+                processedData._token = postdata._token;
+            }
             return processedData;
         };
 
@@ -665,6 +739,87 @@ define([
         $(window).bind('resize', function () {
             self.redrawGridDimensions({});
         });
+    }
+
+    function calcOnlyModifiedFields(newData, oldData) {
+        var processedData = {};
+
+        _.forEach(newData, function (val, key) {
+            if (oldData.hasOwnProperty(key)){
+                if (newData[key] != oldData[key]){
+                    processedData[key] = val;
+                }
+            } else {
+                processedData[key] = val;
+            }
+        });
+
+        return processedData;
+    }
+
+    function openRowForInlineEditing(self, rowBusinuessObjectId) {
+        self.beforeEditGridData = self.getRowData(rowBusinuessObjectId);
+
+        var $grid = self.get$Grid();
+
+        if (self.previousEditedRowBoId) {
+            $grid.jqGrid(JQGRID_FN_RESTORE_ROW, self.previousEditedRowBoId);
+        }
+
+        var editOptions = calcRowEditOptions(self, rowBusinuessObjectId);
+        $grid.jqGrid(JQGRID_FN_EDIT_ROW, rowBusinuessObjectId, editOptions);
+
+        self.previousEditedRowBoId = rowBusinuessObjectId;
+    }
+
+    function calcRowEditOptions(self, rowBusinuessObjectId) {
+        var options = {};
+
+        // Set keys: ENTER - save, ESC - cancel.
+        options.keys = true;
+        //options.focusField = 4; // TODO: research ?
+        options.url = self.controllerUrl;
+        options.extraparam = {
+            _token: $_token // TODO: from AMD
+        };
+        options.mtype = 'PUT';
+
+        options.successfunc = function (data) {
+
+            var response = data.responseJSON;
+
+            // params: id, rowData, rowCss.
+            self.get$Grid().jqGrid(JQGRID_FN_SET_ROW_DATA,
+                rowBusinuessObjectId, null, ROW_SUCCESSFUL_UPDATE_CLASS);
+
+            return true; //[true, "", response.item_id];
+        };
+
+        options.errorfunc = function (rowId, responseRaw) {
+            var errorMessage = processErrorResponse(responseRaw);
+
+            $.jgrid.info_dialog(
+                $.jgrid.errors.errcap,
+                '<div class="ui-state-error">' + errorMessage.html + '</div>',
+                $.jgrid.edit.bClose,
+                {
+                    buttonalign: 'right'
+                });
+
+            return false;
+        };
+
+        return options;
+    }
+
+    function setLoadingIndicator(self) {
+        var loadingIndicator = new LoadingIndicator({
+            parentId: self.gridId,
+            loadingCompleteEventId: GRID_LOADING_COMPLETE_EVENT_ID,
+            loadingStartedEventId: GRID_LOADING_STARTED_EVENT_ID
+        });
+
+        loadingIndicator.execute();
     }
 
     return Class;

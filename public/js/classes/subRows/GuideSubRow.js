@@ -17,7 +17,7 @@ define([
               lang,
               userSettingsService) {
 
-        var Class = function SubRow(params) {
+        var Class = function (params) {
             SubRow.call(this, params);
         };
 
@@ -29,12 +29,14 @@ define([
                     userSettingsService.ready().then(function () {
                         var rowData = self.getRowData();
 
-                        var groupsMembersAssociationTabs = new GridTab({
+                        var groupsMembersAssociationTab = new GridTab({
                             mainId: self.subRowId,
                             caption: lang.get('bo.group-member'),
+                            //direction: userSettingsService.getLanguage().direction,
                             gridInitialization: function (gridId) {
                                 var grid = new GroupsMembersGuideGrid({
                                     gridId: gridId,
+                                    caption: _.capitalize(lang.get('bo.group-member')),
                                     calcDesiredHeightInContainer: function () {
                                         return self.calcGridDesiredHeight();
                                     },
@@ -45,23 +47,26 @@ define([
                                     parentLink: {
                                         id: rowData.user_id,
                                         childFieldName: 'user_id'
-                                    }
+                                    },
+                                    direction: userSettingsService.getLanguage().direction
                                 });
                                 return grid;
                             }
                         });
 
                         var childTabsPanel = new ChildTabsPanel({
-                            id: self.rowId,
+                            mainId: self.subRowId,
                             tabs: [
-                                groupsMembersAssociationTabs
+                                groupsMembersAssociationTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });
 
-                        $('#' + self.rowId).append(
+                        $('#' + self.subRowId).append(
                             childTabsPanel.createElement()
                         );
+
+                        childTabsPanel.clickToOpenFirstTab();
                     });
                 }
             }

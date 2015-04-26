@@ -57,6 +57,13 @@ define([
     }
 
     Class.prototype = Object.create(AttributesObject.prototype, {
+        get$TabLink: {
+            value: function() {
+                var self = this;
+                return $('#' + self.tabLinkId);
+            }
+        },
+
         createTabElement: {
             value: function () {
                 var self = this;
@@ -76,8 +83,6 @@ define([
                     e.preventDefault();
 
                     var grid = self.gridInitialization(
-                        self.lang,
-                        self.userSettingsGService,
                         self.gridId);
 
                     grid.execute();
@@ -102,6 +107,13 @@ define([
                 );
 
                 return $element;
+            }
+        },
+
+        clickToOpen: {
+            value: function() {
+                var self = this;
+                self.get$TabLink().click();
             }
         }
     });

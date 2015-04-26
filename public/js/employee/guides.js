@@ -17,6 +17,7 @@ define([
 
         $(document).ready(function () {
             userSettingsService.ready().then(function () {
+
                     var page = new GridPage({
                         mainId: 'guides_page',
                         Grid: GuideGrid,

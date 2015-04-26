@@ -2,6 +2,7 @@ define([
     'lodash',
     'classes/utilities',
     'classes/Grid',
+    'classes/subRows/GuideSubRow',
     'classes/bi/User',
     'classes/bi/Role',
     'services/language',
@@ -9,6 +10,7 @@ define([
 ], function (_,
              utilities,
              Grid,
+             GuideSubRow,
              User,
              Role,
              lang,
@@ -49,7 +51,7 @@ define([
             formatter: 'select',
             editoptions: {
                 value: utilities.generateGetItems('/api/role', Role)(),
-                dataUrl: '/api/user',
+                dataUrl: '/api/role',
                 buildSelect: utilities.generateBuildSelect(Role)
             }
         }];
@@ -70,6 +72,9 @@ define([
         var processedParams = setParamsColModel(params, colModel);
         processedParams.controllerUrl = CONTROLLER_URL;
         processedParams.colModelExtraFunction = colModelExtraFunction;
+        processedParams.caption = lang.get('bo.guides');
+        processedParams.SubRow = GuideSubRow;
+        processedParams.hasSubGrid = true;
 
         Grid.call(this, processedParams);
     };

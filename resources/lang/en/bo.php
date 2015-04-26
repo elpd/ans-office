@@ -138,4 +138,10 @@ return [
     'etgar-22-registration-request_parent_name' => 'Parent Name',
     'etgar-22-registration-request_parent_email' => 'Parent Email',
     'etgar-22-registration-request_status' => 'Request Status',
+
+    // group-member-guide
+
+    'group-member-guide' => 'Group Member Guide Association',
+    'group-member-guide_group_member' => 'Membership ID',
+    'group-member-guide_user' => 'Guide',
 ];

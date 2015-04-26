@@ -29,6 +29,13 @@ define([
                 }
             },
 
+            get$ParentGrid: {
+                value: function () {
+                    var self = this;
+                    return $('#' + self.parentGridId);
+                }
+            },
+
             execute: {
                 value: function () {
 
@@ -36,9 +43,9 @@ define([
             },
 
             getRowData: {
-                value: function (parentRowKey) {
+                value: function () {
                     var self = this;
-                    return self.get$Grid.jqGrid('getRowData', parentRowKey);
+                    return self.get$ParentGrid().jqGrid('getRowData', self.rowId);
                 }
             },
 
@@ -50,9 +57,11 @@ define([
                 }
             },
 
-            calcGridDesiredWidth: function () {
-                var self = this;
-                return self.get$Page().width() - 10;
+            calcGridDesiredWidth: {
+                value: function () {
+                    var self = this;
+                    return self.get$Page().width() - 10;
+                }
             }
         });
 
