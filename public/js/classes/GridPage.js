@@ -26,6 +26,9 @@ define([
         direction: {},
         headerTitle: {
             required: true
+        },
+        beforeGridExecution: {
+
         }
     };
 
@@ -106,6 +109,10 @@ define([
         $divRow.append($divCol);
 
         self.get$Page().append($divRow);
+
+        if (self.beforeGridExecution) {
+            self.beforeGridExecution.call(null, grid);
+        }
 
         grid.execute();
     }

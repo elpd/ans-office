@@ -37,36 +37,7 @@ define([
             required: true
         },
         caption: {},
-        direction: {
-            mutators: {
-                setget: {
-                    set: function (val) {
-                        var modifiedVal = null;
-                        switch (val) {
-                            case 'right_to_left':
-                                modifiedVal = 'rtl';
-                                break;
-                            case 'left_to_right':
-                                modifiedVal = 'ltr';
-                                break;
-                            case 'rtl':
-                                modifiedVal = 'rtl';
-                                break;
-                            case 'ltr':
-                                modifiedVal = 'ltr';
-                                break;
-                            default:
-                                throw new Error('unexpected value'); // TODO:
-                        }
-
-                        this._direction = modifiedVal;
-                    },
-                    get: function () {
-                        return this._direction;
-                    }
-                }
-            }
-        },
+        direction: {},
         hasSubGrid: {
             required: true,
             defaults: {
@@ -169,6 +140,23 @@ define([
             defaults: {
                 calculation: {}
             }
+        },
+        isExecuted: {
+            required: true,
+            defaults: {
+                calculation: false
+            }
+        },
+        colModelExtraFunction: {
+
+        },
+        queryData: {
+            required: true,
+            defaults: {
+                calculation: {
+                    firstChildJoin: []
+                }
+            }
         }
     };
 
@@ -188,6 +176,8 @@ define([
 
                 // Make grid resize on first activation.
                 $(window).trigger('resize');
+
+                self.isExecuted = true;
             }
         },
 
@@ -404,9 +394,92 @@ define([
                     id: self.fullScreenButtonId
                 });
             }
+        },
+
+        direction: {
+            set: function (val) {
+                var modifiedVal = null;
+                switch (val) {
+                    case 'right_to_left':
+                        modifiedVal = 'rtl';
+                        break;
+                    case 'left_to_right':
+                        modifiedVal = 'ltr';
+                        break;
+                    case 'rtl':
+                        modifiedVal = 'rtl';
+                        break;
+                    case 'ltr':
+                        modifiedVal = 'ltr';
+                        break;
+                    default:
+                        throw new Error('unexpected value'); // TODO:
+                }
+
+                this._direction = modifiedVal;
+            },
+            get: function () {
+                return this._direction;
+            }
+        },
+
+        query: {
+            value: function() {
+                var self = this;
+                return new GridQueryInterface(self);
+            }
+        },
+
+        columns: {
+            value: function() {
+                var self = this;
+                return new GridColumnsInterface(self);
+            }
+        }
+    });
+
+    function GridQueryInterface(self){
+        return {
+
+            addFirstChildJoin: function(fieldId, selectFields){
+                self.queryData.firstChildJoin.push({
+                    linkField: fieldId,
+                    selectFields: selectFields
+                });
+            }
         }
 
-    });
+    }
+
+    function GridColumnsInterface(self) {
+        return {
+            remove: function(columnId) {
+                removeFromColumns(columnId);
+            },
+            add: function(columns) {
+                columns.forEach(function(col){
+                    addToColumns(col);
+                });
+            }
+        }
+
+        function removeFromColumns(columnId) {
+            var indexToRemove = _.findIndex(self.colModel, function(colItem){
+                if (colItem.name == columnId){
+                    return true;
+                }
+            });
+            if (indexToRemove < 0) {
+                throw new Error('id not found. index: ' + columnId);
+            }
+
+            _.pullAt(self.colModel, indexToRemove);
+        }
+
+        function addToColumns(colDef) {
+            self.colModel.push(colDef);
+        }
+    }
 
     function CustomButtonFullScreen(params) {
         id = params.id;
@@ -497,9 +570,16 @@ define([
          */
 
         params.postData = {};
+
         if (self.hasParent) {
             params.postData.parentLink = self.parentLink;
         }
+
+        if (self.queryData.firstChildJoin.length > 0) {
+            params.postData.firstChildJoin =
+                JSON.stringify(self.queryData.firstChildJoin);
+        }
+
         if (self.colModelExtraFunction) {
             params.postData.colModelExtra = function () {
                 return self.colModelExtraFunction();
@@ -745,8 +825,8 @@ define([
         var processedData = {};
 
         _.forEach(newData, function (val, key) {
-            if (oldData.hasOwnProperty(key)){
-                if (newData[key] != oldData[key]){
+            if (oldData.hasOwnProperty(key)) {
+                if (newData[key] != oldData[key]) {
                     processedData[key] = val;
                 }
             } else {

@@ -92,6 +92,8 @@ return [
     'guides' => 'Guides',
     'Guides' => 'Guides',
     'guide_name' => 'Name',
+    'guide__user_id__user_name' => 'User Name',
+    'guide__user_id__user_email' => 'User Email',
 
     // Groups Members
     'group-member' => 'Groups Members',

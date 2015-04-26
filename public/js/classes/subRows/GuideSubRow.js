@@ -6,7 +6,10 @@ define([
         'classes/ChildTabsPanel',
         'classes/grids/GroupsMembersGuideGrid',
         'services/language',
-        'services/userSettings'
+        'services/userSettings',
+        'classes/bi/Group',
+        'classes/bi/Contact',
+        'classes/bi/GroupMembersStatus'
     ],
     function (_,
               utilities,
@@ -15,7 +18,10 @@ define([
               ChildTabsPanel,
               GroupsMembersGuideGrid,
               lang,
-              userSettingsService) {
+              userSettingsService,
+              Group,
+              Contact,
+              GroupMembersStatus) {
 
         var Class = function (params) {
             SubRow.call(this, params);
@@ -50,6 +56,49 @@ define([
                                     },
                                     direction: userSettingsService.getLanguage().direction
                                 });
+
+                                grid.query().addFirstChildJoin('groups_member_id',
+                                    ['group_id', 'contact_id', 'status_id']);
+
+                                grid.columns().remove('user_id');
+                                grid.columns().add([
+                                    {
+                                        label: _.capitalize(lang.get('bo.group-member_group')),
+                                        name: 'groups_members.group_id',
+                                        editable: true,
+                                        edittype: 'select',
+                                        formatter: 'select',
+                                        editoptions: {
+                                            value: utilities.generateGetItems('/api/group', Group)(),
+                                            dataUrl: '/api/group',
+                                            buildSelect: utilities.generateBuildSelect(Group)
+                                        }
+                                    }, {
+                                        label: _.capitalize(lang.get('bo.group-member_contact')),
+                                        name: 'groups_members.contact_id',
+                                        editable: true,
+                                        edittype: 'select',
+                                        formatter: 'select',
+                                        editoptions: {
+                                            value: utilities.generateGetItems('/api/contact', Contact)(),
+                                            dataUrl: '/api/contact',
+                                            buildSelect: utilities.generateBuildSelect(Contact)
+                                        }
+                                    }, {
+                                        label: _.capitalize(lang.get('bo.group-member_status')),
+                                        name: 'groups_members.status_id',
+                                        editable: true,
+                                        edittype: 'select',
+                                        formatter: 'select',
+                                        editoptions: {
+                                            value: utilities.generateGetItems('/api/group-members-status',
+                                                GroupMembersStatus)(),
+                                            dataUrl: '/api/group-members-status',
+                                            buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
+                                        }
+                                    }
+                                ]);
+
                                 return grid;
                             }
                         });
