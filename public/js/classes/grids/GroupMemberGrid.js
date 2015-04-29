@@ -34,7 +34,7 @@ define([
             }
         },
         group_id: {
-            label: _.capitalize(lang.get('bo.group-member_group')),
+            label: _.capitalize(lang.get('bo.group-member_group-id')),
             name: 'group_id',
             editable: true,
             edittype: 'select',
@@ -46,7 +46,7 @@ define([
             }
         },
         contact_id: {
-            label: _.capitalize(lang.get('bo.group-member_contact')),
+            label: _.capitalize(lang.get('bo.group-member_contact-id')),
             name: 'contact_id',
             editable: true,
             edittype: 'select',
@@ -58,7 +58,7 @@ define([
             }
         },
         status_id: {
-            label: _.capitalize(lang.get('bo.group-member_status')),
+            label: _.capitalize(lang.get('bo.group-member_status-id')),
             name: 'status_id',
             editable: true,
             edittype: 'select',

@@ -32,7 +32,7 @@ define([
             }
         },
         user_id: {
-            label: lang.get('bo.role-user_user'),
+            label: lang.get('bo.role-user_user-id'),
             name: 'user_id',
             width: 200,
             editable: true,
@@ -45,7 +45,7 @@ define([
             }
         },
         role_id: {
-            label: lang.get('bo.role-user_role'),
+            label: lang.get('bo.role-user_role-id'),
             name: 'role_id',
             width: 200,
             editable: true,
