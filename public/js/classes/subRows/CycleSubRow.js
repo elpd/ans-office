@@ -33,7 +33,7 @@ define([
                             mainId: self.subRowId + '_groups',
                             Grid: require('classes/grids/GroupGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.cycle_groups'),
+                            caption: _.capitalize(lang.get('bo.cycle_groups')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();

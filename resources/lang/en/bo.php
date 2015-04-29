@@ -63,6 +63,8 @@ return [
     'birth_year' => 'Birth Year',
     'donate' => 'Donate',
     'blacklisted' => 'Blacklisted',
+    'contact_group-members' => 'membership in groups',
+    'contact_etgar22' => 'etgar 22',
 
     // Etgar 22
     'etgar22' => 'Etgar22',
@@ -77,19 +79,21 @@ return [
 
     // Cycle
 
-    'cycles' => 'Cycles',
-    'Cycles' => 'Cycles',
+    'cycle' => 'cycle',
+    'cycles' => 'cycles',
     'cycle_start_date' => 'Start Date',
     'cycle_num' => 'Num',
+    'cycle_groups' => 'groups',
 
     // Group
 
     'group' => 'group',
     'groups' => 'Groups',
     'Groups' => 'Groups',
-    'group_cycle' => 'Cycle',
+    'group_cycle-id' => 'Cycle',
     'group_name' => 'Name',
-    'group_status' => 'Status',
+    'group_status-id' => 'Status',
+    'group_group-members' => 'memberships in group',
 
     // Guide
 
