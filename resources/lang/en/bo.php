@@ -20,7 +20,6 @@ return [
 
     'user' => 'user',
     'users' => 'users',
-    'Users' => 'Users',
     'user_name' => 'Name',
     'user_email' => 'Email',
     'user_password' => 'Password',
@@ -28,13 +27,13 @@ return [
 
     // Role
 
+    'role' => 'role',
     'roles' => 'roles',
-    'Roles' => 'Roles',
-    'role_name' => 'Name',
-    'role_slug' => 'Slug',
-    'role_description' => 'Description',
-    'role_level' => 'Level',
-    'role_users' => 'Users',
+    'role_name' => 'name',
+    'role_slug' => 'slug',
+    'role_description' => 'description',
+    'role_level' => 'level',
+    'role_users' => 'associated users',
     'role_permissions' => 'permissions',
 
     // Permission
@@ -108,8 +107,9 @@ return [
     'group-member_guide_2' => 'Guide 2',
 
     // Role-User
-    'role-user_role' => 'Role',
-    'role-user_user' => 'User',
+    'role-user' => 'role and user association',
+    'role-user_role-id' => 'role',
+    'role-user_user-id' => 'user',
 
     // Permission-User
     'permission-user_permission' => 'Permission',

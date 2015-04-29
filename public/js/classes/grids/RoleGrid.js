@@ -26,25 +26,25 @@ define([
             }
         },
         name: {
-            label: self.lang.get('bo.role_name'),
+            label: lang.get('bo.role_name'),
             name: 'name',
             editable: true,
             editoptions: {}
         },
         slug: {
-            label: self.lang.get('bo.role_slug'),
+            label: lang.get('bo.role_slug'),
             name: 'slug',
             editable: true,
             editoptions: {}
         },
         description: {
-            label: self.lang.get('bo.role_description'),
+            label: lang.get('bo.role_description'),
             name: 'description',
             editable: true,
             editoptions: {}
         },
         level: {
-            label: self.lang.get('bo.role_level'),
+            label: lang.get('bo.role_level'),
             name: 'level',
             editable: true,
             formatter: 'integer',
@@ -64,8 +64,10 @@ define([
         Grid.call(this, params);
 
         self.columns().add(self.defaultColumnDefs.id);
-        self.columns().add(self.defaultColumnDefs.startDate);
-        self.columns().add(self.defaultColumnDefs.num);
+        self.columns().add(self.defaultColumnDefs.name);
+        self.columns().add(self.defaultColumnDefs.slug);
+        self.columns().add(self.defaultColumnDefs.description);
+        self.columns().add(self.defaultColumnDefs.level);
     };
 
     Class.prototype = Object.create(Grid.prototype, {
