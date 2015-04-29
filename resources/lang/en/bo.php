@@ -36,7 +36,7 @@ return [
     'role_description' => 'description',
     'role_level' => 'level',
     'role_users' => 'associated users',
-    'role_permissions' => 'assoiciated permissions',
+    'role_permissions' => 'associated permissions',
 
     // Permission
 
@@ -100,13 +100,12 @@ return [
     'guide__user_id__user_email' => 'User Email',
 
     // Groups Members
-    'group-member' => 'Group Member',
-    'Group-member' => 'Group Member',
-    'group-member_group' => 'Group',
-    'group-member_contact' => 'Contact',
-    'group-member_status' => 'Status',
-    'group-member_guide_1' => 'Guide 1',
-    'group-member_guide_2' => 'Guide 2',
+    'group-member' => 'group member',
+    'group-members' => 'group members',
+    'group-member_group-id' => 'group',
+    'group-member_contact-id' => 'contact',
+    'group-member_status-id' => 'status',
+    'group-member_guides' => 'associated guides',
 
     // Role-User
     'role-user' => 'role and user association',

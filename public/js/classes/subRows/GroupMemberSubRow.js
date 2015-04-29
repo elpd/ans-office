@@ -39,7 +39,7 @@ define([
                             mainId: self.subRowId + '_contact',
                             Grid: require('classes/grids/ContactGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.group-member_contact_id'),
+                            caption: lang.get('bo.group-member_contact-id'),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -63,7 +63,7 @@ define([
                             mainId: self.subRowId + '_group',
                             Grid: require('classes/grids/GroupGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.group-member_group_id'),
+                            caption: lang.get('bo.group-member_group-id'),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
