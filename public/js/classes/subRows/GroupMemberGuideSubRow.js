@@ -103,7 +103,7 @@ define([
                             },
 
                             afterGridExecution: function (grid) {
-                                grid.get$Grid().jqGrid('setGroupHeaders', {
+                                grid.setGroupHeaders({
                                     useColSpanStyle: false,
                                     groupHeaders: [
                                         {

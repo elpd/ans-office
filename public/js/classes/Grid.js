@@ -21,6 +21,7 @@ define([
     var JQGRID_FN_RESTORE_ROW = 'restoreRow';
     var JQGRID_FN_EDIT_ROW = 'editRow';
     var JQGRID_FN_SET_ROW_DATA = 'setRowData';
+    var JQGRID_FN_SET_GROUP_HEADERS = 'setGroupHeaders';
 
     var GRID_LOADING_COMPLETE_EVENT_ID = 'grid_events:loading_complete';
     var GRID_LOADING_STARTED_EVENT_ID = 'grid_events:loading_started';
@@ -439,6 +440,14 @@ define([
             value: function () {
                 var self = this;
                 return new GridColumnsInterface(self);
+            }
+        },
+
+        setGroupHeaders: {
+            value: function(params) {
+                var self = this;
+                self.get$Grid().jqGrid(JQGRID_FN_SET_GROUP_HEADERS, params);
+                self.redrawGridDimensions({shrinkToFit: false});
             }
         }
     });
