@@ -18,6 +18,7 @@ return [
 
     // User
 
+    'user' => 'user',
     'users' => 'users',
     'Users' => 'Users',
     'user_name' => 'Name',
@@ -49,6 +50,7 @@ return [
 
     // Contact
 
+    'contact' => 'contact',
     'contacts' => 'contacts',
     'Contacts' => 'Contacts',
     'registration_date' => 'Registration Date',
@@ -81,6 +83,7 @@ return [
 
     // Group
 
+    'group' => 'group',
     'groups' => 'Groups',
     'Groups' => 'Groups',
     'group_cycle' => 'Cycle',
@@ -96,8 +99,8 @@ return [
     'guide__user_id__user_email' => 'User Email',
 
     // Groups Members
-    'group-member' => 'Groups Members',
-    'Group-member' => 'Groups Members',
+    'group-member' => 'Group Member',
+    'Group-member' => 'Group Member',
     'group-member_group' => 'Group',
     'group-member_contact' => 'Contact',
     'group-member_status' => 'Status',

@@ -3,6 +3,7 @@ define([
         'classes/utilities',
         'classes/GridPage',
         'classes/grids/GuideGrid',
+        'classes/grids/UserGrid',
         'classes/subRows/GuideSubRow',
         'services/language',
         'services/userSettings'
@@ -11,6 +12,7 @@ define([
               utilities,
               GridPage,
               GuideGrid,
+              UserGrid,
               GuideSubRow,
               lang,
               userSettingsService) {
@@ -23,22 +25,32 @@ define([
                         Grid: GuideGrid,
                         direction: userSettingsService.getLanguage().direction,
                         headerTitle: _.capitalize(lang.get('bo.guides')),
-                        beforeGridExecution: function(grid) {
+                        beforeGridExecution: function (grid) {
                             grid.columns().remove('role_id');
-                            grid.query().addFirstChildJoin('user_id', [
-                                'name', 'email'
-                            ]);
                             grid.columns().add(
-                                [
+                                _.merge({}, UserGrid.prototype.defaultColumnDefs.name, {
+                                    name: 'users.name',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, UserGrid.prototype.defaultColumnDefs.email, {
+                                    name: 'users.email',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                        },
+                        afterGridExecution: function (grid) {
+                            grid.get$Grid().jqGrid('setGroupHeaders', {
+                                useColSpanStyle: true,
+                                groupHeaders: [
                                     {
-                                        label: _.capitalize(lang.get('bo.guide__user_id__user_name')),
-                                        name: 'users.name'
-                                    },
-                                    {
-                                        label: _.capitalize(lang.get('bo.guide__user_id__user_email')),
-                                        name: 'users.email'
+                                        startColumnName: 'users.name',
+                                        numberOfColumns: 8,
+                                        titleText: '<em>' + _.capitalize(lang.get('bo.guide_user_id')) + '</em>'
                                     }
-                                ]);
+                                ]
+                            });
                         }
                     });
 

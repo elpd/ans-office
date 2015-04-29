@@ -47,7 +47,17 @@ define([
         caption: {
             required: true
         },
-        gridInitialization: {
+        beforeGridCreation: {},
+        beforeGridExecution: {},
+        afterGridExecution: {},
+        direction: {
+            required: true,
+            defaults: {
+                dependencies: [],
+                calculation: 'left_to_right'
+            }
+        },
+        Grid: {
             required: true
         }
     };
@@ -58,7 +68,7 @@ define([
 
     Class.prototype = Object.create(AttributesObject.prototype, {
         get$TabLink: {
-            value: function() {
+            value: function () {
                 var self = this;
                 return $('#' + self.tabLinkId);
             }
@@ -82,10 +92,17 @@ define([
                 $elementTabLink.click(function (e) {
                     e.preventDefault();
 
-                    var grid = self.gridInitialization(
-                        self.gridId);
+                    var grid = createGrid(self);
+                    if (self.hasOwnProperty('beforeGridExecution')) {
+                        self.beforeGridExecution(grid);
+                    }
 
                     grid.execute();
+
+                    if (self.hasOwnProperty('afterGridExecution')){
+                        self.afterGridExecution(grid);
+                    }
+
                     $(this).tab('show');
                 });
 
@@ -111,12 +128,26 @@ define([
         },
 
         clickToOpen: {
-            value: function() {
+            value: function () {
                 var self = this;
                 self.get$TabLink().click();
             }
         }
     });
+
+    function createGrid(self) {
+        var gridParams = {};
+        gridParams.gridId = self.gridId;
+        gridParams.caption = self.caption;
+        gridParams.direction = self.direction;
+
+        if (self.hasOwnProperty('beforeGridCreation')) {
+            self.beforeGridCreation(gridParams);
+        }
+
+        var grid = new self.Grid(gridParams);
+        return grid;
+    }
 
     return Class;
 });

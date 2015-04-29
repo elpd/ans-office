@@ -1,26 +1,20 @@
 define([
-        'require',
         'lodash',
         'classes/utilities',
         'classes/SubRow',
         'classes/GridTab',
         'classes/ChildTabsPanel',
-        'classes/grids/GroupMemberGuideGrid',
-        'classes/grids/UserGrid',
         'services/language',
         'services/userSettings',
         'classes/bi/Group',
         'classes/bi/Contact',
         'classes/bi/GroupMembersStatus'
     ],
-    function (require,
-              _,
+    function (_,
               utilities,
               SubRow,
               GridTab,
               ChildTabsPanel,
-              GroupMemberGuideGrid,
-              UserGrid,
               lang,
               userSettingsService,
               Group,
@@ -39,11 +33,11 @@ define([
                     userSettingsService.ready().then(function () {
                         var rowData = self.getRowData();
 
-                        var groupsMembersAssociationTab = new GridTab({
-                            mainId: self.subRowId + '_group_member_association',
-                            Grid: require('classes/grids/GroupMemberGuideGrid'),
+                        /*var groupsMembersAssociationTab = new GridTab({
+                            mainId: self.subRowId,
+                            Grid: GroupsMembersGuideGrid,
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.group-member-guide'),
+                            caption: lang.get('bo.group-member'),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -59,7 +53,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('user_id');
+                                grid.columns().remove('user_id');
                                 grid.columns().add([
                                     {
                                         label: _.capitalize(lang.get('bo.group-member_group')),
@@ -71,8 +65,7 @@ define([
                                             value: utilities.generateGetItems('/api/group', Group)(),
                                             dataUrl: '/api/group',
                                             buildSelect: utilities.generateBuildSelect(Group)
-                                        },
-                                        classes: 'joined_child_cell'
+                                        }
                                     }, {
                                         label: _.capitalize(lang.get('bo.group-member_contact')),
                                         name: 'groups_members.contact_id',
@@ -83,8 +76,7 @@ define([
                                             value: utilities.generateGetItems('/api/contact', Contact)(),
                                             dataUrl: '/api/contact',
                                             buildSelect: utilities.generateBuildSelect(Contact)
-                                        },
-                                        classes: 'joined_child_cell'
+                                        }
                                     }, {
                                         label: _.capitalize(lang.get('bo.group-member_status')),
                                         name: 'groups_members.status_id',
@@ -96,42 +88,17 @@ define([
                                                 GroupMembersStatus)(),
                                             dataUrl: '/api/group-members-status',
                                             buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
-                                        },
-                                        classes: 'joined_child_cell'
+                                        }
                                     }
                                 ]);
 
                             }
-                        });
-
-                        var usersTab = new GridTab({
-                            mainId: self.subRowId + '_user',
-                            Grid: UserGrid,
-                            direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.user')),
-                            beforeGridCreation: function (gridParams) {
-                                gridParams.calcDesiredHeightInContainer = function () {
-                                    return self.calcGridDesiredHeight();
-                                };
-                                gridParams.calcDesiredWidthInContainer = function () {
-                                    return self.calcGridDesiredWidth();
-                                };
-                                gridParams.hasParent = true;
-                                gridParams.parentLink = {
-                                    id: rowData.user_id,
-                                    childFieldName: 'id'
-                                };
-                            },
-                            beforeGridExecution: function (grid) {
-
-                            }
-                        });
+                        });*/
 
                         var childTabsPanel = new ChildTabsPanel({
                             mainId: self.subRowId,
                             tabs: [
-                                groupsMembersAssociationTab,
-                                usersTab
+                                //groupsMembersAssociationTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });
@@ -140,7 +107,7 @@ define([
                             childTabsPanel.createElement()
                         );
 
-                        childTabsPanel.clickToOpenFirstTab();
+                        //childTabsPanel.clickToOpenFirstTab();
                     });
                 }
             }

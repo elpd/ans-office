@@ -183,6 +183,7 @@ class CreateEtgar22Tables extends Migration
             $table->increments('id')->unsigned();
             $table->integer('groups_member_id')->unsigned();
             $table->integer('user_id')->unsigned();
+            $table->timestamps();
 
             $table->foreign('groups_member_id')
                 ->references('id')

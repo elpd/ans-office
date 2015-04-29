@@ -222,23 +222,29 @@ trait RestControllerTrait
     {
         $query = $class::query();
 
+        if (method_exists($this, 'buildInitialQuery')) {
+            $query = $this->buildInitialQuery($query);
+        }
+
         $classObject = new $class();
         $mainTableName = $classObject->getTable();
 
-        $query = $query->select($mainTableName . '.*');
+        //$query = $query->select($mainTableName . '.*');
 
         if (method_exists($this, 'setAdditionalQueryFilters')) {
             $query = $this->setAdditionalQueryFilters($query);
         }
 
-        foreach ($firstChildJoinParams as $firstChildJoinSpec) {
+       /* foreach ($firstChildJoinParams as $firstChildJoinSpec) {
+            $query = $query->with($firstChildJoinSpec->functionOnChild);
+
             $query = $this->createJoinOnQuery($query,
                 $mainTableName,
                 $firstChildJoinSpec->linkedTableName,
                 $mainTableName . '.' . $firstChildJoinSpec->fieldName,
                 '=',
                 $firstChildJoinSpec->linkedTableName . '.' . $firstChildJoinSpec->linkedField);
-
+/*
             foreach ($firstChildJoinSpec->requestedFields as $requestedField){
 
                 $selectStr =
@@ -250,7 +256,8 @@ trait RestControllerTrait
 
                 $query = $query->addSelect($selectStr);
             }
-        }
+
+        }*/
 
         foreach ($filterParams as $filterCondition) {
             if (isset($filterCondition->isSearchOnParentField) && $filterCondition->isSearchOnParentField) {
@@ -271,7 +278,7 @@ trait RestControllerTrait
 
             } else {
                 $query = $query->where(
-                    $mainTableName . '.' . $filterCondition->fieldName,
+                    $filterCondition->fieldName,
                     $filterCondition->operator,
                     $filterCondition->value
                 );
@@ -399,10 +406,13 @@ trait RestControllerTrait
     {
         $filterCondition = new \stdClass();
 
-        $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
-        $linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
+        $classObject = new $class();
+        $mainTableName = $classObject->getTable();
 
-        $filterCondition->fieldName = $linkInfo['fieldName'];
+        $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
+        //$linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
+
+        $filterCondition->fieldName = $mainTableName . '.' . $parentLink['childFieldName']; //$linkInfo['fieldName'];
         $filterCondition->operator = '=';
         $filterCondition->value = $parentLink['id'];
 
@@ -493,10 +503,10 @@ trait RestControllerTrait
                     $sortingIndex);
             }
 
-            $sortingIndexFragments = explode('.', $sortingIndex);
+            /*$sortingIndexFragments = explode('.', $sortingIndex);
             if (count($sortingIndexFragments) == 1) {
                 $sortingIndex =  $mainTableName . '.' . $sortingIndex;
-            }
+            }*/
 
             $orderCondition = [
                 'index' => $sortingIndex,
@@ -577,6 +587,7 @@ trait RestControllerTrait
         $param->linkedTableName = $linkInfo['linkedTable'];
         $param->fieldName = $linkInfo['fieldName'];
         $param->linkedField = $linkInfo['linkedField'];
+        $param->functionOnChild = $linkInfo['functionOnChild'];
         // TODO: security check. fields injection.
         $param->requestedFields = $reqParam->selectFields;
 

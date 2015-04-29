@@ -29,7 +29,8 @@ define([
         },
         beforeGridExecution: {
 
-        }
+        },
+        afterGridExecution: {}
     };
 
     var Class = function (params) {
@@ -111,10 +112,14 @@ define([
         self.get$Page().append($divRow);
 
         if (self.beforeGridExecution) {
-            self.beforeGridExecution.call(null, grid);
+            self.beforeGridExecution(grid);
         }
 
         grid.execute();
+
+        if (self.afterGridExecution) {
+            self.afterGridExecution(grid);
+        }
     }
 
     function calcGridParams(self) {

@@ -1,166 +1,100 @@
 define([
         'lodash',
         'classes/utilities',
-        'classes/bi/Contact',
-        'employee/contacts.SubRow',
+        'classes/GridPage',
+        'classes/grids/ContactGrid',
+        'classes/grids/Etgar22Grid',
         'services/language',
-        'classes/LoadingIndicator',
-        'classes/GeneralGrid',
-        'services/userSettings',
-        'classes/GeneralContentPageObject'
+        'services/userSettings'
     ],
     function (_,
               utilities,
-              Contact,
-              SubRow,
+              GridPage,
+              ContactGrid,
+              Etgar22Grid,
               lang,
-              LoadingIndicator,
-              GeneralGrid,
-              userSettingsGService,
-              GeneralContentPageObject) {
+              userSettingsService) {
 
         $(document).ready(function () {
 
-            var page = new GeneralContentPageObject({
-                name: 'contacts'
-            });
+            userSettingsService.ready().then(function () {
 
-            userSettingsGService.load().then(function () {
+                    var page = new GridPage({
+                        mainId: 'contacts_page',
+                        Grid: ContactGrid,
+                        direction: userSettingsService.getLanguage().direction,
+                        headerTitle: _.capitalize(lang.get('bo.contacts')),
+                        beforeGridExecution: function (grid) {
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.facebook_know_how, {
+                                    name: 'etgar22.facebook_know_how',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.call_for_facebook_help, {
+                                    name: 'etgar22.call_for_facebook_help',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.registration_date, {
+                                    name: 'etgar22.registration_date',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.notes, {
+                                    name: 'etgar22.notes',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.next_call, {
+                                    name: 'etgar22.next_call',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.why_go_vegan, {
+                                    name: 'etgar22.why_go_vegan',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.parent_name, {
+                                    name: 'etgar22.parent_name',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, Etgar22Grid.prototype.defaultColumnDefs.parent_email, {
+                                    name: 'etgar22.parent_email',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
 
-                    var grid = new GeneralGrid({
-                        getDesiredHeightInContainer: function(){
-                            return page.getGridDesiredHeight();
                         },
-                        getDesiredWidthInContainer: function() {
-                            return page.getGridDesiredWidth();
-                        },
-                        lang: lang,
-                        userSettingsGService: userSettingsGService,
-                        controllerUrl: '/api/contact',
-                        biName: 'contact',
-                        biNamePlural: 'contacts',
-                        caption: _.capitalize(lang.get('bo.contacts')),
-                        SubRow: SubRow,
-                        direction: userSettingsGService.getLanguage().direction,
-                        colModel: [{
-                            label: lang.get('bo.id'),
-                            name: 'id',
-                            width: 30,
-                            key: true,
-                            searchoptions: {
-                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                            },
-                            searchrules: {
-                                integer: true
-                            }
-                        }, {
-                            label: lang.get('bo.registration_date'),
-                            name: 'registration_date',
-                            editable: true,
-                            //edittype: 'select',
-                            formatter: 'datetime',
-                            datefmt: 'yyyy-mm-dd',
-                            editoptions: {
-                                // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
-                                // use it to place a third party control to customize the toolbar
-                                dataInit: generateDateTimePicker
-                            },
-                            //stype: 'datetime',
-                            searchoptions: {
-                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'],
-                                dataInit: generateDateTimePicker
-                            },
-                            searchrules: {
-                                date: true
-                            }
-                        }, {
-                            label: lang.get('bo.email'),
-                            name: 'email',
-                            editable: true,
-                            editoptions: {}
-                            //search:true,
-                            //stype:'text',
 
-                        }, {
-                            label: lang.get('bo.first_name'),
-                            name: 'first_name',
-                            editable: true,
-                            editoptions: {}
-                        }, {
-                            label: lang.get('bo.last_name'),
-                            name: 'last_name',
-                            editable: true,
-                            editoptions: {}
-                        }, {
-                            label: lang.get('bo.phone'),
-                            name: 'phone',
-                            editable: true,
-                            editoptions: {}
-                        }, {
-                            label: lang.get('bo.facebook_account'),
-                            name: 'facebook',
-                            editable: true,
-                            editoptions: {}
-                        }, {
-                            label: lang.get('bo.birth_year'),
-                            name: 'birth_year',
-                            editable: true,
-                            editoptions: {},
-                            searchoptions: {
-                                // show search options
-                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                            }
-                        }, {
-                            label: lang.get('bo.donate'),
-                            name: 'donate',
-                            editable: true,
-                            formatter: 'checkbox',
-                            align: 'center',
-                            width: 100,
-                            fixed: true,
-                            edittype: 'checkbox',
-                            editoptions: {
-                                value: "1:0"
-                            },
-                            stype: "select",
-                            searchoptions: {
-                                sopt: ['eq', 'ne'],
-                                value: ":All;1:Yes;0:No"
-                            }
-                        }, {
-                            label: lang.get('bo.blacklisted'),
-                            name: 'blacklisted',
-                            editable: true,
-                            formatter: 'checkbox',
-                            align: 'center',
-                            width: 100,
-                            fixed: true,
-                            edittype: 'checkbox',
-                            editoptions: {
-                                value: "1:0"
-                            },
-                            stype: "select",
-                            searchoptions: {
-                                sopt: ['eq', 'ne'],
-                                value: ":All;1:Yes;0:No"
-                            }
-                        }]
+                        afterGridExecution: function (grid) {
+                            grid.get$Grid().jqGrid('setGroupHeaders', {
+                                useColSpanStyle: true,
+                                groupHeaders: [
+                                    {
+                                        startColumnName: 'etgar22.facebook_know_how',
+                                        numberOfColumns: 8,
+                                        titleText: '<em>' + _.capitalize(lang.get('bo.contact_etgar22')) + '</em>'
+                                    }
+                                ]
+                            });
+                        }
                     });
 
-                    grid.activate();
+                    page.execute();
                 }
-            )
-            ;
+            );
 
         });
-
-        // TODO: make global
-        function generateDateTimePicker(element) {
-            $(element).datetimepicker({
-                dateFormat: 'yy-mm-dd',
-                timeFormat: 'HH:mm:ss'
-            });
-        }
     });
 
 

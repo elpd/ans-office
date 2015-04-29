@@ -2,21 +2,21 @@ define([
     'lodash',
     'classes/utilities',
     'classes/Grid',
-    'classes/subRows/GuideSubRow',
-    'classes/bi/User',
-    'classes/bi/Role',
+    'classes/subRows/GroupSubRow',
+    'classes/bi/Cycle',
+    'classes/bi/GroupStatus',
     'services/language',
     'services/userSettings'
 ], function (_,
              utilities,
              Grid,
-             GuideSubRow,
-             User,
-             Role,
+             GroupSubRow,
+             Cycle,
+             GroupStatus,
              lang,
              userSettingService) {
 
-    var CONTROLLER_URL = '/api/guide';
+    var CONTROLLER_URL = '/api/group';
 
     var defaultColumns = {
         id: {
@@ -31,30 +31,37 @@ define([
                 integer: true
             }
         },
-        user_id: {
-            label: lang.get('bo.role-user_user'),
-            name: 'user_id',
-            width: 200,
+        cycle_id: {
+            label: _.capitalize(lang.get('bo.group_cycle')),
+            name: 'cycle_id',
             editable: true,
             edittype: 'select',
             formatter: 'select',
             editoptions: {
-                value: utilities.generateGetItems('/api/user', User)(),
-                dataUrl: '/api/user',
-                buildSelect: utilities.generateBuildSelect(User)
+                value: utilities.generateGetItems('/api/cycle', Cycle)(),
+                dataUrl: '/api/cycle',
+                buildSelect: utilities.generateBuildSelect(Cycle)
             }
         },
-        role_id: {
-            label: lang.get('bo.role-user_role'),
-            name: 'role_id',
-            width: 200,
+        name: {
+            label: _.capitalize(lang.get('bo.group_name')),
+            name: 'name',
+            editable: true,
+            editoptions: {}
+            //search:true,
+            //stype:'text',
+
+        },
+        status_id: {
+            label: _.capitalize(lang.get('bo.group_status')),
+            name: 'status_id',
             editable: true,
             edittype: 'select',
             formatter: 'select',
             editoptions: {
-                value: utilities.generateGetItems('/api/role', Role)(),
-                dataUrl: '/api/role',
-                buildSelect: utilities.generateBuildSelect(Role)
+                value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
+                dataUrl: '/api/group-status',
+                buildSelect: utilities.generateBuildSelect(GroupStatus)
             }
         }
     };
@@ -63,26 +70,23 @@ define([
         var self = this;
 
         params.controllerUrl = CONTROLLER_URL;
-        params.caption = lang.get('bo.guides');
-        params.SubRow = GuideSubRow;
+        // TODO: attribute inharitance.
+        params.caption = lang.get('bo.groups');
+        params.SubRow = GroupSubRow;
         params.hasSubGrid = true;
 
         Grid.call(this, params);
 
         self.columns().add(self.defaultColumnDefs.id);
-        self.columns().add(self.defaultColumnDefs.user_id);
-        self.columns().add(self.defaultColumnDefs.role_id);
+        self.columns().add(self.defaultColumnDefs.cycle_id);
+        self.columns().add(self.defaultColumnDefs.name);
+        self.columns().add(self.defaultColumnDefs.status_id);
     };
 
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnDefs: {
             get: function () {
                 return _.cloneDeep(defaultColumns);
-            }
-        },
-        defaultJoins: {
-            get: function () {
-                return _.cloneDeep(defaultJoins);
             }
         }
     });

@@ -2,21 +2,21 @@ define([
     'lodash',
     'classes/utilities',
     'classes/Grid',
-    'classes/subRows/GuideSubRow',
+    'classes/subRows/GroupMemberGuideSubRow',
+    'classes/bi/GroupsMembers',
     'classes/bi/User',
-    'classes/bi/Role',
     'services/language',
     'services/userSettings'
 ], function (_,
              utilities,
              Grid,
-             GuideSubRow,
+             GroupMemberGuideSubRow,
+             GroupsMembers,
              User,
-             Role,
              lang,
              userSettingService) {
 
-    var CONTROLLER_URL = '/api/guide';
+    var CONTROLLER_URL = '/api/group-member-guide';
 
     var defaultColumns = {
         id: {
@@ -26,15 +26,29 @@ define([
             key: true,
             searchoptions: {
                 sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-            },
+            }
+            ,
             searchrules: {
                 integer: true
             }
         },
+
+        groups_member_id: {
+            label: _.capitalize(lang.get('bo.group-member-guide_group_member')),
+            name: 'groups_member_id',
+            editable: true,
+            edittype: 'select',
+            formatter: 'select',
+            editoptions: {
+                value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
+                dataUrl: '/api/groups-members',
+                buildSelect: utilities.generateBuildSelect(GroupsMembers)
+            }
+        },
+
         user_id: {
-            label: lang.get('bo.role-user_user'),
+            label: _.capitalize(lang.get('bo.group-member-guide_user')),
             name: 'user_id',
-            width: 200,
             editable: true,
             edittype: 'select',
             formatter: 'select',
@@ -43,19 +57,6 @@ define([
                 dataUrl: '/api/user',
                 buildSelect: utilities.generateBuildSelect(User)
             }
-        },
-        role_id: {
-            label: lang.get('bo.role-user_role'),
-            name: 'role_id',
-            width: 200,
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/role', Role)(),
-                dataUrl: '/api/role',
-                buildSelect: utilities.generateBuildSelect(Role)
-            }
         }
     };
 
@@ -63,15 +64,19 @@ define([
         var self = this;
 
         params.controllerUrl = CONTROLLER_URL;
-        params.caption = lang.get('bo.guides');
-        params.SubRow = GuideSubRow;
+        // todo: inharitance of attribute. array merge.
+        if (! params.caption) {
+            params.caption = lang.get('bo.group-member-guides');
+        }
+        params.SubRow = GroupMemberGuideSubRow;
         params.hasSubGrid = true;
 
         Grid.call(this, params);
 
         self.columns().add(self.defaultColumnDefs.id);
+        self.columns().add(self.defaultColumnDefs.groups_member_id);
         self.columns().add(self.defaultColumnDefs.user_id);
-        self.columns().add(self.defaultColumnDefs.role_id);
+
     };
 
     Class.prototype = Object.create(Grid.prototype, {
@@ -79,13 +84,16 @@ define([
             get: function () {
                 return _.cloneDeep(defaultColumns);
             }
-        },
-        defaultJoins: {
-            get: function () {
-                return _.cloneDeep(defaultJoins);
-            }
         }
     });
+
+    function setParamsColModel(params, colModel) {
+        // TODO: deep copy ?
+        var processedParams = params;
+        processedParams.colModel = colModel;
+
+        return processedParams;
+    }
 
     return Class;
 });

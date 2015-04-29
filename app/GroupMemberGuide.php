@@ -48,7 +48,7 @@ class GroupMemberGuide extends Model
     ];
 
     public function groupMember() {
-        return $this->belongsTo('App\GroupsMembers', 'groups_member_id');
+        return $this->belongsTo('App\GroupsMember', 'groups_member_id');
     }
 
     public function user() {

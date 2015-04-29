@@ -1,10 +1,12 @@
 define([
     'classes/AttributesObject',
     'classes/SubRow',
-    'classes/LoadingIndicator'
+    'classes/LoadingIndicator',
+    'classes/database/query/Builder'
 ], function (AttributesObject,
              EmptySubRow,
-             LoadingIndicator) {
+             LoadingIndicator,
+             QueryBuilder) {
 
     var GRID_HEIGHT_MIN = 150;
     var GRID_WIDTH_MIN = 700;
@@ -78,7 +80,13 @@ define([
             required: true
         },
         colModel: {
-            required: true
+            required: true,
+            defaults: {
+                dependencies: [],
+                calculation: function() {
+                    return new Array();
+                }
+            }
         },
         gridBoxId: {
             required: true,
@@ -138,7 +146,9 @@ define([
         beforeEditGridData: {
             required: true,
             defaults: {
-                calculation: {}
+                calculation: function(){
+                    return {};
+                }
             }
         },
         isExecuted: {
@@ -147,24 +157,26 @@ define([
                 calculation: false
             }
         },
-        colModelExtraFunction: {
+        colModelExtraFunction: {},
 
-        },
-        queryData: {
+        // Tracking of successful edited rows. For visual indication.
+        changedRows: {
             required: true,
             defaults: {
-                calculation: {
-                    firstChildJoin: []
+                calculation: function() {
+                    return [];
                 }
             }
         }
     };
 
     var Class = function (params) {
-        AttributesObject.call(this, params, attributesRules);
+        var self = this;
+        AttributesObject.call(self, params, attributesRules);
     };
 
     Class.prototype = Object.create(AttributesObject.prototype, {
+
         execute: {
             value: function () {
                 var self = this;
@@ -423,49 +435,36 @@ define([
             }
         },
 
-        query: {
-            value: function() {
-                var self = this;
-                return new GridQueryInterface(self);
-            }
-        },
-
         columns: {
-            value: function() {
+            value: function () {
                 var self = this;
                 return new GridColumnsInterface(self);
             }
         }
     });
 
-    function GridQueryInterface(self){
-        return {
-
-            addFirstChildJoin: function(fieldId, selectFields){
-                self.queryData.firstChildJoin.push({
-                    linkField: fieldId,
-                    selectFields: selectFields
-                });
-            }
-        }
-
-    }
-
     function GridColumnsInterface(self) {
         return {
-            remove: function(columnId) {
+            remove: function (columnId) {
                 removeFromColumns(columnId);
             },
-            add: function(columns) {
-                columns.forEach(function(col){
-                    addToColumns(col);
-                });
+            hide: function(columnId) {
+                hideFromColumns(columnId);
+            },
+            add: function (column) {
+                if (column instanceof Array) {
+                    column.forEach(function(item){
+                        addToColumns(item);
+                    })
+                } else {
+                    addToColumns(column);
+                }
             }
         }
 
         function removeFromColumns(columnId) {
-            var indexToRemove = _.findIndex(self.colModel, function(colItem){
-                if (colItem.name == columnId){
+            var indexToRemove = _.findIndex(self.colModel, function (colItem) {
+                if (colItem.name == columnId) {
                     return true;
                 }
             });
@@ -474,6 +473,23 @@ define([
             }
 
             _.pullAt(self.colModel, indexToRemove);
+        }
+
+        function hideFromColumns(columnId) {
+            var targetIndex = _.findIndex(self.colModel, function (colItem) {
+                if (colItem.name == columnId) {
+                    return true;
+                }
+            });
+            if (targetIndex < 0) {
+                throw new Error('id not found. index: ' + columnId);
+            }
+
+            self.colModel[targetIndex] = _.merge({},
+                self.colModel[targetIndex],
+                {
+                    hidden: true
+                });
         }
 
         function addToColumns(colDef) {
@@ -575,11 +591,6 @@ define([
             params.postData.parentLink = self.parentLink;
         }
 
-        if (self.queryData.firstChildJoin.length > 0) {
-            params.postData.firstChildJoin =
-                JSON.stringify(self.queryData.firstChildJoin);
-        }
-
         if (self.colModelExtraFunction) {
             params.postData.colModelExtra = function () {
                 return self.colModelExtraFunction();
@@ -609,8 +620,14 @@ define([
         };
 
         params.rowattr = function (rowData, currentObj, rowId) {
+            var rowClasses = 'dataRow' + ' ' + self.dataRowClass;
+
+            if (_.indexOf(self.changedRows, rowId) >= 0) {
+                rowClasses += ' ' + ROW_SUCCESSFUL_UPDATE_CLASS;
+            }
+
             return {
-                "class": ["dataRow " + self.dataRowClass]
+                "class": [rowClasses]
             };
         };
 
@@ -638,6 +655,10 @@ define([
                 {
                     buttonalign: 'right'
                 });
+        };
+
+        params.serializeGridData = function (postData) {
+            return postData;
         };
 
         return params;
@@ -748,6 +769,16 @@ define([
                 }
 
                 return [returnData.success, returnData.message];
+            },
+            beforeShowForm: function($form) {
+                // Remove join child fields.
+                $('.FormData', $form).each(function(index, element){
+                    var $formData = $(this);
+                    var formDataId = $formData.attr('id');
+                    if (formDataId && formDataId.indexOf('.') >= 0){
+                        $formData.remove();
+                    }
+                });
             }
         };
 
@@ -858,7 +889,7 @@ define([
         // Set keys: ENTER - save, ESC - cancel.
         options.keys = true;
         //options.focusField = 4; // TODO: research ?
-        options.url = self.controllerUrl;
+        options.url = self.controllerUrl + '/' + rowBusinuessObjectId;
         options.extraparam = {
             _token: $_token // TODO: from AMD
         };
@@ -868,9 +899,12 @@ define([
 
             var response = data.responseJSON;
 
+            // Refresh grid data. For child connected columns fo instance.
+            self.get$Grid().trigger("reloadGrid");
+
+            // Show success indication. Color of row.
             // params: id, rowData, rowCss.
-            self.get$Grid().jqGrid(JQGRID_FN_SET_ROW_DATA,
-                rowBusinuessObjectId, null, ROW_SUCCESSFUL_UPDATE_CLASS);
+            self.changedRows = _.union(self.changedRows, [rowBusinuessObjectId]);
 
             return true; //[true, "", response.item_id];
         };

@@ -57,6 +57,13 @@ define([], function () {
             }
 
             return buildSelect;
+        },
+
+        generateDateTimePicker: function (element) {
+            $(element).datetimepicker({
+                dateFormat: 'yy-mm-dd',
+                timeFormat: 'HH:mm:ss'
+            });
         }
     };
 
