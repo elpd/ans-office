@@ -32,7 +32,7 @@ define([
             }
         },
         cycle_id: {
-            label: _.capitalize(lang.get('bo.group_cycle')),
+            label: _.capitalize(lang.get('bo.group_cycle-id')),
             name: 'cycle_id',
             editable: true,
             edittype: 'select',
@@ -53,7 +53,7 @@ define([
 
         },
         status_id: {
-            label: _.capitalize(lang.get('bo.group_status')),
+            label: _.capitalize(lang.get('bo.group_status-id')),
             name: 'status_id',
             editable: true,
             edittype: 'select',
