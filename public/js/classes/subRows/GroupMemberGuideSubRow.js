@@ -1,4 +1,5 @@
 define([
+        'require',
         'lodash',
         'classes/utilities',
         'classes/SubRow',
@@ -10,7 +11,8 @@ define([
         'services/language',
         'services/userSettings'
     ],
-    function (_,
+    function (require,
+              _,
               utilities,
               SubRow,
               GridTab,
@@ -33,11 +35,11 @@ define([
                     userSettingsService.ready().then(function () {
                         var rowData = self.getRowData();
 
-                        var groupMembersTab = new GridTab({
-                            mainId: self.subRowId + '_group_member',
-                            Grid: GroupMemberGrid,
+                        var groupMemberTab = new GridTab({
+                            mainId: self.subRowId + '_group_member_guide_group_member',
+                            Grid: require('classes/grids/GroupMemberGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.group-member'),
+                            caption: _.capitalize(lang.get('bo.group-member-guide_group-member-id')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -53,71 +55,11 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                //grid.columns().remove('user_id');
 
-                                // Group
-
-                                grid.columns().add(
-                                    _.merge({}, GroupGrid.prototype.defaultColumnDefs.cycle_id, {
-                                        name: 'groups.cycle_id',
-                                        classes: 'joined_child_cell',
-                                        editable: false
-                                    }));
-
-                                grid.columns().add(
-                                    _.merge({}, GroupGrid.prototype.defaultColumnDefs.name, {
-                                        name: 'groups.name',
-                                        classes: 'joined_child_cell',
-                                        editable: false
-                                    }));
-
-                                grid.columns().add(
-                                    _.merge({}, GroupGrid.prototype.defaultColumnDefs.status_id, {
-                                        name: 'groups.status_id',
-                                        classes: 'joined_child_cell',
-                                        editable: false
-                                    }));
-
-                                // Contact
-
-                                grid.columns().add(
-                                    _.merge({}, ContactGrid.prototype.defaultColumnDefs.email, {
-                                        name: 'contacts.email',
-                                        classes: 'joined_child_cell',
-                                        editable: false
-                                    }));
-
-                                grid.columns().add(
-                                    _.merge({}, ContactGrid.prototype.defaultColumnDefs.first_name, {
-                                        name: 'contacts.first_name',
-                                        classes: 'joined_child_cell',
-                                        editable: false
-                                    }));
-
-                                grid.columns().add(
-                                    _.merge({}, ContactGrid.prototype.defaultColumnDefs.last_name, {
-                                        name: 'contacts.last_name',
-                                        classes: 'joined_child_cell',
-                                        editable: false
-                                    }));
                             },
 
                             afterGridExecution: function (grid) {
-                                grid.setGroupHeaders({
-                                    useColSpanStyle: false,
-                                    groupHeaders: [
-                                        {
-                                            startColumnName: 'groups.cycle_id',
-                                            numberOfColumns: 3,
-                                            titleText: '<em>' + _.capitalize(lang.get('bo.group')) + '</em>'
-                                        },
-                                        {
-                                            startColumnName: 'contacts.email',
-                                            numberOfColumns: 3,
-                                            titleText: '<em>' + _.capitalize(lang.get('bo.contact')) + '</em>'
-                                        }
-                                    ]
-                                });
+
                             }
 
                         });
@@ -125,7 +67,7 @@ define([
                         var childTabsPanel = new ChildTabsPanel({
                             mainId: self.subRowId,
                             tabs: [
-                                groupMembersTab
+                                groupMemberTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });
