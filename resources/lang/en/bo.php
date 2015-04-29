@@ -20,10 +20,12 @@ return [
 
     'user' => 'user',
     'users' => 'users',
-    'user_name' => 'Name',
-    'user_email' => 'Email',
-    'user_password' => 'Password',
-    'user_password_confirmation' => 'Password Confirmation',
+    'user_name' => 'name',
+    'user_email' => 'email',
+    'user_password' => 'password',
+    'user_password_confirmation' => 'password confirmation',
+    'user_roles' => 'roles',
+    'user_permissions' => 'permissions',
 
     // Role
 
@@ -34,7 +36,7 @@ return [
     'role_description' => 'description',
     'role_level' => 'level',
     'role_users' => 'associated users',
-    'role_permissions' => 'permissions',
+    'role_permissions' => 'assoiciated permissions',
 
     // Permission
 
@@ -112,12 +114,14 @@ return [
     'role-user_user-id' => 'user',
 
     // Permission-User
-    'permission-user_permission' => 'Permission',
-    'permission-user_user' => 'User',
+    'permission-user' => 'permission and user association',
+    'permission-user_permission-id' => 'permission',
+    'permission-user_user-id' => 'user',
 
     // Permission-Role
-    'permission-role_permission' => 'permission',
-    'permission-role_role' => 'role',
+    'permission-role' => 'permission and role association',
+    'permission-role_permission-id' => 'permission',
+    'permission-role_role-id' => 'role',
 
     // Contact Note
     'contact-notes' => 'Notes',

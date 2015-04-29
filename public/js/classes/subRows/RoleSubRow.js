@@ -6,7 +6,8 @@ define([
         'classes/ChildTabsPanel',
         'services/language',
         'services/userSettings',
-        'classes/grids/RoleUserGrid'
+        'classes/grids/RoleUserGrid',
+        'classes/grids/PermissionRoleGrid'
     ],
     function (_,
               utilities,
@@ -15,7 +16,8 @@ define([
               ChildTabsPanel,
               lang,
               userSettingsService,
-              RoleUserGrid) {
+              RoleUserGrid,
+              PermissionRoleGrid) {
 
         var Class = function (params) {
             SubRow.call(this, params);
@@ -59,10 +61,40 @@ define([
 
                         });
 
+                        var rolePermissionsTab = new GridTab({
+                            mainId: self.subRowId + '_role_permissions',
+                            Grid: require('classes/grids/PermissionRoleGrid'),
+                            direction: userSettingsService.getLanguage().direction,
+                            caption: _.capitalize(lang.get('bo.role_permissions')),
+                            beforeGridCreation: function (gridParams) {
+                                gridParams.calcDesiredHeightInContainer = function () {
+                                    return self.calcGridDesiredHeight();
+                                };
+                                gridParams.calcDesiredWidthInContainer = function () {
+                                    return self.calcGridDesiredWidth();
+                                };
+                                gridParams.hasParent = true;
+                                gridParams.parentLink = {
+                                    id: rowData.id,
+                                    childFieldName: 'role_id'
+                                };
+                            },
+
+                            beforeGridExecution: function (grid) {
+                                grid.columns().hide('role_id');
+                            },
+
+                            afterGridExecution: function (grid) {
+
+                            }
+
+                        });
+
                         var childTabsPanel = new ChildTabsPanel({
                             mainId: self.subRowId,
                             tabs: [
-                                roleUsersTab
+                                roleUsersTab,
+                                rolePermissionsTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });

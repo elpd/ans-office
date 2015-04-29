@@ -2,19 +2,19 @@ define([
     'lodash',
     'classes/utilities',
     'classes/Grid',
-    'classes/subRows/PermissionRoleSubRow',
-    'classes/bi/Role',
+    'classes/subRows/PermissionUserSubRow',
+    'services/language',
     'classes/bi/Permission',
-    'services/language'
+    'classes/bi/User'
 ], function (_,
              utilities,
              Grid,
-             PermissionRoleSubRow,
-             Role,
+             PermissionUserSubRow,
+             lang,
              Permission,
-             lang) {
+             User) {
 
-    var CONTROLLER_URL = '/api/permission-role';
+    var CONTROLLER_URL = '/api/permission-user';
 
     var defaultColumns = {
         id: {
@@ -30,7 +30,8 @@ define([
             }
         },
         permission_id: {
-            label: _.capitalize(lang.get('bo.permission-role_permission-id')),
+
+            label: _.capitalize(lang.get('bo.permission-user_permission-id')),
             name: 'permission_id',
             editable: true,
             edittype: 'select',
@@ -40,17 +41,18 @@ define([
                 dataUrl: '/api/permission',
                 buildSelect: utilities.generateBuildSelect(Permission)
             }
+
         },
-        role_id: {
-            label: _.capitalize(lang.get('bo.permission-role_role-id')),
-            name: 'role_id',
+        user_id: {
+            label: _.capitalize(lang.get('bo.permission-user_user-id')),
+            name: 'user_id',
             editable: true,
             edittype: 'select',
             formatter: 'select',
             editoptions: {
-                value: utilities.generateGetItems('/api/role', Role)(),
-                dataUrl: '/api/role',
-                buildSelect: utilities.generateBuildSelect(Role)
+                value: utilities.generateGetItems('/api/user', User)(),
+                dataUrl: '/api/user',
+                buildSelect: utilities.generateBuildSelect(User)
             }
         }
     };
@@ -59,15 +61,15 @@ define([
         var self = this;
 
         params.controllerUrl = CONTROLLER_URL;
-        params.caption = lang.get('bo.permission-role');
-        params.SubRow = PermissionRoleSubRow;
+        params.caption = lang.get('bo.permission-user');
+        params.SubRow = PermissionUserSubRow;
         params.hasSubGrid = true;
 
         Grid.call(this, params);
 
         self.columns().add(self.defaultColumnDefs.id);
         self.columns().add(self.defaultColumnDefs.permission_id);
-        self.columns().add(self.defaultColumnDefs.role_id);
+        self.columns().add(self.defaultColumnDefs.user_id);
     };
 
     Class.prototype = Object.create(Grid.prototype, {
