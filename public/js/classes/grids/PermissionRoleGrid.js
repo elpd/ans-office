@@ -5,14 +5,14 @@ define([
     'classes/subRows/PermissionRoleSubRow',
     'classes/bi/Role',
     'classes/bi/Permission',
-    'services/language',
-    'services/userSettings'
+    'services/language'
 ], function (_,
              utilities,
              Grid,
              PermissionRoleSubRow,
              Role,
-             Permission) {
+             Permission,
+             lang) {
 
     var CONTROLLER_URL = '/api/permission-role';
 
@@ -30,7 +30,7 @@ define([
             }
         },
         permission_id: {
-            label: _.capitalize(self.lang.get('bo.permission-role_permission_id')),
+            label: _.capitalize(lang.get('bo.permission-role_permission-id')),
             name: 'permission_id',
             editable: true,
             edittype: 'select',
@@ -42,7 +42,7 @@ define([
             }
         },
         role_id: {
-            label: _.capitalize(self.lang.get('bo.permission-role_role_id')),
+            label: _.capitalize(lang.get('bo.permission-role_role-id')),
             name: 'role_id',
             editable: true,
             edittype: 'select',

@@ -62,7 +62,7 @@ define([
 
         params.controllerUrl = CONTROLLER_URL;
         params.caption = lang.get('bo.permission-user');
-        params.SubRow = RoleUserSubRow;
+        params.SubRow = PermissionUserSubRow;
         params.hasSubGrid = true;
 
         Grid.call(this, params);

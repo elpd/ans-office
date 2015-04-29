@@ -6,7 +6,7 @@ define([
         'classes/ChildTabsPanel',
         'services/language',
         'services/userSettings',
-        'classes/grids/RoleUserGrid',
+        'classes/grids/PermissionUserGrid',
         'classes/grids/PermissionRoleGrid'
     ],
     function (_,
@@ -16,7 +16,7 @@ define([
               ChildTabsPanel,
               lang,
               userSettingsService,
-              RoleUserGrid,
+              PermissionUserGrid,
               PermissionRoleGrid) {
 
         var Class = function (params) {
@@ -31,11 +31,11 @@ define([
                     userSettingsService.ready().then(function () {
                         var rowData = self.getRowData();
 
-                        var roleUsersTab = new GridTab({
-                            mainId: self.subRowId + '_role_users',
-                            Grid: require('classes/grids/RoleUserGrid'),
+                        var permissionUsersTab = new GridTab({
+                            mainId: self.subRowId + '_permission_users',
+                            Grid: require('classes/grids/PermissionUserGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.role_users')),
+                            caption: _.capitalize(lang.get('bo.permission_users')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -46,12 +46,12 @@ define([
                                 gridParams.hasParent = true;
                                 gridParams.parentLink = {
                                     id: rowData.id,
-                                    childFieldName: 'role_id'
+                                    childFieldName: 'permission_id'
                                 };
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('role_id');
+                                grid.columns().hide('permission_id');
 
                             },
 
@@ -61,11 +61,11 @@ define([
 
                         });
 
-                        var rolePermissionsTab = new GridTab({
-                            mainId: self.subRowId + '_role_permissions',
+                        var permissionRolesTab = new GridTab({
+                            mainId: self.subRowId + '_permission_roles',
                             Grid: require('classes/grids/PermissionRoleGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.role_permissions')),
+                            caption: _.capitalize(lang.get('bo.permission_roles')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -76,12 +76,13 @@ define([
                                 gridParams.hasParent = true;
                                 gridParams.parentLink = {
                                     id: rowData.id,
-                                    childFieldName: 'role_id'
+                                    childFieldName: 'permission_id'
                                 };
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('role_id');
+                                grid.columns().hide('permission_id');
+
                             },
 
                             afterGridExecution: function (grid) {
@@ -93,8 +94,8 @@ define([
                         var childTabsPanel = new ChildTabsPanel({
                             mainId: self.subRowId,
                             tabs: [
-                                roleUsersTab,
-                                rolePermissionsTab
+                                permissionUsersTab,
+                                permissionRolesTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });
