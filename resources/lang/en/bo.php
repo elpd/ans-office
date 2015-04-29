@@ -129,6 +129,7 @@ return [
 
     // etgar-22-registration-requests
 
+    'etgar-22-registration-request' => 'Etgar 22 Registration Request',
     'etgar-22-registration-requests' => 'Etgar 22 Registration Requests',
     'Etgar-22-registration-requests' => 'Etgar 22 Registration Requests',
     'etgar-22-registration-request_full_name' => 'Full Name',
