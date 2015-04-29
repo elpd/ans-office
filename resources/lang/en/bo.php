@@ -18,8 +18,8 @@ return [
 
     // User
 
+    'user' => 'user',
     'users' => 'users',
-    'Users' => 'Users',
     'user_name' => 'Name',
     'user_email' => 'Email',
     'user_password' => 'Password',
@@ -27,13 +27,13 @@ return [
 
     // Role
 
+    'role' => 'role',
     'roles' => 'roles',
-    'Roles' => 'Roles',
-    'role_name' => 'Name',
-    'role_slug' => 'Slug',
-    'role_description' => 'Description',
-    'role_level' => 'Level',
-    'role_users' => 'Users',
+    'role_name' => 'name',
+    'role_slug' => 'slug',
+    'role_description' => 'description',
+    'role_level' => 'level',
+    'role_users' => 'associated users',
     'role_permissions' => 'permissions',
 
     // Permission
@@ -49,6 +49,7 @@ return [
 
     // Contact
 
+    'contact' => 'contact',
     'contacts' => 'contacts',
     'Contacts' => 'Contacts',
     'registration_date' => 'Registration Date',
@@ -81,6 +82,7 @@ return [
 
     // Group
 
+    'group' => 'group',
     'groups' => 'Groups',
     'Groups' => 'Groups',
     'group_cycle' => 'Cycle',
@@ -92,10 +94,12 @@ return [
     'guides' => 'Guides',
     'Guides' => 'Guides',
     'guide_name' => 'Name',
+    'guide__user_id__user_name' => 'User Name',
+    'guide__user_id__user_email' => 'User Email',
 
     // Groups Members
-    'group-member' => 'Groups Members',
-    'Group-member' => 'Groups Members',
+    'group-member' => 'Group Member',
+    'Group-member' => 'Group Member',
     'group-member_group' => 'Group',
     'group-member_contact' => 'Contact',
     'group-member_status' => 'Status',
@@ -103,8 +107,9 @@ return [
     'group-member_guide_2' => 'Guide 2',
 
     // Role-User
-    'role-user_role' => 'Role',
-    'role-user_user' => 'User',
+    'role-user' => 'role and user association',
+    'role-user_role-id' => 'role',
+    'role-user_user-id' => 'user',
 
     // Permission-User
     'permission-user_permission' => 'Permission',
@@ -124,6 +129,7 @@ return [
 
     // etgar-22-registration-requests
 
+    'etgar-22-registration-request' => 'Etgar 22 Registration Request',
     'etgar-22-registration-requests' => 'Etgar 22 Registration Requests',
     'Etgar-22-registration-requests' => 'Etgar 22 Registration Requests',
     'etgar-22-registration-request_full_name' => 'Full Name',
@@ -138,4 +144,10 @@ return [
     'etgar-22-registration-request_parent_name' => 'Parent Name',
     'etgar-22-registration-request_parent_email' => 'Parent Email',
     'etgar-22-registration-request_status' => 'Request Status',
+
+    // group-member-guide
+
+    'group-member-guide' => 'Group Member Guide Association',
+    'group-member-guide_group_member' => 'Membership ID',
+    'group-member-guide_user' => 'Guide',
 ];

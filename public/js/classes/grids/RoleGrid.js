@@ -1,90 +1,83 @@
 define([
-        'lodash',
-        'classes/utilities',
-        'classes/GeneralGrid',
-        'classes/EmptySubRow'
-    ],
-    function (_,
-              utilities,
-              GeneralGrid,
-              EmptySubRow) {
+    'lodash',
+    'classes/utilities',
+    'classes/Grid',
+    'classes/subRows/RoleSubRow',
+    'services/language'
+], function (_,
+             utilities,
+             Grid,
+             RoleSubRow,
+             lang) {
 
-        var Class = function RoleGrid(params) {
-            this.setParams(params);
-            this.setVariables();
-        };
+    var CONTROLLER_URL = '/api/role';
 
-        Class.prototype = {
-            setParams: function (params) {
-                var self = this;
-
-                // Services
-                self.lang = params.lang;
-                self.userSettingsGService = params.userSettingsGService;
-
-                //
-                self.gridId = params.gridId;
-                self.parentLink = params.parentLink;
+    var defaultColumns = {
+        id: {
+            label: _.capitalize(lang.get('bo.id')),
+            name: 'id',
+            width: 50,
+            key: true,
+            searchoptions: {
+                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
             },
-
-            setVariables: function () {
-                var self = this;
-
-                self.controllerUrl = '/api/role';
-                self.biName = 'role';
-                self.biNamePlural = 'roles';
-                self.caption = self.lang.get('bo.roles');
-                self.SubRow = EmptySubRow;
-                self.direction= self.userSettingsGService.getLanguage().direction;
-
-                self.colModel = [{
-                    label: self.lang.get('bo.id'),
-                    name: 'id',
-                    width: 30,
-                    key: true
-                }, {
-                    label: self.lang.get('bo.role_name'),
-                    name: 'name',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: self.lang.get('bo.role_slug'),
-                    name: 'slug',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: self.lang.get('bo.role_description'),
-                    name: 'description',
-                    editable: true,
-                    editoptions: {}
-                }, {
-                    label: self.lang.get('bo.role_level'),
-                    name: 'level',
-                    editable: true,
-                    formatter: 'integer',
-                    editoptions: {}
-                }];
-            },
-
-            activate: function () {
-                var self = this;
-
-                this.grid = new GeneralGrid({
-                    gridId: self.gridId,
-                    controllerUrl: self.controllerUrl,
-                    biName: self.biName,
-                    biNamePlural: self.biNamePlural,
-                    caption: self.caption,
-                    SubRow: self.SubRow,
-                    direction: self.direction,
-                    colModel: self.colModel,
-                    parentLink: self.parentLink
-                });
-
-                this.grid.activate();
+            searchrules: {
+                integer: true
             }
-        };
+        },
+        name: {
+            label: lang.get('bo.role_name'),
+            name: 'name',
+            editable: true,
+            editoptions: {}
+        },
+        slug: {
+            label: lang.get('bo.role_slug'),
+            name: 'slug',
+            editable: true,
+            editoptions: {}
+        },
+        description: {
+            label: lang.get('bo.role_description'),
+            name: 'description',
+            editable: true,
+            editoptions: {}
+        },
+        level: {
+            label: lang.get('bo.role_level'),
+            name: 'level',
+            editable: true,
+            formatter: 'integer',
+            editoptions: {}
+        }
+    };
 
-        return Class;
-    }
-);
+    var Class = function (params) {
+        var self = this;
+
+        params.controllerUrl = CONTROLLER_URL;
+        // TODO: attribute inheritance.
+        params.caption = lang.get('bo.roles');
+        params.SubRow = RoleSubRow;
+        params.hasSubGrid = true;
+
+        Grid.call(this, params);
+
+        self.columns().add(self.defaultColumnDefs.id);
+        self.columns().add(self.defaultColumnDefs.name);
+        self.columns().add(self.defaultColumnDefs.slug);
+        self.columns().add(self.defaultColumnDefs.description);
+        self.columns().add(self.defaultColumnDefs.level);
+    };
+
+    Class.prototype = Object.create(Grid.prototype, {
+        defaultColumnDefs: {
+            get: function () {
+                return _.cloneDeep(defaultColumns);
+            }
+        }
+    });
+
+    return Class;
+});
+

@@ -14,6 +14,7 @@ trait RestControllerTrait
     protected static $SEARCH_REQ_PARAM = '_search';
     protected static $SORT_ON_LINK_FIELD_REQ_PARAM = 'sortOnLinkField';
     protected static $SEARCH_ON_LINK_FIELD_REQ_PARAM = 'searchOnLinkField';
+    protected static $FIRST_CHILD_JOIN_REQ_PARAM = 'firstChildJoin';
 
     protected static $MAX_ROWS_PER_PAGE = 1000;
 
@@ -23,11 +24,13 @@ trait RestControllerTrait
     {
         $class = $this->class;
 
+        $firstChildJoinParams = $this->calcFirstChildJoinParams($request, $class);
         $filterParams = $this->calcFilterParams($request, $class);
         $orderParams = $this->calcOrderParams($request, $class);
         $rowsPerPage = $this->calcRowsPerPage($request);
 
-        $query = $this->buildQuery($class, $filterParams, $orderParams);
+        $query = $this->buildQuery($class, $filterParams, $orderParams,
+            $firstChildJoinParams);
 
         if ($request->has(self::$PAGE_TO_SHOW_REQ_PARAM)) {
             $items = $query->paginate($rowsPerPage);
@@ -214,14 +217,47 @@ trait RestControllerTrait
         return $inputs;
     }
 
-    protected function buildQuery($class, $filterParams, $orderParams)
+    protected function buildQuery($class, $filterParams, $orderParams,
+                                  $firstChildJoinParams)
     {
         $query = $class::query();
+
+        if (method_exists($this, 'buildInitialQuery')) {
+            $query = $this->buildInitialQuery($query);
+        }
 
         $classObject = new $class();
         $mainTableName = $classObject->getTable();
 
-        $query = $query->select($mainTableName . '.*');
+        //$query = $query->select($mainTableName . '.*');
+
+        if (method_exists($this, 'setAdditionalQueryFilters')) {
+            $query = $this->setAdditionalQueryFilters($query);
+        }
+
+       /* foreach ($firstChildJoinParams as $firstChildJoinSpec) {
+            $query = $query->with($firstChildJoinSpec->functionOnChild);
+
+            $query = $this->createJoinOnQuery($query,
+                $mainTableName,
+                $firstChildJoinSpec->linkedTableName,
+                $mainTableName . '.' . $firstChildJoinSpec->fieldName,
+                '=',
+                $firstChildJoinSpec->linkedTableName . '.' . $firstChildJoinSpec->linkedField);
+/*
+            foreach ($firstChildJoinSpec->requestedFields as $requestedField){
+
+                $selectStr =
+                    $firstChildJoinSpec->linkedTableName . '.' .
+                    $requestedField .
+                    ' as ' .
+                    $firstChildJoinSpec->linkedTableName . '.' .
+                    $requestedField ;
+
+                $query = $query->addSelect($selectStr);
+            }
+
+        }*/
 
         foreach ($filterParams as $filterCondition) {
             if (isset($filterCondition->isSearchOnParentField) && $filterCondition->isSearchOnParentField) {
@@ -242,7 +278,7 @@ trait RestControllerTrait
 
             } else {
                 $query = $query->where(
-                    $mainTableName . '.' . $filterCondition->fieldName,
+                    $filterCondition->fieldName,
                     $filterCondition->operator,
                     $filterCondition->value
                 );
@@ -263,7 +299,8 @@ trait RestControllerTrait
                 $query = $this->createJoinOnQuery($query,
                     $mainTableName,
                     $linkedTableName,
-                    $mainTableName . '.' . $sortingPrimaryCondition['index'],
+                    //$mainTableName . '.' .
+                    $sortingPrimaryCondition['index'],
                     '=',
                     $linkedTableName . '.' . $linkedTableConnectionFieldName);
 
@@ -273,7 +310,8 @@ trait RestControllerTrait
             } else {
 
                 $query = $query->orderBy(
-                    $mainTableName . '.' . $sortingPrimaryCondition['index'],
+                    //$mainTableName . '.' .
+                    $sortingPrimaryCondition['index'],
                     $sortingPrimaryCondition['order']
                 );
             }
@@ -368,10 +406,13 @@ trait RestControllerTrait
     {
         $filterCondition = new \stdClass();
 
-        $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
-        $linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
+        $classObject = new $class();
+        $mainTableName = $classObject->getTable();
 
-        $filterCondition->fieldName = $linkInfo['fieldName'];
+        $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
+        //$linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
+
+        $filterCondition->fieldName = $mainTableName . '.' . $parentLink['childFieldName']; //$linkInfo['fieldName'];
         $filterCondition->operator = '=';
         $filterCondition->value = $parentLink['id'];
 
@@ -445,6 +486,9 @@ trait RestControllerTrait
         $orderParams = [];
         $parentFieldToSortBy = null;
 
+        $classObject = new $class();
+        $mainTableName = $classObject->getTable();
+
         if ($request->has(self::$SORTING_INDEX_REQ_PARAM)) {
             $sortingIndex = $request->get(self::$SORTING_INDEX_REQ_PARAM);
             $sortingOrder = $request->get(self::$SORTING_ORDER_REQ_PARAM);
@@ -458,6 +502,11 @@ trait RestControllerTrait
                     self::$SORT_ON_LINK_FIELD_REQ_PARAM,
                     $sortingIndex);
             }
+
+            /*$sortingIndexFragments = explode('.', $sortingIndex);
+            if (count($sortingIndexFragments) == 1) {
+                $sortingIndex =  $mainTableName . '.' . $sortingIndex;
+            }*/
 
             $orderCondition = [
                 'index' => $sortingIndex,
@@ -512,5 +561,36 @@ trait RestControllerTrait
         }
 
         return $rows_per_page;
+    }
+
+    protected function calcFirstChildJoinParams($request, $class)
+    {
+        $childJoinParams = [];
+
+        if ($request->has(self::$FIRST_CHILD_JOIN_REQ_PARAM)) {
+            $childJoinReqParamsStr = $request->get(self::$FIRST_CHILD_JOIN_REQ_PARAM);
+            $childJoinReqParams = \GuzzleHttp\json_decode($childJoinReqParamsStr);
+            foreach ($childJoinReqParams as $reqParam) {
+                $param = $this->calcChildJoinParam($reqParam, $class);
+                $childJoinParams[] = $param;
+            }
+        }
+
+        return $childJoinParams;
+    }
+
+    protected function calcChildJoinParam($reqParam, $class)
+    {
+        $param = new \stdClass();
+
+        $linkInfo = $class::getLinkInfo($reqParam->linkField);
+        $param->linkedTableName = $linkInfo['linkedTable'];
+        $param->fieldName = $linkInfo['fieldName'];
+        $param->linkedField = $linkInfo['linkedField'];
+        $param->functionOnChild = $linkInfo['functionOnChild'];
+        // TODO: security check. fields injection.
+        $param->requestedFields = $reqParam->selectFields;
+
+        return $param;
     }
 }

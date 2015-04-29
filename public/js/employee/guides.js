@@ -1,73 +1,63 @@
 define([
         'lodash',
         'classes/utilities',
-        'classes/bi/Guide',
-        'employee/guides.SubRow',
+        'classes/GridPage',
+        'classes/grids/GuideGrid',
+        'classes/grids/UserGrid',
+        'classes/subRows/GuideSubRow',
         'services/language',
-        'classes/LoadingIndicator',
-        'classes/GeneralGrid',
-        'services/userSettings',
-        'classes/GeneralContentPageObject'
+        'services/userSettings'
     ],
     function (_,
               utilities,
-              Guide,
-              SubRow,
+              GridPage,
+              GuideGrid,
+              UserGrid,
+              GuideSubRow,
               lang,
-              LoadingIndicator,
-              GeneralGrid,
-              userSettingsGService,
-              GeneralContentPageObject) {
+              userSettingsService) {
 
         $(document).ready(function () {
+            userSettingsService.ready().then(function () {
 
-            var page = new GeneralContentPageObject({
-                name: 'guides'
-            });
-
-            userSettingsGService.load().then(function () {
-
-                    var grid = new GeneralGrid({
-                        getDesiredHeightInContainer: function(){
-                            return page.getGridDesiredHeight();
+                    var page = new GridPage({
+                        mainId: 'guides_page',
+                        Grid: GuideGrid,
+                        direction: userSettingsService.getLanguage().direction,
+                        headerTitle: _.capitalize(lang.get('bo.guides')),
+                        beforeGridExecution: function (grid) {
+                            grid.columns().remove('role_id');
+                            grid.columns().add(
+                                _.merge({}, UserGrid.prototype.defaultColumnDefs.name, {
+                                    name: 'users.name',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
+                            grid.columns().add(
+                                _.merge({}, UserGrid.prototype.defaultColumnDefs.email, {
+                                    name: 'users.email',
+                                    classes: 'joined_child_cell',
+                                    editable: false
+                                }));
                         },
-                        getDesiredWidthInContainer: function() {
-                            return page.getGridDesiredWidth();
-                        },
-                        lang: lang,
-                        userSettingsGService: userSettingsGService,
-                        controllerUrl: '/api/guide',
-                        biName: 'guide',
-                        biNamePlural: 'guides',
-                        caption: _.capitalize(lang.get('bo.guides')),
-                        SubRow: SubRow,
-                        direction: userSettingsGService.getLanguage().direction,
-                        colModel: [{
-                            label: _.capitalize(lang.get('bo.id')),
-                            name: 'id',
-                            width: 30,
-                            key: true,
-                            searchoptions: {
-                                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                            },
-                            searchrules: {
-                                integer: true
-                            }
-                        },  {
-                            label: _.capitalize(lang.get('bo.guide_name')),
-                            name: 'name',
-                            editable: true,
-                            editoptions: {}
-                        }]
+                        afterGridExecution: function (grid) {
+                            grid.get$Grid().jqGrid('setGroupHeaders', {
+                                useColSpanStyle: true,
+                                groupHeaders: [
+                                    {
+                                        startColumnName: 'users.name',
+                                        numberOfColumns: 8,
+                                        titleText: '<em>' + _.capitalize(lang.get('bo.guide_user_id')) + '</em>'
+                                    }
+                                ]
+                            });
+                        }
                     });
 
-                    grid.activate();
+                    page.execute();
                 }
-            )
-            ;
-
+            );
         });
-
     });
 
 

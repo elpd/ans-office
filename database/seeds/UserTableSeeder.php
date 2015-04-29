@@ -19,6 +19,7 @@ class UserTableSeeder extends Seeder
         $employeeRole = Role::where('slug', '=', 'employee')->firstOrFail();
         $userRole = Role::where('slug', '=', 'user')->firstOrFail();
         $etgar22registratorRole = Role::where('slug', '=', 'etgar22registrator')->firstOrFail();
+        $guideRole = Role::where('slug', '=', 'guide')->firstOrFail();
 
         $englishUiLanguage = UiLanguage::where('name', '=', 'English')->firstOrFail();
         $hebrewUiLanguage = UiLanguage::where('name', '=', 'Hebrew')->firstOrFail();
@@ -86,6 +87,34 @@ class UserTableSeeder extends Seeder
                     'ui_bootstrap_theme' => $lumenUiTheme,
                     'ui_jquery_ui_theme' => $redmondJqUiTheme,
                 ]
+            ], [
+                'user' => [
+                    'name' => 'guide1',
+                    'email' => 'guide1@example.com',
+                    'password' => \Hash::make('guide1'),
+                ],
+                'roles' => [
+                    $guideRole
+                ],
+                'settings' => [
+                    'ui_language' => $englishUiLanguage,
+                    'ui_bootstrap_theme' => $lumenUiTheme,
+                    'ui_jquery_ui_theme' => $redmondJqUiTheme,
+                ]
+            ], [
+                'user' => [
+                    'name' => 'guide2',
+                    'email' => 'guide2@example.com',
+                    'password' => \Hash::make('guide2'),
+                ],
+                'roles' => [
+                    $guideRole
+                ],
+                'settings' => [
+                    'ui_language' => $englishUiLanguage,
+                    'ui_bootstrap_theme' => $lumenUiTheme,
+                    'ui_jquery_ui_theme' => $redmondJqUiTheme,
+                ]
             ],
         ];
 
@@ -100,15 +129,15 @@ class UserTableSeeder extends Seeder
                 $settings = $sampleUser['settings'];
                 $settingsDb = new Settings();
                 $settingsDb->user()->associate($newItem);
-                if (isset($settings['ui_language'])){
+                if (isset($settings['ui_language'])) {
                     $selectedLanguage = $settings['ui_language'];
                     $settingsDb->ui_language()->associate($selectedLanguage);
                 }
-                if (isset($settings['ui_bootstrap_theme'])){
+                if (isset($settings['ui_bootstrap_theme'])) {
                     $selectedTheme = $settings['ui_bootstrap_theme'];
                     $settingsDb->ui_bootstrap_theme()->associate($selectedTheme);
                 }
-                if (isset($settings['ui_jquery_ui_theme'])){
+                if (isset($settings['ui_jquery_ui_theme'])) {
                     $selectedTheme = $settings['ui_jquery_ui_theme'];
                     $settingsDb->ui_jquery_ui_theme()->associate($selectedTheme);
                 }

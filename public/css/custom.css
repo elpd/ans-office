@@ -140,3 +140,12 @@ select {
   user-select:none;
   -o-user-select:none;
 }
+
+.joined_child_cell {
+    background-color: #f2f0f0;
+}
+
+.ui-th-column-header
+{
+    text-align: center;
+}

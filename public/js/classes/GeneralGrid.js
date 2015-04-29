@@ -75,7 +75,8 @@ define([
             self.subRow = new self.SubRow({
                 parentControllerUrl: self.controllerUrl,
                 lang: self.lang,
-                userSettingsGService: self.userSettingsGService
+                userSettingsGService: self.userSettingsGService,
+                parentGridId: self.gridId
             });
 
             setGrid(self);

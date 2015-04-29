@@ -59,6 +59,7 @@ Route::resource('api/ui_bootstrap_theme', 'api\UiBootstrapThemeController');
 Route::resource('api/ui_jquery_ui_theme', 'api\UiJqueryUiThemeController');
 Route::resource('api/etgar22-registration-request', 'api\Etgar22RegistrationRequestController');
 Route::resource('api/request-status', 'api\RequestStatusController');
+Route::resource('api/group-member-guide', 'api\GroupMemberGuideController');
 
 Route::get('api/user-name', 'api\User\NameController@show');
 Route::put('api/user-name', 'api\User\NameController@update');
