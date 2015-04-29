@@ -9,10 +9,11 @@ define([
              QueryBuilder) {
 
     var GRID_HEIGHT_MIN = 150;
-    var GRID_WIDTH_MIN = 700;
+    var GRID_WIDTH_MIN = 1050;
     var FULL_SCREEN_GRID_BOX_CLASS = 'full_screen_grid';
     var GRID_TITLE_BAR_CLASS = 'ui-jqgrid-titlebar';
     var GRID_HEADER_BOX_CLASS = 'ui-jqgrid-hdiv';
+    var GRID_INNER_HEADER_BOX_CLASS = 'ui-jqgrid-hbox';
     var GRID_BOTTOM_PAGER_CLASS = 'ui-jqgrid-pager.ui-corner-bottom';
     var POST_DATA_OPERATION_EDIT = 'edit';
     var ROW_SUCCESSFUL_UPDATE_CLASS = 'row_successful_update';
@@ -219,6 +220,14 @@ define([
             value: function () {
                 var self = this;
                 return self.get$GridBox().find('.' + GRID_HEADER_BOX_CLASS);
+            }
+        },
+
+        get$GridInnerHeaderBox:
+        {
+            value: function() {
+                var self = this;
+                return self.get$GridBox().find('.' + GRID_INNER_HEADER_BOX_CLASS);
             }
         },
 
@@ -448,6 +457,13 @@ define([
                 var self = this;
                 self.get$Grid().jqGrid(JQGRID_FN_SET_GROUP_HEADERS, params);
                 self.redrawGridDimensions({shrinkToFit: false});
+            }
+        },
+
+        calcSumOfColumnsWidth: {
+            value : function() {
+                var self = this;
+                // todo
             }
         }
     });
