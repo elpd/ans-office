@@ -31,7 +31,7 @@ define([
         },
         role_id: {
 
-            label: _.capitalize(lang.get('bo.role-user_role')),
+            label: _.capitalize(lang.get('bo.role-user_role-id')),
             name: 'role_id',
             editable: true,
             edittype: 'select',
@@ -44,7 +44,7 @@ define([
 
         },
         user_id: {
-            label: _.capitalize(lang.get('bo.role-user_user')),
+            label: _.capitalize(lang.get('bo.role-user_user-id')),
             name: 'user_id',
             editable: true,
             edittype: 'select',
