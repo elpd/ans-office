@@ -1,85 +1,40 @@
 define([
+        'require',
+        'lodash',
         'classes/utilities',
-        'classes/bi/Permission',
-        'admin/permissions.SubRow',
+        'classes/GridPage',
+        'classes/grids/PermissionGrid',
         'services/language',
-        'classes/LoadingIndicator',
-        'classes/GeneralGrid',
-        'services/userSettings',
-        'classes/GeneralContentPageObject'
+        'services/userSettings'
     ],
-    function (utilities,
-              Permission,
-              SubRow,
+    function (require,
+              _,
+              utilities,
+              GridPage,
+              PermissinGrid,
               lang,
-              LoadingIndicator,
-              GeneralGrid,
-              userSettingsGService,
-              GeneralContentPageObject) {
+              userSettingsService) {
 
         $(document).ready(function () {
 
-            var page = new GeneralContentPageObject({
-                name: 'permissions'
-            });
+            userSettingsService.ready().then(function () {
 
-            userSettingsGService.load().then(function () {
+                    var page = new GridPage({
+                        mainId: 'permissions_page',
+                        Grid: require('classes/grids/PermissionGrid'),
+                        direction: userSettingsService.getLanguage().direction,
+                        headerTitle: _.capitalize(lang.get('bo.permissions')),
+                        beforeGridExecution: function (grid) {
 
-                var grid = new GeneralGrid({
-                    getDesiredHeightInContainer: function(){
-                        return page.getGridDesiredHeight();
-                    },
-                    getDesiredWidthInContainer: function() {
-                        return page.getGridDesiredWidth();
-                    },
-                    // Services
-                    lang: lang,
-                    userSettingsGService: userSettingsGService,
+                        },
+                        afterGridExecution: function (grid) {
 
-                    //
-                    controllerUrl: '/api/permission',
-                    biName: 'permission',
-                    biNamePlural: 'permissions',
-                    caption: _.capitalize(lang.get('bo.Permissions')),
-                    SubRow: SubRow,
-                    direction: userSettingsGService.getLanguage().direction,
-                    colModel: [{
-                        label: _.capitalize(lang.get('bo.id')),
-                        name: 'id',
-                        width: 30,
-                        key: true
-                    }, {
-                        label: _.capitalize(lang.get('bo.permission_name')),
-                        name: 'name',
-                        editable: true,
-                        //edittype: 'select',
-                        //formatter: 'integer',
-                        editoptions: {}
-                    }, {
-                        label: _.capitalize(lang.get('bo.permission_slug')),
-                        name: 'slug',
-                        editable: true,
-                        //edittype: 'select',
-                        //formatter: 'integer',
-                        editoptions: {}
-                    }, {
-                        label: _.capitalize(lang.get('bo.permission_description')),
-                        name: 'description',
-                        editable: true,
-                        //edittype: 'select',
-                        //formatter: 'integer',
-                        editoptions: {}
-                    }, {
-                        label: _.capitalize(lang.get('bo.permission_model')),
-                        name: 'model',
-                        editable: true,
-                        //edittype: 'select',
-                        //formatter: 'integer',
-                        editoptions: {}
-                    }]
-                });
+                        }
+                    });
 
-                grid.activate();
-            });
+                    page.execute();
+                }
+            );
+
         });
     });
