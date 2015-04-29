@@ -1,96 +1,40 @@
 define([
+        'require',
+        'lodash',
         'classes/utilities',
-        'classes/bi/User',
-        'admin/users.SubRow',
+        'classes/GridPage',
+        'classes/grids/UserGrid',
         'services/language',
-        'classes/LoadingIndicator',
-        'classes/GeneralGrid',
-        'services/userSettings',
-        'classes/GeneralContentPageObject'
+        'services/userSettings'
     ],
-    function (utilities,
-              User,
-              SubRow,
+    function (require,
+              _,
+              utilities,
+              GridPage,
+              UserGrid,
               lang,
-              LoadingIndicator,
-              GeneralGrid,
-              userSettingsGService,
-              GeneralContentPageObject) {
+              userSettingsService) {
 
         $(document).ready(function () {
 
-            var page = new GeneralContentPageObject({
-                name: 'users'
-            });
+            userSettingsService.ready().then(function () {
 
-            userSettingsGService.load().then(function () {
+                    var page = new GridPage({
+                        mainId: 'users_page',
+                        Grid: require('classes/grids/UserGrid'),
+                        direction: userSettingsService.getLanguage().direction,
+                        headerTitle: _.capitalize(lang.get('bo.users')),
+                        beforeGridExecution: function (grid) {
 
-                var grid = new GeneralGrid({
-                    getDesiredHeightInContainer: function(){
-                        return page.getGridDesiredHeight();
-                    },
-                    getDesiredWidthInContainer: function() {
-                        return page.getGridDesiredWidth();
-                    },
-                    // Services
-                    lang: lang,
-                    userSettingsGService: userSettingsGService,
+                        },
+                        afterGridExecution: function (grid) {
 
-                    //
-                    controllerUrl: '/api/user',
-                    biName: 'user',
-                    biNamePlural: 'users',
-                    caption: lang.get('bo.Users'),
-                    SubRow: SubRow,
-                    direction: userSettingsGService.getLanguage().direction,
-                    colModel: [{
-                        label: lang.get('bo.id'),
-                        name: 'id',
-                        width: 30,
-                        key: true
-                    }, {
-                        label: lang.get('bo.user_name'),
-                        name: 'name',
-                        editable: true,
-                        //edittype: 'select',
-                        //formatter: 'integer',
-                        editoptions: {}
-                    }, {
-                        label: lang.get('bo.user_email'),
-                        name: 'email',
-                        editable: true,
-                        //edittype: 'select',
-                        //formatter: 'integer',
-                        editoptions: {},
-                        editrules: {
-                            required: true,
-                            email: true
                         }
-                    }, {
-                        label: lang.get('bo.user_password'),
-                        name: 'password',
-                        editable: true,
-                        //hidden: true,
-                        edittype: 'password',
-                        editoptions: {},
-                        editrules: {
-                            edithidden: true,
-                            required: true
-                        }
-                    }, {
-                        label: lang.get('bo.user_password_confirmation'),
-                        name: 'password_confirmation',
-                        editable: true,
-                        //hidden: true,
-                        edittype: 'password',
-                        editrules: {
-                            edithidden: true, required: true
-                        }
-                    },
-                    ]
-                });
+                    });
 
-                grid.activate();
-            });
+                    page.execute();
+                }
+            );
+
         });
     });

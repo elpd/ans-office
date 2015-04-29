@@ -1,23 +1,25 @@
 define([
+        'require',
         'lodash',
         'classes/utilities',
         'classes/SubRow',
         'classes/GridTab',
         'classes/ChildTabsPanel',
+        'classes/grids/UserGrid',
+        'classes/grids/PermissionGrid',
         'services/language',
-        'services/userSettings',
-        'classes/grids/RoleUserGrid',
-        'classes/grids/PermissionUserGrid'
+        'services/userSettings'
     ],
-    function (_,
+    function (require,
+              _,
               utilities,
               SubRow,
               GridTab,
               ChildTabsPanel,
+              UserGrid,
+              PermissionGrid,
               lang,
-              userSettingsService,
-              RoleUserGrid,
-              PermissionUserGrid) {
+              userSettingsService) {
 
         var Class = function (params) {
             SubRow.call(this, params);
@@ -31,11 +33,11 @@ define([
                     userSettingsService.ready().then(function () {
                         var rowData = self.getRowData();
 
-                        var userRolesTab = new GridTab({
-                            mainId: self.subRowId + '_user_roles',
-                            Grid: require('classes/grids/RoleUserGrid'),
+                        var userTab = new GridTab({
+                            mainId: self.subRowId + '_user',
+                            Grid: require('classes/grids/UserGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.user_roles')),
+                            caption: _.capitalize(lang.get('bo.permission-user_user-id')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -45,27 +47,21 @@ define([
                                 };
                                 gridParams.hasParent = true;
                                 gridParams.parentLink = {
-                                    id: rowData.id,
-                                    childFieldName: 'user_id'
+                                    id: rowData.user_id,
+                                    childFieldName: 'id'
                                 };
                             },
-
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('user_id');
-
                             },
-
                             afterGridExecution: function (grid) {
-
                             }
-
                         });
 
-                        var userPermissionsTab = new GridTab({
-                            mainId: self.subRowId + '_user_permissions',
-                            Grid: require('classes/grids/PermissionUserGrid'),
+                        var permissionTab = new GridTab({
+                            mainId: self.subRowId + '_permission',
+                            Grid: require('classes/grids/PermissionGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.user_permissions')),
+                            caption: _.capitalize(lang.get('bo.permission-user_permission-id')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -75,26 +71,21 @@ define([
                                 };
                                 gridParams.hasParent = true;
                                 gridParams.parentLink = {
-                                    id: rowData.id,
-                                    childFieldName: 'user_id'
+                                    id: rowData.permission_id,
+                                    childFieldName: 'id'
                                 };
                             },
-
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('user_id');
                             },
-
                             afterGridExecution: function (grid) {
-
                             }
-
                         });
 
                         var childTabsPanel = new ChildTabsPanel({
                             mainId: self.subRowId,
                             tabs: [
-                                userRolesTab,
-                                userPermissionsTab
+                                userTab,
+                                permissionTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });
