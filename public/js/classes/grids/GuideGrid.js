@@ -72,6 +72,8 @@ define([
         self.columns().add(self.defaultColumnDefs.id);
         self.columns().add(self.defaultColumnDefs.user_id);
         self.columns().add(self.defaultColumnDefs.role_id);
+
+        self.columns().selectAbsolute(['id', 'user_id', 'role_id']);
     };
 
     Class.prototype = Object.create(Grid.prototype, {

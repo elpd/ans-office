@@ -88,6 +88,8 @@ define([
         self.columns().add(self.defaultColumnDefs.email);
         self.columns().add(self.defaultColumnDefs.password);
         self.columns().add(self.defaultColumnDefs.password_confirmation);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

@@ -28,7 +28,7 @@ define([
             }
         },
         contact_id: {
-            label: _.capitalize(lang.get('bo.etgar22_contact_id')),
+            label: _.capitalize(lang.get('bo.etgar22_contact-id')),
             name: 'contact_id',
             editable: true,
             edittype: 'select',
@@ -40,7 +40,7 @@ define([
             }
         },
         facebook_know_how: {
-            label: _.capitalize(lang.get('bo.etgar22_facebook_know_how')),
+            label: _.capitalize(lang.get('bo.etgar22_facebook-know-how')),
             name: 'facebook_know_how',
             editable: true,
             formatter: 'checkbox',
@@ -57,7 +57,7 @@ define([
             }
         },
         call_for_facebook_help: {
-            label: _.capitalize(lang.get('bo.etgar22_call_for_facebook_help')),
+            label: _.capitalize(lang.get('bo.etgar22_call-for-facebook-help')),
             name: 'call_for_facebook_help',
             editable: true,
             formatter: 'checkbox',
@@ -74,7 +74,7 @@ define([
             }
         },
         registration_date: {
-            label: _.capitalize(lang.get('bo.etgar22_registration_date')),
+            label: _.capitalize(lang.get('bo.etgar22_registration-date')),
             name: 'registration_date',
             editable: true,
             formatter: 'datetime',
@@ -104,7 +104,7 @@ define([
 
         },
         next_call: {
-            label: _.capitalize(lang.get('bo.etgar22_next_call')),
+            label: _.capitalize(lang.get('bo.etgar22_next-call')),
             name: 'next_call',
             editable: true,
             formatter: 'datetime',
@@ -125,7 +125,7 @@ define([
             }
         },
         why_go_vegan: {
-            label: _.capitalize(lang.get('bo.etgar22_why_go_vegan')),
+            label: _.capitalize(lang.get('bo.etgar22_why-go-vegan')),
             name: 'why_go_vegan',
             editable: true,
             editoptions: {}
@@ -134,7 +134,7 @@ define([
 
         },
         parent_name: {
-            label: _.capitalize(lang.get('bo.etgar22_parent_name')),
+            label: _.capitalize(lang.get('bo.etgar22_parent-name')),
             name: 'parent_name',
             editable: true,
             editoptions: {}
@@ -143,7 +143,7 @@ define([
 
         },
         parent_email: {
-            label: _.capitalize(lang.get('bo.etgar22_parent_email')),
+            label: _.capitalize(lang.get('bo.etgar22_parent-email')),
             name: 'parent_email',
             editable: true,
             editoptions: {}
@@ -174,6 +174,16 @@ define([
         self.columns().add(self.defaultColumnDefs.why_go_vegan);
         self.columns().add(self.defaultColumnDefs.parent_name);
         self.columns().add(self.defaultColumnDefs.parent_email);
+
+        self.columns().selectAbsolute(['id', 'contact_id',
+            'facebook_know_how',
+            'call_for_facebook_help',
+            'registration_date',
+            'notes',
+            'next_call',
+            'why_go_vegan',
+            'parent_name',
+            'parent_email']);
     };
 
     Class.prototype = Object.create(Grid.prototype, {

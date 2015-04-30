@@ -47,4 +47,11 @@ return [
 
     'settings_user_bootstrap_theme_label' => 'Site theme',
     'settings_user_jquery_ui_theme_label' => 'Table theme',
+
+    /*
+     *
+     */
+
+    'dialog-field-chooser_header' => 'Fields Chooser',
+    'dialog-field-chooser_children_header' => 'Children Groups',
 ];

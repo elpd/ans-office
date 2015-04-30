@@ -86,6 +86,8 @@ define([
         self.columns().add(self.defaultColumnDefs.group_id);
         self.columns().add(self.defaultColumnDefs.contact_id);
         self.columns().add(self.defaultColumnDefs.status_id);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

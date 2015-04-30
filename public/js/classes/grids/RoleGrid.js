@@ -68,6 +68,8 @@ define([
         self.columns().add(self.defaultColumnDefs.slug);
         self.columns().add(self.defaultColumnDefs.description);
         self.columns().add(self.defaultColumnDefs.level);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

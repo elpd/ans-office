@@ -81,6 +81,9 @@ define([
         self.columns().add(self.defaultColumnDefs.cycle_id);
         self.columns().add(self.defaultColumnDefs.name);
         self.columns().add(self.defaultColumnDefs.status_id);
+
+        self.columns().selectAbsolute(['id', 'cycle_id', 'name',
+            'status_id']);
     };
 
     Class.prototype = Object.create(Grid.prototype, {

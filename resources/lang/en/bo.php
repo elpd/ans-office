@@ -68,14 +68,15 @@ return [
 
     // Etgar 22
     'etgar22' => 'Etgar22',
-    'etgar22_facebook_know_how' => 'Knows To Use Facebook',
-    'etgar22_call_for_facebook_help' => 'Call For FB Help',
-    'etgar22_registration_date' => 'Registration Date',
+    'etgar22_contact-id', 'contact',
+    'etgar22_facebook-know-how' => 'Knows To Use Facebook',
+    'etgar22_call-for-facebook-help' => 'Call For FB Help',
+    'etgar22_registration-date' => 'Registration Date',
     'etgar22_notes' => 'Notes',
-    'etgar22_next_call' => 'Next Call',
-    'etgar22_why_go_vegan' => 'Why Go Vegan',
-    'etgar22_parent_name' => 'Parent Name',
-    'etgar22_parent_email' => 'Parent Email',
+    'etgar22_next-call' => 'Next Call',
+    'etgar22_why-go-vegan' => 'Why Go Vegan',
+    'etgar22_parent-name' => 'Parent Name',
+    'etgar22_parent-email' => 'Parent Email',
 
     // Cycle
 

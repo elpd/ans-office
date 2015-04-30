@@ -149,3 +149,7 @@ select {
 {
     text-align: center;
 }
+
+.modal-backdrop {
+    z-index: 0;
+}

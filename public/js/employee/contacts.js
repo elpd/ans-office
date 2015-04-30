@@ -77,16 +77,7 @@ define([
                         },
 
                         afterGridExecution: function (grid) {
-                            grid.setGroupHeaders({
-                                useColSpanStyle: true,
-                                groupHeaders: [
-                                    {
-                                        startColumnName: 'etgar22.facebook_know_how',
-                                        numberOfColumns: 8,
-                                        titleText: '<em>' + _.capitalize(lang.get('bo.contact_etgar22')) + '</em>'
-                                    }
-                                ]
-                            });
+
                         }
                     });
 

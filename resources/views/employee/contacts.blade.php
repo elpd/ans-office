@@ -2,7 +2,6 @@
 
 @section('subContent')
     <div id="contacts_page" class="sub_content">
-
     </div>
 @endsection
 
