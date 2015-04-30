@@ -59,48 +59,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('user_id');
-                                grid.columns().add([
-                                    {
-                                        label: _.capitalize(lang.get('bo.group-member_group')),
-                                        name: 'groups_members.group_id',
-                                        editable: false,
-                                        edittype: 'select',
-                                        formatter: 'select',
-                                        editoptions: {
-                                            value: utilities.generateGetItems('/api/group', Group)(),
-                                            dataUrl: '/api/group',
-                                            buildSelect: utilities.generateBuildSelect(Group)
-                                        },
-                                        classes: 'joined_child_cell'
-                                    }, {
-                                        label: _.capitalize(lang.get('bo.group-member_contact')),
-                                        name: 'groups_members.contact_id',
-                                        editable: false,
-                                        edittype: 'select',
-                                        formatter: 'select',
-                                        editoptions: {
-                                            value: utilities.generateGetItems('/api/contact', Contact)(),
-                                            dataUrl: '/api/contact',
-                                            buildSelect: utilities.generateBuildSelect(Contact)
-                                        },
-                                        classes: 'joined_child_cell'
-                                    }, {
-                                        label: _.capitalize(lang.get('bo.group-member_status')),
-                                        name: 'groups_members.status_id',
-                                        editable: false,
-                                        edittype: 'select',
-                                        formatter: 'select',
-                                        editoptions: {
-                                            value: utilities.generateGetItems('/api/group-members-status',
-                                                GroupMembersStatus)(),
-                                            dataUrl: '/api/group-members-status',
-                                            buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
-                                        },
-                                        classes: 'joined_child_cell'
-                                    }
-                                ]);
-
+                                grid.columns().makeHidden('user_id');
                             }
                         });
 

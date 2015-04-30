@@ -57,6 +57,10 @@ class Contact extends Model
      * Relationships
      */
 
+    public $relationshipMethods = [
+        'etgar22'
+    ];
+
     public function etgar22()
     {
         return $this->hasOne('App\Etgar22');

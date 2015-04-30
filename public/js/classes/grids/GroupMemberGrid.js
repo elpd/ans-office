@@ -7,7 +7,8 @@ define([
     'classes/bi/Contact',
     'classes/bi/GroupMembersStatus',
     'services/language',
-    'services/userSettings'
+    'classes/grids/ContactGrid',
+    'classes/grids/GroupGrid'
 ], function (_,
              utilities,
              Grid,
@@ -16,7 +17,8 @@ define([
              Contact,
              GroupMembersStatus,
              lang,
-             userSettingService) {
+             ContactGrid,
+             GroupGrid) {
 
     var CONTROLLER_URL = '/api/groups-members';
 
@@ -75,6 +77,9 @@ define([
     var Class = function (params) {
         var self = this;
 
+        GroupGrid = require('classes/grids/GroupGrid');
+        ContactGrid = require('classes/grids/ContactGrid');
+
         params.controllerUrl = CONTROLLER_URL;
         params.caption = lang.get('bo.group-member');
         params.SubRow = GroupMemberSubRow;
@@ -86,6 +91,20 @@ define([
         self.columns().add(self.defaultColumnDefs.group_id);
         self.columns().add(self.defaultColumnDefs.contact_id);
         self.columns().add(self.defaultColumnDefs.status_id);
+
+        self.children().add({
+            name: 'group',
+            title: lang.get('bo.group'),
+            queryJoinTable: 'groups',
+            columns: _.values(GroupGrid.prototype.defaultColumnDefs)
+        });
+
+        self.children().add({
+            name: 'contact',
+            title: lang.get('bo.contact'),
+            queryJoinTable: 'contacts',
+            columns: _.values(ContactGrid.prototype.defaultColumnDefs)
+        });
 
         self.columns().selectAbsoluteAll();
     };

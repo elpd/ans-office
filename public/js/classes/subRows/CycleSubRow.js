@@ -49,7 +49,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('cycle_id');
+                                grid.columns().makeHidden('cycle_id');
 
                             },
 

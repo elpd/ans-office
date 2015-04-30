@@ -157,18 +157,7 @@ define([
             name: 'etgar22',
             title: lang.get('bo.etgar22'),
             queryJoinTable: 'etgar22',
-            columns: [
-                Etgar22Grid.prototype.defaultColumnDefs.id,
-                Etgar22Grid.prototype.defaultColumnDefs.contact_id,
-                Etgar22Grid.prototype.defaultColumnDefs.facebook_know_how,
-                Etgar22Grid.prototype.defaultColumnDefs.call_for_facebook_help,
-                Etgar22Grid.prototype.defaultColumnDefs.registration_date,
-                Etgar22Grid.prototype.defaultColumnDefs.notes,
-                Etgar22Grid.prototype.defaultColumnDefs.next_call,
-                Etgar22Grid.prototype.defaultColumnDefs.why_go_vegan,
-                Etgar22Grid.prototype.defaultColumnDefs.parent_name,
-                Etgar22Grid.prototype.defaultColumnDefs.parent_email,
-            ]
+            columns: _.values(Etgar22Grid.prototype.defaultColumnDefs)
         });
 
         self.columns().selectAbsoluteAll();

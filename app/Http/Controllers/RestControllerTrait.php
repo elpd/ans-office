@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Utilities\GeneralUtilities as Utils;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Watson\Validating\ValidationException;
 
@@ -220,44 +221,35 @@ trait RestControllerTrait
     protected function buildQuery($class, $filterParams, $orderParams,
                                   $firstChildJoinParams)
     {
+        $classObject = new $class();
+        $mainTableName = $classObject->getTable();
+
         $query = $class::query();
+        $query->select($mainTableName . '.*');
 
         if (method_exists($this, 'buildInitialQuery')) {
             $query = $this->buildInitialQuery($query);
         }
 
-        $classObject = new $class();
-        $mainTableName = $classObject->getTable();
-
-        //$query = $query->select($mainTableName . '.*');
-
         if (method_exists($this, 'setAdditionalQueryFilters')) {
             $query = $this->setAdditionalQueryFilters($query);
         }
 
-       /* foreach ($firstChildJoinParams as $firstChildJoinSpec) {
-            $query = $query->with($firstChildJoinSpec->functionOnChild);
+        foreach ($firstChildJoinParams as $firstChildJoinSpec) {
+            //$query = $query->with($firstChildJoinSpec->functionOnChild);
 
             $query = $this->createJoinOnQuery($query,
                 $mainTableName,
-                $firstChildJoinSpec->linkedTableName,
-                $mainTableName . '.' . $firstChildJoinSpec->fieldName,
+                $firstChildJoinSpec->childTableName,
+                $firstChildJoinSpec->parentFieldFullName,
                 '=',
-                $firstChildJoinSpec->linkedTableName . '.' . $firstChildJoinSpec->linkedField);
-/*
-            foreach ($firstChildJoinSpec->requestedFields as $requestedField){
+                $firstChildJoinSpec->childFieldFullName);
 
-                $selectStr =
-                    $firstChildJoinSpec->linkedTableName . '.' .
-                    $requestedField .
-                    ' as ' .
-                    $firstChildJoinSpec->linkedTableName . '.' .
-                    $requestedField ;
-
+            foreach ($firstChildJoinSpec->childFieldsForSelect as $requestedField) {
+                $selectStr = $requestedField . ' AS ' . $requestedField;
                 $query = $query->addSelect($selectStr);
             }
-
-        }*/
+        }
 
         foreach ($filterParams as $filterCondition) {
             if (isset($filterCondition->isSearchOnParentField) && $filterCondition->isSearchOnParentField) {
@@ -310,7 +302,7 @@ trait RestControllerTrait
             } else {
 
                 $query = $query->orderBy(
-                    //$mainTableName . '.' .
+                //$mainTableName . '.' .
                     $sortingPrimaryCondition['index'],
                     $sortingPrimaryCondition['order']
                 );
@@ -565,18 +557,67 @@ trait RestControllerTrait
 
     protected function calcFirstChildJoinParams($request, $class)
     {
-        $childJoinParams = [];
+        $query_params = [];
 
-        if ($request->has(self::$FIRST_CHILD_JOIN_REQ_PARAM)) {
-            $childJoinReqParamsStr = $request->get(self::$FIRST_CHILD_JOIN_REQ_PARAM);
-            $childJoinReqParams = \GuzzleHttp\json_decode($childJoinReqParamsStr);
-            foreach ($childJoinReqParams as $reqParam) {
-                $param = $this->calcChildJoinParam($reqParam, $class);
-                $childJoinParams[] = $param;
+        if ($request->has('_query')) {
+            $query = $request->get('_query');
+            if ($query['joinSelectChildren']) {
+                foreach ($query['joinSelectChildren'] as $joinName) {
+                    $emptyItem = new $class();
+                    if (in_array($joinName, $emptyItem->relationshipMethods)) {
+                        $param = $this->createJoinDataFromModelLink($emptyItem->$joinName());
+                        $query_params[] = $param;
+                    }
+                }
             }
         }
 
-        return $childJoinParams;
+
+        return $query_params;
+    }
+
+    protected function createJoinDataFromModelLink(Relation $relation)
+    {
+        $joinData = new \stdClass();
+
+        $className = get_class($relation);
+        switch ($className) {
+            case "Illuminate\\Database\\Eloquent\\Relations\\HasOne":
+                $joinData->parentFieldFullName = $relation->getQualifiedParentKeyName();
+                $joinData->childFieldFullName = $relation->getForeignKey();
+                $joinData->childTableName = $relation->getRelated()->getTable();
+                $joinData->childFieldsForSelect = $this->createFieldsNamesForSelect(
+                    $joinData->childTableName, $relation->getRelated()->getFillable());
+                break;
+
+            case "Illuminate\\Database\\Eloquent\\Relations\\BelongsTo":
+                $joinData->parentFieldFullName = $relation->getQualifiedForeignKey();
+                $joinData->childFieldFullName = $relation->getQualifiedOtherKeyName();
+                $joinData->childTableName = $relation->getRelated()->getTable();
+                $joinData->childFieldsForSelect = $this->createFieldsNamesForSelect(
+                    $joinData->childTableName, $relation->getRelated()->getFillable());
+
+                break;
+
+            default:
+                throw new \Exception('unintended');
+        }
+
+        return $joinData;
+    }
+
+    protected function createFieldsNamesForSelect($tableName, $fieldsNames)
+    {
+        $selectFields = [];
+
+        $selectFields[] = $tableName . '.id';
+
+        foreach ($fieldsNames as $fieldName) {
+            $fullName = $tableName . '.' . $fieldName;
+            $selectFields[] = $fullName;
+        }
+
+        return $selectFields;
     }
 
     protected function calcChildJoinParam($reqParam, $class)

@@ -54,7 +54,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('contact_id');
+                                grid.columns().makeHidden('contact_id');
                             }
                         });
 
@@ -78,7 +78,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('contact_id');
+                                grid.columns().makeHidden('contact_id');
 
                             },
 

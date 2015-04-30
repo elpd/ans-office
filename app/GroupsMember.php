@@ -61,6 +61,17 @@ class GroupsMember extends Model
         ],
     ];
 
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'status',
+        'contact',
+        'group',
+        'guides',
+    ];
+
     public function status() {
         return $this->belongsTo('App\GroupMembersStatus');
     }

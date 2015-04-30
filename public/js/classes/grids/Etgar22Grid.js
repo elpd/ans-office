@@ -175,15 +175,7 @@ define([
         self.columns().add(self.defaultColumnDefs.parent_name);
         self.columns().add(self.defaultColumnDefs.parent_email);
 
-        self.columns().selectAbsolute(['id', 'contact_id',
-            'facebook_know_how',
-            'call_for_facebook_help',
-            'registration_date',
-            'notes',
-            'next_call',
-            'why_go_vegan',
-            'parent_name',
-            'parent_email']);
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

@@ -68,7 +68,7 @@ return [
 
     // Etgar 22
     'etgar22' => 'Etgar22',
-    'etgar22_contact-id', 'contact',
+    'etgar22_contact-id' => 'contact',
     'etgar22_facebook-know-how' => 'Knows To Use Facebook',
     'etgar22_call-for-facebook-help' => 'Call For FB Help',
     'etgar22_registration-date' => 'Registration Date',

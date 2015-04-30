@@ -50,6 +50,15 @@ class Group extends Model
         ],
     ];
 
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'cycle',
+        'status',
+    ];
+
     public function cycle() {
       return $this->belongsTo('App\Cycle');
     }

@@ -1,4 +1,5 @@
 define([
+    'require',
     'lodash',
     'classes/utilities',
     'classes/Grid',
@@ -6,15 +7,16 @@ define([
     'classes/bi/Cycle',
     'classes/bi/GroupStatus',
     'services/language',
-    'services/userSettings'
-], function (_,
+    'classes/grids/CycleGrid'
+], function (require,
+             _,
              utilities,
              Grid,
              GroupSubRow,
              Cycle,
              GroupStatus,
              lang,
-             userSettingService) {
+             CycleGrid) {
 
     var CONTROLLER_URL = '/api/group';
 
@@ -69,6 +71,8 @@ define([
     var Class = function (params) {
         var self = this;
 
+        CycleGrid = require('classes/grids/CycleGrid');
+
         params.controllerUrl = CONTROLLER_URL;
         // TODO: attribute inharitance.
         params.caption = lang.get('bo.groups');
@@ -82,8 +86,14 @@ define([
         self.columns().add(self.defaultColumnDefs.name);
         self.columns().add(self.defaultColumnDefs.status_id);
 
-        self.columns().selectAbsolute(['id', 'cycle_id', 'name',
-            'status_id']);
+        self.children().add({
+            name: 'cycle',
+            title: lang.get('bo.cycle'),
+            queryJoinTable: 'cycles',
+            columns: _.values(CycleGrid.prototype.defaultColumnDefs)
+        });
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

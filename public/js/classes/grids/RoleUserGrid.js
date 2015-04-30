@@ -70,6 +70,8 @@ define([
         self.columns().add(self.defaultColumnDefs.id);
         self.columns().add(self.defaultColumnDefs.role_id);
         self.columns().add(self.defaultColumnDefs.user_id);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

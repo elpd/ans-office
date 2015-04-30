@@ -47,6 +47,15 @@ class GroupMemberGuide extends Model
         ],
     ];
 
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'groupMember',
+        'user',
+    ];
+
     public function groupMember() {
         return $this->belongsTo('App\GroupsMember', 'groups_member_id');
     }

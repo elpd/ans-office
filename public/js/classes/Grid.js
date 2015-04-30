@@ -764,7 +764,18 @@ define([
         };
 
         params.serializeGridData = function (postData) {
-            return postData;
+            var resultData = postData;
+            
+            resultData._query = {};
+            if (self._selectedChildrenGroups.length > 0) {
+                resultData._query.joinSelectChildren = _.map(self._selectedChildrenGroups,
+                    function(selection){
+                        var childrenGroupDef = self._children[selection];
+                        return childrenGroupDef.name;
+                    });
+            }
+
+            return resultData;
         };
 
         return params;

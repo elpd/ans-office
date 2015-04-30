@@ -51,7 +51,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('group_id');
+                                grid.columns().makeHidden('group_id');
 
                             },
 
