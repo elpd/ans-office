@@ -16,56 +16,9 @@ define([
 
     var CONTROLLER_URL = '/api/permission-user';
 
-    var defaultColumns = {
-        id: {
-            label: _.capitalize(lang.get('bo.id')),
-            name: 'id',
-            width: 50,
-            key: true,
-            searchoptions: {
-                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-            },
-            searchrules: {
-                integer: true
-            }
-        },
-        permission_id: {
+    var defaultColumns = null;
 
-            label: _.capitalize(lang.get('bo.permission-user_permission-id')),
-            name: 'permission_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/permission', Permission)(),
-                dataUrl: '/api/permission',
-                buildSelect: utilities.generateBuildSelect(Permission)
-            },
-            extraInfo: {
-                linkMethod: 'permission',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
 
-        },
-        user_id: {
-            label: _.capitalize(lang.get('bo.permission-user_user-id')),
-            name: 'user_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/user', User)(),
-                dataUrl: '/api/user',
-                buildSelect: utilities.generateBuildSelect(User)
-            },
-            extraInfo: {
-                linkMethod: 'user',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        }
-    };
 
     var Class = function (params) {
         var self = this;
@@ -87,10 +40,69 @@ define([
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnDefs: {
             get: function () {
+                var self = this;
+                if (defaultColumns == null) {
+                    defaultColumns = generateDefaultColumns();
+                }
                 return _.cloneDeep(defaultColumns);
             }
         }
     });
+
+    function generateDefaultColumns() {
+        var columnsDefs = {
+            id: {
+                label: _.capitalize(lang.get('bo.id')),
+                name: 'id',
+                width: 50,
+                key: true,
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                },
+                searchrules: {
+                    integer: true
+                }
+            },
+            permission_id: {
+
+                label: _.capitalize(lang.get('bo.permission-user_permission-id')),
+                name: 'permission_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/permission', Permission)(),
+                    dataUrl: '/api/permission',
+                    buildSelect: utilities.generateBuildSelect(Permission)
+                },
+                extraInfo: {
+                    linkMethod: 'permission',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+
+            },
+            user_id: {
+                label: _.capitalize(lang.get('bo.permission-user_user-id')),
+                name: 'user_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/user', User)(),
+                    dataUrl: '/api/user',
+                    buildSelect: utilities.generateBuildSelect(User)
+                },
+                extraInfo: {
+                    linkMethod: 'user',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            }
+        };
+
+        return columnsDefs;
+    }
 
     return Class;
 });

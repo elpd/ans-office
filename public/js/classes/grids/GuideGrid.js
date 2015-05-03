@@ -17,56 +17,9 @@ define([
 
     var CONTROLLER_URL = '/api/guide';
 
-    var defaultColumns = {
-        id: {
-            label: _.capitalize(lang.get('bo.id')),
-            name: 'id',
-            width: 50,
-            key: true,
-            searchoptions: {
-                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-            },
-            searchrules: {
-                integer: true
-            }
-        },
-        user_id: {
-            label: _.capitalize(lang.get('bo.role-user_user-id')),
-            name: 'user_id',
-            width: 200,
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/user', User)(),
-                dataUrl: '/api/user',
-                buildSelect: utilities.generateBuildSelect(User)
-            },
-            extraInfo: {
-                linkMethod: 'user',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        },
-        role_id: {
-            label: _.capitalize(lang.get('bo.role-user_role-id')),
-            name: 'role_id',
-            width: 200,
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/role', Role)(),
-                dataUrl: '/api/role',
-                buildSelect: utilities.generateBuildSelect(Role)
-            },
-            extraInfo: {
-                linkMethod: 'role',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        }
-    };
+    var defaultColumns = null;
+
+
 
     var Class = function (params) {
         var self = this;
@@ -88,6 +41,10 @@ define([
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnDefs: {
             get: function () {
+                var self = this;
+                if (defaultColumns == null) {
+                    defaultColumns = generateDefaultColumns();
+                }
                 return _.cloneDeep(defaultColumns);
             }
         },
@@ -97,6 +54,61 @@ define([
             }
         }
     });
+
+    function generateDefaultColumns() {
+        var columnsDefs = {
+            id: {
+                label: _.capitalize(lang.get('bo.id')),
+                name: 'id',
+                width: 50,
+                key: true,
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                },
+                searchrules: {
+                    integer: true
+                }
+            },
+            user_id: {
+                label: _.capitalize(lang.get('bo.role-user_user-id')),
+                name: 'user_id',
+                width: 200,
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/user', User)(),
+                    dataUrl: '/api/user',
+                    buildSelect: utilities.generateBuildSelect(User)
+                },
+                extraInfo: {
+                    linkMethod: 'user',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            },
+            role_id: {
+                label: _.capitalize(lang.get('bo.role-user_role-id')),
+                name: 'role_id',
+                width: 200,
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/role', Role)(),
+                    dataUrl: '/api/role',
+                    buildSelect: utilities.generateBuildSelect(Role)
+                },
+                extraInfo: {
+                    linkMethod: 'role',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            }
+        };
+
+        return columnsDefs;
+    }
 
     return Class;
 });

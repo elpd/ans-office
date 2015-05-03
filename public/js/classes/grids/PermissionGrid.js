@@ -12,44 +12,9 @@ define([
 
     var CONTROLLER_URL = '/api/permission';
 
-    var defaultColumns = {
-        id: {
-            label: _.capitalize(lang.get('bo.id')),
-            name: 'id',
-            width: 50,
-            key: true,
-            searchoptions: {
-                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-            },
-            searchrules: {
-                integer: true
-            }
-        },
-        name: {
-            label: lang.get('bo.permission_name'),
-            name: 'name',
-            editable: true,
-            editoptions: {}
-        },
-        slug: {
-            label: lang.get('bo.permission_slug'),
-            name: 'slug',
-            editable: true,
-            editoptions: {}
-        },
-        description: {
-            label: lang.get('bo.permission_description'),
-            name: 'description',
-            editable: true,
-            editoptions: {}
-        },
-        model: {
-            label: lang.get('bo.permission_model'),
-            name: 'model',
-            editable: true,
-            editoptions: {}
-        }
-    };
+    var defaultColumns = null;
+
+
 
     var Class = function (params) {
         var self = this;
@@ -74,10 +39,57 @@ define([
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnDefs: {
             get: function () {
+                var self = this;
+                if (defaultColumns == null) {
+                    defaultColumns = generateDefaultColumns();
+                }
                 return _.cloneDeep(defaultColumns);
             }
         }
     });
+
+    function generateDefaultColumns() {
+        var columnsDefs = {
+            id: {
+                label: _.capitalize(lang.get('bo.id')),
+                name: 'id',
+                width: 50,
+                key: true,
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                },
+                searchrules: {
+                    integer: true
+                }
+            },
+            name: {
+                label: lang.get('bo.permission_name'),
+                name: 'name',
+                editable: true,
+                editoptions: {}
+            },
+            slug: {
+                label: lang.get('bo.permission_slug'),
+                name: 'slug',
+                editable: true,
+                editoptions: {}
+            },
+            description: {
+                label: lang.get('bo.permission_description'),
+                name: 'description',
+                editable: true,
+                editoptions: {}
+            },
+            model: {
+                label: lang.get('bo.permission_model'),
+                name: 'model',
+                editable: true,
+                editoptions: {}
+            }
+        };
+
+        return columnsDefs;
+    }
 
     return Class;
 });

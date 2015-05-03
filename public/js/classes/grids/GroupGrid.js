@@ -20,63 +20,7 @@ define([
 
     var CONTROLLER_URL = '/api/group';
 
-    var defaultColumns = {
-        id: {
-            label: _.capitalize(lang.get('bo.id')),
-            name: 'id',
-            width: 50,
-            key: true,
-            searchoptions: {
-                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-            },
-            searchrules: {
-                integer: true
-            }
-        },
-        cycle_id: {
-            label: _.capitalize(lang.get('bo.group_cycle-id')),
-            name: 'cycle_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/cycle', Cycle)(),
-                dataUrl: '/api/cycle',
-                buildSelect: utilities.generateBuildSelect(Cycle)
-            },
-            extraInfo: {
-                linkMethod: 'cycle',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        },
-        name: {
-            label: _.capitalize(lang.get('bo.group_name')),
-            name: 'name',
-            editable: true,
-            editoptions: {}
-            //search:true,
-            //stype:'text',
-
-        },
-        status_id: {
-            label: _.capitalize(lang.get('bo.group_status-id')),
-            name: 'status_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
-                dataUrl: '/api/group-status',
-                buildSelect: utilities.generateBuildSelect(GroupStatus)
-            },
-            extraInfo: {
-                linkMethod: 'status',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        }
-    };
+    var defaultColumns = null;
 
     var Class = function (params) {
         var self = this;
@@ -109,10 +53,76 @@ define([
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnDefs: {
             get: function () {
+                var self = this;
+                if (defaultColumns == null) {
+                    defaultColumns = generateDefaultColumns();
+                }
                 return _.cloneDeep(defaultColumns);
             }
         }
     });
+
+    function generateDefaultColumns() {
+        var columnsDefs = {
+            id: {
+                label: _.capitalize(lang.get('bo.id')),
+                name: 'id',
+                width: 50,
+                key: true,
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                },
+                searchrules: {
+                    integer: true
+                }
+            },
+            cycle_id: {
+                label: _.capitalize(lang.get('bo.group_cycle-id')),
+                name: 'cycle_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/cycle', Cycle)(),
+                    dataUrl: '/api/cycle',
+                    buildSelect: utilities.generateBuildSelect(Cycle)
+                },
+                extraInfo: {
+                    linkMethod: 'cycle',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            },
+            name: {
+                label: _.capitalize(lang.get('bo.group_name')),
+                name: 'name',
+                editable: true,
+                editoptions: {}
+                //search:true,
+                //stype:'text',
+
+            },
+            status_id: {
+                label: _.capitalize(lang.get('bo.group_status-id')),
+                name: 'status_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
+                    dataUrl: '/api/group-status',
+                    buildSelect: utilities.generateBuildSelect(GroupStatus)
+                },
+                extraInfo: {
+                    linkMethod: 'status',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            }
+        };
+
+        return columnsDefs;
+    }
 
     return Class;
 });
