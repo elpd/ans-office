@@ -43,6 +43,11 @@ define([
                 value: utilities.generateGetItems('/api/cycle', Cycle)(),
                 dataUrl: '/api/cycle',
                 buildSelect: utilities.generateBuildSelect(Cycle)
+            },
+            extraInfo: {
+                linkMethod: 'cycle',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         },
         name: {
@@ -64,6 +69,11 @@ define([
                 value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
                 dataUrl: '/api/group-status',
                 buildSelect: utilities.generateBuildSelect(GroupStatus)
+            },
+            extraInfo: {
+                linkMethod: 'status',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         }
     };

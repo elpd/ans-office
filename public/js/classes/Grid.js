@@ -904,6 +904,8 @@ define([
             filter.isOnForeign = true;
             filter.fieldModel = fieldDef.extraInfo.fieldModel;
             filter.linkMethod = fieldDef.extraInfo.linkMethod;
+        } else {
+            filter.isOnForeign = false;
         }
 
         return filter;

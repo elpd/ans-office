@@ -80,6 +80,11 @@ define([
                     GroupMembersStatus)(),
                 dataUrl: '/api/group-members-status',
                 buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
+            },
+            extraInfo: {
+                linkMethod: 'status',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         }
     };

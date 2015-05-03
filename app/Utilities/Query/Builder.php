@@ -7,6 +7,7 @@ class Builder
 
     protected $selectArray = [];
     protected $innerJoins = [];
+    protected $binding_numerator = 0;
 
     public function __construct(\Illuminate\Database\Eloquent\Builder $originalQuery,
                                 $mainClass)
@@ -177,7 +178,7 @@ class Builder
         $selectedFieldDesc = $this->getSelectedField($fullFieldSortName);
         $order = $this->calcOrder($sortParam['order']);
 
-        if (isset($sortParam['isOnForeign']) && $sortParam['isOnForeign']) {
+        if (isset($sortParam['isOnForeign']) && $sortParam['isOnForeign'] == true) {
             $linkedMethod = $sortParam['linkMethod'];
             $parentModelClass = $this->repository->getModelForTableName(
                 $selectedFieldDesc->tableName);
@@ -241,7 +242,7 @@ class Builder
         );
         $targetValue = $filterParam['targetValue'];
 
-        if ($filterParam['isOnForeign']) {
+        if ($filterParam['isOnForeign'] == true) {
             $connectionDetails = $this->getConnectionDetailsForField(
                 $filterParam['fieldName'],
                 $filterParam['linkMethod']
@@ -257,14 +258,15 @@ class Builder
                 $identityClause = $connectionDetails->second_table_field_name . ' = ' .
                     $connectionDetails->first_table_field_name;
 
+                $bindingName = $this->getNewBindingName();
                 $searchClause = $sqlToStringRepresentation . ' ' .
-                    $whereOperation . ' ' . ':targetValue'
+                    $whereOperation . ' ' . ':' . $bindingName
                 ;
 
                 $subQuery->select(\DB::raw(1))
                     ->from($connectionDetails->second_table_name)
                     ->whereRaw($identityClause)
-                    ->whereRaw($searchClause, ['targetValue' => $targetValue]);
+                    ->whereRaw($searchClause, [$bindingName => $targetValue]);
 
             }, $booleanOp);
 
@@ -274,6 +276,13 @@ class Builder
                 $targetValue,
                 $booleanOp);
         }
+    }
+
+    protected function getNewBindingName() {
+        $numerator = $this->binding_numerator++;
+        $name = 'binding_' . $numerator;
+
+        return $name;
     }
 
     protected function getConnectionDetailsForField($field_name, $linkedMethod)

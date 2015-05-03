@@ -51,8 +51,7 @@ class Group extends Model
     ];
 
     protected $toStringFields = [
-        'id',
-        'name'
+        'name',
     ];
 
     /*
