@@ -40,8 +40,12 @@ define([
                 value: utilities.generateGetItems('/api/role', Role)(),
                 dataUrl: '/api/role',
                 buildSelect: utilities.generateBuildSelect(Role)
+            },
+            extraInfo: {
+                linkMethod: 'role',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
-
         },
         user_id: {
             label: _.capitalize(lang.get('bo.role-user_user-id')),
@@ -53,6 +57,11 @@ define([
                 value: utilities.generateGetItems('/api/user', User)(),
                 dataUrl: '/api/user',
                 buildSelect: utilities.generateBuildSelect(User)
+            },
+            extraInfo: {
+                linkMethod: 'user',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         }
     };
@@ -70,6 +79,8 @@ define([
         self.columns().add(self.defaultColumnDefs.id);
         self.columns().add(self.defaultColumnDefs.role_id);
         self.columns().add(self.defaultColumnDefs.user_id);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

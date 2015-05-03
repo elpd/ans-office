@@ -7,7 +7,7 @@ define([
         'classes/ChildTabsPanel',
         'classes/grids/GroupMemberGrid',
         'classes/grids/GroupGrid',
-        'classes/grids/ContactGrid',
+        'classes/grids/GuideGrid',
         'services/language',
         'services/userSettings'
     ],
@@ -19,7 +19,7 @@ define([
               ChildTabsPanel,
               GroupMemberGrid,
               GroupGrid,
-              ContactGrid,
+              GuideGrid,
               lang,
               userSettingsService) {
 
@@ -53,13 +53,35 @@ define([
                                     childFieldName: 'id'
                                 };
                             },
-
                             beforeGridExecution: function (grid) {
-
                             },
-
                             afterGridExecution: function (grid) {
+                            }
 
+                        });
+
+                        var guideTab = new GridTab({
+                            mainId: self.subRowId + '_guide',
+                            Grid: require('classes/grids/GuideGrid'),
+                            direction: userSettingsService.getLanguage().direction,
+                            caption: _.capitalize(lang.get('bo.group-member-guide_user-id')),
+                            beforeGridCreation: function (gridParams) {
+                                gridParams.calcDesiredHeightInContainer = function () {
+                                    return self.calcGridDesiredHeight();
+                                };
+                                gridParams.calcDesiredWidthInContainer = function () {
+                                    return self.calcGridDesiredWidth();
+                                };
+                                gridParams.hasParent = true;
+                                gridParams.parentLink = {
+                                    id: rowData.user_id,
+                                    childFieldName: 'user_id'
+                                };
+                            },
+                            beforeGridExecution: function (grid) {
+                                grid.columns().makeHidden('role_id');
+                            },
+                            afterGridExecution: function (grid) {
                             }
 
                         });
@@ -67,7 +89,8 @@ define([
                         var childTabsPanel = new ChildTabsPanel({
                             mainId: self.subRowId,
                             tabs: [
-                                groupMemberTab
+                                groupMemberTab,
+                                guideTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });

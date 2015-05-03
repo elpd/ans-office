@@ -2,11 +2,13 @@ define([
     'classes/AttributesObject',
     'classes/SubRow',
     'classes/LoadingIndicator',
-    'classes/database/query/Builder'
+    'classes/database/query/Builder',
+    'services/language'
 ], function (AttributesObject,
              EmptySubRow,
              LoadingIndicator,
-             QueryBuilder) {
+             QueryBuilder,
+             lang) {
 
     var GRID_HEIGHT_MIN = 150;
     var GRID_WIDTH_MIN = 1050;
@@ -23,6 +25,7 @@ define([
     var JQGRID_FN_EDIT_ROW = 'editRow';
     var JQGRID_FN_SET_ROW_DATA = 'setRowData';
     var JQGRID_FN_SET_GROUP_HEADERS = 'setGroupHeaders';
+    var JQGRID_FN_SEARCH_GRID = 'searchGrid';
 
     var GRID_LOADING_COMPLETE_EVENT_ID = 'grid_events:loading_complete';
     var GRID_LOADING_STARTED_EVENT_ID = 'grid_events:loading_started';
@@ -85,8 +88,8 @@ define([
             required: true,
             defaults: {
                 dependencies: [],
-                calculation: function() {
-                    return new Array();
+                calculation: function () {
+                    return {};
                 }
             }
         },
@@ -148,7 +151,7 @@ define([
         beforeEditGridData: {
             required: true,
             defaults: {
-                calculation: function(){
+                calculation: function () {
                     return {};
                 }
             }
@@ -165,7 +168,34 @@ define([
         changedRows: {
             required: true,
             defaults: {
-                calculation: function() {
+                calculation: function () {
+                    return [];
+                }
+            }
+        },
+
+        _selectedMainColumns: {
+            required: true,
+            defaults: {
+                calculation: function () {
+                    return [];
+                }
+            }
+        },
+
+        _children: {
+            required: true,
+            defaults: {
+                calculation: function () {
+                    return {};
+                }
+            }
+        },
+
+        _selectedChildrenGroups: {
+            required: true,
+            defaults: {
+                calculation: function () {
                     return [];
                 }
             }
@@ -183,6 +213,7 @@ define([
             value: function () {
                 var self = this;
                 setGridComponent(self);
+                setGridHeaders(self);
                 setFilterToolbarComponent(self);
                 setNavigationComponents(self);
                 setLoadingIndicator(self);
@@ -223,9 +254,8 @@ define([
             }
         },
 
-        get$GridInnerHeaderBox:
-        {
-            value: function() {
+        get$GridInnerHeaderBox: {
+            value: function () {
                 var self = this;
                 return self.get$GridBox().find('.' + GRID_INNER_HEADER_BOX_CLASS);
             }
@@ -452,73 +482,133 @@ define([
             }
         },
 
-        setGroupHeaders: {
-            value: function(params) {
+        children: {
+            value: function () {
                 var self = this;
-                self.get$Grid().jqGrid(JQGRID_FN_SET_GROUP_HEADERS, params);
-                self.redrawGridDimensions({shrinkToFit: false});
+                return new GridChildrenInterface(self);
             }
         },
 
         calcSumOfColumnsWidth: {
-            value : function() {
+            value: function () {
                 var self = this;
                 // todo
+            }
+        },
+
+        refreshGridIncludeDefinitions: {
+            value: function () {
+                var self = this;
+                self.get$Grid().jqGrid('GridUnload', self.gridId);
+                self.execute();
             }
         }
     });
 
     function GridColumnsInterface(self) {
         return {
-            remove: function (columnId) {
-                removeFromColumns(columnId);
-            },
-            hide: function(columnId) {
+            makeHidden: function (columnId) {
                 hideFromColumns(columnId);
             },
             add: function (column) {
                 if (column instanceof Array) {
-                    column.forEach(function(item){
+                    column.forEach(function (item) {
                         addToColumns(item);
                     })
                 } else {
                     addToColumns(column);
                 }
+            },
+            selectAbsolute: function (selectionParam) {
+                self._selectedMainColumns = [];
+                if (selectionParam instanceof Array) {
+                    selectionParam.forEach(function (selectedName) {
+                        selectMainSingular(selectedName);
+                    });
+                } else {
+                    selectMainSingular(selectionParam);
+                }
+            },
+            selectAbsoluteAll: function () {
+                self._selectedMainColumns = [];
+                _.forEach(self.colModel, function (colDef, colKey) {
+                    selectMainSingular(colKey);
+                });
             }
         }
 
-        function removeFromColumns(columnId) {
-            var indexToRemove = _.findIndex(self.colModel, function (colItem) {
-                if (colItem.name == columnId) {
-                    return true;
-                }
-            });
-            if (indexToRemove < 0) {
-                throw new Error('id not found. index: ' + columnId);
-            }
-
-            _.pullAt(self.colModel, indexToRemove);
+        function selectMainSingular(selectedMain) {
+            self._selectedMainColumns.push(selectedMain);
         }
 
         function hideFromColumns(columnId) {
-            var targetIndex = _.findIndex(self.colModel, function (colItem) {
-                if (colItem.name == columnId) {
-                    return true;
-                }
-            });
-            if (targetIndex < 0) {
-                throw new Error('id not found. index: ' + columnId);
-            }
-
-            self.colModel[targetIndex] = _.merge({},
-                self.colModel[targetIndex],
+            self.colModel[columnId] = _.merge({},
+                self.colModel[columnId],
                 {
                     hidden: true
                 });
         }
 
         function addToColumns(colDef) {
-            self.colModel.push(colDef);
+            self.colModel[colDef.name] = colDef;
+        }
+    }
+
+    function GridChildrenInterface(self) {
+        return {
+            add: function (childDefParam) {
+                if (childDefParam instanceof Array) {
+                    addMultiple(childDefParam);
+                } else {
+                    addSingular(childDefParam);
+                }
+            },
+
+            selectAbsolute: function (selectionParam) {
+                removeAllSelection();
+                if (selectionParam instanceof Array) {
+                    selectionParam.forEach(function (selectionItem) {
+                        selectSingular(selectionItem);
+                    })
+                } else {
+                    selectSingular(selectionItem);
+                }
+
+                self.refreshGridIncludeDefinitions();
+            }
+        };
+
+        function addSingular(childDef) {
+            var customDef = _.cloneDeep(childDef);
+
+            customDef.columns.forEach(function (columnDef) {
+                // Only one column in the all grid can be a key.
+                columnDef.key = false;
+
+                // Add child table name to column field name.
+                columnDef.name = childDef.queryJoinTable +
+                    '.' +
+                    columnDef.name;
+
+                // For now, no edit is allowed on children. Until code is available
+                // in controller infrastructure.
+                columnDef.editable = false;
+            });
+            self._children[childDef.name] = customDef;
+        }
+
+        function addMultiple(childrenDefs) {
+            childrenDefs.forEach(function (childDef) {
+                addSingular(childDef);
+            })
+        }
+
+        function removeAllSelection() {
+            self._selectedChildrenGroups = [];
+        }
+
+        function selectSingular(selectedChild) {
+            self._selectedChildrenGroups.push(selectedChild);
         }
     }
 
@@ -568,7 +658,7 @@ define([
         var params = {};
 
         params.url = self.controllerUrl;
-        params.colModel = self.colModel;
+        params.colModel = calcGridColModel(self);
 
         // show the current page, data rang and total records on the toolbar
         params.viewrecords = true;
@@ -591,6 +681,7 @@ define([
             params.direction = self.direction;
         }
         params.autowidth = true;
+        params.multiSort = true;
 
         if (self.hasSubGrid) {
             params.subGrid = self.hasSubGrid;
@@ -683,16 +774,234 @@ define([
         };
 
         params.serializeGridData = function (postData) {
-            return postData;
+            var resultData = postData;
+
+            resultData._query = {
+                _filler: "filler"
+            };
+
+            calcInnerJoinSelectQueryOperation(self, postData, resultData._query);
+            calcFilterQueryOperation(self, postData, resultData._query);
+            calcSortQueryOperation(self, postData, resultData._query);
+
+            return resultData;
         };
 
         return params;
+    }
+
+    function calcSortQueryOperation(self, postData, query) {
+        var jqGridSortIndexes = postData.sidx;
+        var jqGridSortOrder = postData.sord;
+
+        if (jqGridSortIndexes == '') {
+            return;
+        }
+
+        var tempSortIndexAndOrderPairs = jqGridSortIndexes.split(',');
+        var sortIndexAndOrderPairs = _.map(tempSortIndexAndOrderPairs, function (pairStr) {
+            var pairArray = _.words(pairStr, /[\w.]+/g);
+            var pair = {};
+            pair.index = pairArray[0];
+            if (pairArray.length > 1) {
+                pair.order = pairArray[1];
+            }
+
+            var fieldDef = getColModelDef(self, pair.index);
+            if (fieldDef.extraInfo && fieldDef.extraInfo.sortByForeignLinkToString) {
+                pair.isOnForeign = true;
+                pair.fieldModel = fieldDef.extraInfo.fieldModel;
+                pair.linkMethod = fieldDef.extraInfo.linkMethod;
+            }
+            return pair;
+        });
+
+        var last = _.last(sortIndexAndOrderPairs);
+        if (last.order) {
+            throw new Error('malformed jqgrid sort parameter');
+        }
+        last.order = jqGridSortOrder;
+
+        query.sortParameters = sortIndexAndOrderPairs;
+    }
+
+    function calcInnerJoinSelectQueryOperation(self, postData, query) {
+        if (self._selectedChildrenGroups.length > 0) {
+            query.joinSelectChildren = _.map(self._selectedChildrenGroups,
+                function (selection) {
+                    var childrenGroupDef = self._children[selection];
+                    return childrenGroupDef.name;
+                });
+        }
+    }
+
+    function calcFilterQueryOperation(self, postData, query) {
+        calcParentLinkFilter(self, postData, query);
+        calcSearchFilters(self, postData, query);
+    }
+
+    function calcParentLinkFilter(self, postData, query) {
+        if (self.parentLink) {
+            query.parentLinkFilter = {
+                parent_id: self.parentLink.id,
+                fieldToFilterBy: self.parentLink.childFieldName
+            }
+        }
+    }
+
+    function calcSearchFilters(self, postData, query) {
+        if (postData.filters && postData._search) {
+            var parseJqGridFilters = JSON.parse(postData.filters);
+            query.filters = calcJqGridFilterToQueryFilter(self, parseJqGridFilters);
+        }
+    }
+
+    function calcJqGridFilterToQueryFilter(self, jqGridFilter) {
+        var filter = {};
+
+        var rulesLength = jqGridFilter.rules ? jqGridFilter.rules.length : 0;
+        var groupsLength = jqGridFilter.groups ? jqGridFilter.groups.length : 0;
+
+        if (rulesLength == 0 && groupsLength == 0) {
+            filter.isGroup = false;
+            filter.operation = 'no_operation';
+
+            return filter;
+        }
+
+        if (
+            (rulesLength == 1 && groupsLength == 0) ||
+            (rulesLength == 0 && groupsLength == 1)
+        ) {
+
+            if (jqGridFilter.rules.length == 1) {
+                filter = calcJqGridSimpleFilter(self, jqGridFilter.rules[0]);
+            } else {
+                filter = calcJqGridFilterToQueryFilter(self, jqGridFilter.groups[0]);
+            }
+
+            return filter;
+        }
+
+        filter.isGroup = true;
+        filter.operation = jqGridFilter.groupOp;
+        filter.nodes = [];
+
+        _.forEach(jqGridFilter.rules, function (jqGridSimpleFilter) {
+            var childFilter = calcJqGridSimpleFilter(self, jqGridSimpleFilter);
+            filter.nodes.push(childFilter);
+        });
+
+        _.forEach(jqGridFilter.groups, function (jqGridGroupFilter) {
+            var childFilter = calcJqGridFilterToQueryFilter(self, jqGridGroupFilter);
+            filter.nodes.push(childFilter);
+        });
+
+        return filter;
+    }
+
+    function calcJqGridSimpleFilter(self, jqGridSimpleFilter) {
+        var filter = {};
+
+        filter.isGroup = false;
+        filter.operation = jqGridSimpleFilter.op;
+        filter.targetValue = jqGridSimpleFilter.data;
+        filter.fieldName = jqGridSimpleFilter.field;
+
+        var fieldDef = getColModelDef(self, jqGridSimpleFilter.field);
+        if (fieldDef.extraInfo && fieldDef.extraInfo.sortByForeignLinkToString) {
+            filter.isOnForeign = true;
+            filter.fieldModel = fieldDef.extraInfo.fieldModel;
+            filter.linkMethod = fieldDef.extraInfo.linkMethod;
+        } else {
+            filter.isOnForeign = false;
+        }
+
+        return filter;
+    }
+
+    function isFieldDefinedAsSearchByForeign(self, fieldName) {
+        var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');
+        var result = _.find(currentColModel, function (columnDef) {
+            if (columnDef.name == fieldName && columnDef.extraSearchOptions) {
+                if (columnDef.extraSearchOptions.searchByForeignLinkToString) {
+                    return true;
+                }
+            }
+        });
+
+        if (result != null) {
+            return true
+        }
+
+        return false;
+    }
+
+    function getColModelDef(self, fieldName) {
+        var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');
+        var result = _.find(currentColModel, function (columnDef) {
+            if (columnDef.name == fieldName) {
+                    return true;
+            }
+        });
+
+        if (result == null) {
+            throw new Error('unintended code path');
+        }
+        return result;
+    }
+
+    function calcGridColModel(self) {
+        var calcResult = [];
+
+        self._selectedMainColumns.forEach(function (selectionName) {
+            var selectedModel = _.cloneDeep(self.colModel[selectionName]);
+            calcResult.push(selectedModel);
+        });
+
+        self._selectedChildrenGroups.forEach(function (selectedChildGroupName) {
+            var childGroup = self._children[selectedChildGroupName];
+            childGroup.columns.forEach(function (childColumnDef) {
+                var selectedModel = _.cloneDeep(childColumnDef);
+                calcResult.push(selectedModel);
+            });
+        });
+
+        return calcResult;
     }
 
     function setGridComponent(self) {
         var gridParams = calcGridParamsOnActivation(self);
         var $grid = self.get$Grid();
         $grid.jqGrid(gridParams);
+    }
+
+    function setGridHeaders(self) {
+        var groupHeaders = calcGroupsHeaders(self);
+        var headersParams = {
+            useColSpanStyle: true,
+            groupHeaders: groupHeaders
+        };
+
+        self.get$Grid().jqGrid(JQGRID_FN_SET_GROUP_HEADERS, headersParams);
+        self.redrawGridDimensions({shrinkToFit: false});
+    }
+
+    function calcGroupsHeaders(self) {
+        var groupsHeadersDefs = [];
+
+        self._selectedChildrenGroups.forEach(function (groupName) {
+            var headerDef = {};
+
+            var childGroupDef = self._children[groupName];
+            var firstColumnDef = childGroupDef.columns[0];
+            headerDef.startColumnName = firstColumnDef.name;
+            headerDef.numberOfColumns = childGroupDef.columns.length;
+            headerDef.titleText = '<em>' + childGroupDef.title + '</em>';
+            groupsHeadersDefs.push(headerDef);
+        });
+
+        return groupsHeadersDefs
     }
 
     function setFilterToolbarComponent(self) {
@@ -716,9 +1025,19 @@ define([
             toolbarSettings,
             editSettings,
             addSettings,
-            deleteSettings
+            deleteSettings,
+            {
+                multipleSearch : true,
+                multipleGroup:true
+            } // enable the advanced searching
         );
 
+        addFullScreenButtonsToNavGrid(self, $grid);
+        addFitColumnsToTableWidthButtonToNavGrid(self, $grid);
+        addColumnsChooserButtonToNavGrid(self, $grid);
+    }
+
+    function addFullScreenButtonsToNavGrid(self, $grid) {
         $grid.navGrid('#' + self.pagerId)
             .navButtonAdd('#' + self.pagerId, {
                 caption: "Full",//"Full Screen",
@@ -734,7 +1053,11 @@ define([
                         self.customButtonFullScreen().setAppearanceAsExitFullScreen();
                     }
                 }
-            })
+            });
+    }
+
+    function addFitColumnsToTableWidthButtonToNavGrid(self, $grid) {
+        $grid.navGrid('#' + self.pagerId)
             .navButtonAdd('#' + self.pagerId, {
                 caption: "Fit",//"Fit To Size",
                 position: 'last',
@@ -742,7 +1065,103 @@ define([
                     self.redrawGridDimensions({shrinkToFit: true});
                 }
             });
+    }
 
+    function addColumnsChooserButtonToNavGrid(self, $grid) {
+        $grid.navGrid('#' + self.pagerId)
+            .navButtonAdd('#' + self.pagerId, {
+                caption: "Columns",//"Fit To Size",
+                position: 'last',
+                onClickButton: function () {
+                    showColumnsChooserDialog(self);
+                }
+            });
+    }
+
+    function showColumnsChooserDialog(self) {
+        var $dialogChooser = $(
+            '<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" ' +
+            'aria-hidden="true" data-backdrop="true">' +
+            '<div class="modal-dialog">' +
+            '<div class="modal-content">' +
+            '</div>' +
+            '</div>' +
+            ' </div>'
+        );
+
+        var $dialogHeader = $(
+            '<div class="modal-header">' +
+            '<button type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+            '<span aria-hidden="true">&times;</span></button>' +
+            '<h4 class="modal-title" id="myModalLabel">' +
+            _.capitalize(lang.get('main.dialog-field-chooser_header')) +
+            '</h4>' +
+            '</div>');
+
+        var $dialogBody = $(
+            '<div class="modal-body">' +
+
+            '</div>');
+
+        var $closeButton = $('<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>');
+        var $saveButton = $('<button type="button" class="btn btn-primary">Save changes</button>');
+
+        var $dialogFooter = $(
+            '<div class="modal-footer">' +
+            '</div>'
+        );
+        $dialogFooter.append($closeButton, $saveButton);
+
+        var $childrenGroupsOptions = _.map(self._children,
+            function (childGroupDef, childGroupDefKey) {
+                var $input = $('<input type="checkbox" class="childSelection" ' +
+                'value="' + childGroupDefKey + '">');
+                if (_.indexOf(self._selectedChildrenGroups, childGroupDefKey) >= 0) {
+                    $input.attr('checked', true);
+                }
+
+                var inputHtml = $input[0].outerHTML;
+                var $option = $(
+                    '<div class="checkbox">' +
+                    '<label>' +
+                    inputHtml +
+                    childGroupDefKey +
+                    '</label>' +
+                    '</div>');
+
+                return $option;
+            });
+
+        var $form = $(
+            '<form>' +
+            '<h3 class="form_field_chooser_header">' +
+            _.capitalize(lang.get('main.dialog-field-chooser_children_header')) +
+            '</h3>' +
+            '</form>'
+        );
+
+        $form.find('.form_field_chooser_header').after(
+            $childrenGroupsOptions);
+
+        $dialogBody.append($form);
+
+        $dialogChooser.find('.modal-content').first().append(
+            $dialogHeader, $dialogBody, $dialogFooter
+        )
+
+        $saveButton.click(function (e) {
+            var selectedChildrenNames = []
+            $form.find('input.childSelection').each(function (index, element) {
+                if ($(this).prop('checked')) {
+                    selectedChildrenNames.push($(this).val());
+                }
+            });
+            self.children().selectAbsolute(selectedChildrenNames);
+        });
+
+        $dialogChooser.modal({
+            //show: true
+        });
     }
 
     function calcNavToolbarSettings(self) {
@@ -795,12 +1214,12 @@ define([
 
                 return [returnData.success, returnData.message];
             },
-            beforeShowForm: function($form) {
+            beforeShowForm: function ($form) {
                 // Remove join child fields.
-                $('.FormData', $form).each(function(index, element){
+                $('.FormData', $form).each(function (index, element) {
                     var $formData = $(this);
                     var formDataId = $formData.attr('id');
-                    if (formDataId && formDataId.indexOf('.') >= 0){
+                    if (formDataId && formDataId.indexOf('.') >= 0) {
                         $formData.remove();
                     }
                 });

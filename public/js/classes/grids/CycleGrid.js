@@ -79,6 +79,8 @@ define([
         self.columns().add(self.defaultColumnDefs.id);
         self.columns().add(self.defaultColumnDefs.startDate);
         self.columns().add(self.defaultColumnDefs.num);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

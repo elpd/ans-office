@@ -51,7 +51,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('role_id');
+                                grid.columns().makeHidden('role_id');
 
                             },
 
@@ -81,7 +81,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('role_id');
+                                grid.columns().makeHidden('role_id');
                             },
 
                             afterGridExecution: function (grid) {

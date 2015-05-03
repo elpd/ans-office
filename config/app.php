@@ -149,6 +149,7 @@ return [
         'Propaganistas\LaravelPhone\LaravelPhoneServiceProvider',
 
         'App\Providers\ComposerServiceProvider',
+		'App\Providers\DbRepositoryProvider',
 	],
 
 	/*

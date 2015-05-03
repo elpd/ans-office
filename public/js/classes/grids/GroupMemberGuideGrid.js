@@ -1,4 +1,5 @@
 define([
+    'require',
     'lodash',
     'classes/utilities',
     'classes/Grid',
@@ -6,15 +7,16 @@ define([
     'classes/bi/GroupsMembers',
     'classes/bi/User',
     'services/language',
-    'services/userSettings'
-], function (_,
+    'classes/grids/GroupMemberGrid'
+], function (require,
+             _,
              utilities,
              Grid,
              GroupMemberGuideSubRow,
              GroupsMembers,
              User,
              lang,
-             userSettingService) {
+             GroupMemberGrid) {
 
     var CONTROLLER_URL = '/api/group-member-guide';
 
@@ -34,7 +36,7 @@ define([
         },
 
         groups_member_id: {
-            label: _.capitalize(lang.get('bo.group-member-guide_group_member')),
+            label: _.capitalize(lang.get('bo.group-member-guide_group-member-id')),
             name: 'groups_member_id',
             editable: true,
             edittype: 'select',
@@ -43,11 +45,16 @@ define([
                 value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
                 dataUrl: '/api/groups-members',
                 buildSelect: utilities.generateBuildSelect(GroupsMembers)
+            },
+            extraInfo: {
+                linkMethod: 'groupMember',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         },
 
         user_id: {
-            label: _.capitalize(lang.get('bo.group-member-guide_user')),
+            label: _.capitalize(lang.get('bo.group-member-guide_user-id')),
             name: 'user_id',
             editable: true,
             edittype: 'select',
@@ -56,6 +63,11 @@ define([
                 value: utilities.generateGetItems('/api/user', User)(),
                 dataUrl: '/api/user',
                 buildSelect: utilities.generateBuildSelect(User)
+            },
+            extraInfo: {
+                linkMethod: 'user',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         }
     };
@@ -63,10 +75,12 @@ define([
     var Class = function (params) {
         var self = this;
 
+        GroupMemberGrid = require('classes/grids/GroupMemberGrid');
+
         params.controllerUrl = CONTROLLER_URL;
         // todo: inharitance of attribute. array merge.
-        if (! params.caption) {
-            params.caption = lang.get('bo.group-member-guides');
+        if (!params.caption) {
+            params.caption = _.capitalize(lang.get('bo.group-member-guides'));
         }
         params.SubRow = GroupMemberGuideSubRow;
         params.hasSubGrid = true;
@@ -77,6 +91,14 @@ define([
         self.columns().add(self.defaultColumnDefs.groups_member_id);
         self.columns().add(self.defaultColumnDefs.user_id);
 
+        self.children().add({
+            name: 'groupMember',
+            title: lang.get('bo.group-member'),
+            queryJoinTable: 'groups_members',
+            columns: _.values(GroupMemberGrid.prototype.defaultColumnDefs)
+        });
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

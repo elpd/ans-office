@@ -39,6 +39,11 @@ define([
                 value: utilities.generateGetItems('/api/permission', Permission)(),
                 dataUrl: '/api/permission',
                 buildSelect: utilities.generateBuildSelect(Permission)
+            },
+            extraInfo: {
+                linkMethod: 'permission',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         },
         role_id: {
@@ -51,6 +56,11 @@ define([
                 value: utilities.generateGetItems('/api/role', Role)(),
                 dataUrl: '/api/role',
                 buildSelect: utilities.generateBuildSelect(Role)
+            },
+            extraInfo: {
+                linkMethod: 'role',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         }
     };
@@ -68,6 +78,8 @@ define([
         self.columns().add(self.defaultColumnDefs.id);
         self.columns().add(self.defaultColumnDefs.permission_id);
         self.columns().add(self.defaultColumnDefs.role_id);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

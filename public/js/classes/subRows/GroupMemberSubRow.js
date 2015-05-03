@@ -102,7 +102,7 @@ define([
                                 };
                             },
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('groups_member_id');
+                                grid.columns().makeHidden('groups_member_id');
                             },
                             afterGridExecution: function (grid) {
                             }

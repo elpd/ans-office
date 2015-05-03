@@ -13,4 +13,18 @@ class Role extends \Bican\Roles\Models\Role
 
     public $nullable = [];
     protected $rules = [];
+
+    protected $toStringFields = [
+        'name',
+        'slug'
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'users',
+        'permissions',
+    ];
 }

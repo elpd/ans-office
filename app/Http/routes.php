@@ -28,6 +28,7 @@ Route::group(['middleware' => 'user.settings'], function() {
     Route::get('employee/contacts', 'ContactController@index');
     Route::get('employee/groups', 'GroupController@index');
     Route::get('employee/guides', 'GuideController@index');
+    Route::get('employee/groups-members-guides', 'GroupMemberGuideController@index');
     Route::get('employee/groups-members', 'GroupsMembersController@index');
     Route::get('employee/cycles', 'CycleController@index');
     Route::get('employee/etgar22-registration-requests', 'Etgar22RegistrationRequestController@index');

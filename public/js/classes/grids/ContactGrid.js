@@ -5,14 +5,14 @@ define([
     'classes/Grid',
     'classes/subRows/ContactSubRow',
     'services/language',
-    'services/userSettings'
+    'classes/grids/Etgar22Grid'
 ], function (require,
              _,
              utilities,
              Grid,
              ContactSubRow,
              lang,
-             userSettingService) {
+             Etgar22Grid) {
 
     var CONTROLLER_URL = '/api/contact';
 
@@ -30,7 +30,7 @@ define([
             }
         },
         registration_date: {
-            label: lang.get('bo.registration_date'),
+            label: _.capitalize(lang.get('bo.registration_date')),
             name: 'registration_date',
             editable: true,
             //edittype: 'select',
@@ -51,7 +51,7 @@ define([
             }
         },
         email: {
-            label: lang.get('bo.email'),
+            label: _.capitalize(lang.get('bo.email')),
             name: 'email',
             editable: true,
             editoptions: {}
@@ -60,31 +60,31 @@ define([
 
         },
         first_name: {
-            label: lang.get('bo.first_name'),
+            label: _.capitalize(lang.get('bo.first_name')),
             name: 'first_name',
             editable: true,
             editoptions: {}
         },
         last_name: {
-            label: lang.get('bo.last_name'),
+            label: _.capitalize(lang.get('bo.last_name')),
             name: 'last_name',
             editable: true,
             editoptions: {}
         },
         phone: {
-            label: lang.get('bo.phone'),
+            label: _.capitalize(lang.get('bo.phone')),
             name: 'phone',
             editable: true,
             editoptions: {}
         },
         facebook: {
-            label: lang.get('bo.facebook_account'),
+            label: _.capitalize(lang.get('bo.facebook_account')),
             name: 'facebook',
             editable: true,
             editoptions: {}
         },
         birth_year: {
-            label: lang.get('bo.birth_year'),
+            label: _.capitalize(lang.get('bo.birth_year')),
             name: 'birth_year',
             editable: true,
             editoptions: {},
@@ -94,7 +94,7 @@ define([
             }
         },
         donate: {
-            label: lang.get('bo.donate'),
+            label: _.capitalize(lang.get('bo.donate')),
             name: 'donate',
             editable: true,
             formatter: 'checkbox',
@@ -112,7 +112,7 @@ define([
             }
         },
         blacklisted: {
-            label: lang.get('bo.blacklisted'),
+            label: _.capitalize(lang.get('bo.blacklisted')),
             name: 'blacklisted',
             editable: true,
             formatter: 'checkbox',
@@ -137,7 +137,6 @@ define([
         params.controllerUrl = CONTROLLER_URL;
         // TODO: attribute inharitance.
         params.caption = lang.get('bo.contacts');
-        //var ContactSubRow = require('classes/subRows/ContactSubRow');
         params.SubRow = ContactSubRow;
         params.hasSubGrid = true;
 
@@ -153,6 +152,15 @@ define([
         self.columns().add(self.defaultColumnDefs.birth_year);
         self.columns().add(self.defaultColumnDefs.donate);
         self.columns().add(self.defaultColumnDefs.blacklisted);
+
+        self.children().add({
+            name: 'etgar22',
+            title: lang.get('bo.etgar22'),
+            queryJoinTable: 'etgar22',
+            columns: _.values(Etgar22Grid.prototype.defaultColumnDefs)
+        });
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

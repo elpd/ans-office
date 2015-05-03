@@ -171,6 +171,8 @@ define([
         self.columns().add(self.defaultColumnDefs.parent_email);
         self.columns().add(self.defaultColumnDefs.request_status_id);
         self.columns().add(self.defaultColumnDefs.created_at);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

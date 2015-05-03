@@ -1,6 +1,7 @@
 <?php namespace App\Http\Controllers;
 
 use App\Utilities\GeneralUtilities as Utils;
+use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Watson\Validating\ValidationException;
 
@@ -22,15 +23,11 @@ trait RestControllerTrait
 
     public function index(Request $request)
     {
-        $class = $this->class;
+        $jqGridRequest = new \App\Utilities\JqGrid\Request($request);
+        $queryParams = $jqGridRequest->getOrNewQueryParam();
 
-        $firstChildJoinParams = $this->calcFirstChildJoinParams($request, $class);
-        $filterParams = $this->calcFilterParams($request, $class);
-        $orderParams = $this->calcOrderParams($request, $class);
-        $rowsPerPage = $this->calcRowsPerPage($request);
-
-        $query = $this->buildQuery($class, $filterParams, $orderParams,
-            $firstChildJoinParams);
+        $rowsPerPage = $this->calcRowsPerPage($jqGridRequest);
+        $query = $this->buildQuery($queryParams);
 
         if ($request->has(self::$PAGE_TO_SHOW_REQ_PARAM)) {
             $items = $query->paginate($rowsPerPage);
@@ -217,206 +214,57 @@ trait RestControllerTrait
         return $inputs;
     }
 
-    protected function buildQuery($class, $filterParams, $orderParams,
-                                  $firstChildJoinParams)
+    protected function buildQueryParams($class, $request)
     {
-        $query = $class::query();
+        $queryParams = new \stdClass();
+
+        $queryParams = $request->get('_query');
+
+        return $queryParams;
+    }
+
+    protected function buildQuery($queryParams)
+    {
+        $class = $this->class;
+        $originalQuery = $class::query();
+        $query = new \App\Utilities\Query\Builder($originalQuery, $this->class);
+
+        $query->addSelectAllMainFields($query);
 
         if (method_exists($this, 'buildInitialQuery')) {
-            $query = $this->buildInitialQuery($query);
+            $this->buildInitialQuery($query->getOriginal());
         }
 
-        $classObject = new $class();
-        $mainTableName = $classObject->getTable();
-
-        //$query = $query->select($mainTableName . '.*');
-
-        if (method_exists($this, 'setAdditionalQueryFilters')) {
-            $query = $this->setAdditionalQueryFilters($query);
+        if (isset($queryParams['joinSelectChildren'])) {
+            $list = $queryParams['joinSelectChildren'];
+            $query->joinSelectChildren($list);
         }
 
-       /* foreach ($firstChildJoinParams as $firstChildJoinSpec) {
-            $query = $query->with($firstChildJoinSpec->functionOnChild);
-
-            $query = $this->createJoinOnQuery($query,
-                $mainTableName,
-                $firstChildJoinSpec->linkedTableName,
-                $mainTableName . '.' . $firstChildJoinSpec->fieldName,
-                '=',
-                $firstChildJoinSpec->linkedTableName . '.' . $firstChildJoinSpec->linkedField);
-/*
-            foreach ($firstChildJoinSpec->requestedFields as $requestedField){
-
-                $selectStr =
-                    $firstChildJoinSpec->linkedTableName . '.' .
-                    $requestedField .
-                    ' as ' .
-                    $firstChildJoinSpec->linkedTableName . '.' .
-                    $requestedField ;
-
-                $query = $query->addSelect($selectStr);
-            }
-
-        }*/
-
-        foreach ($filterParams as $filterCondition) {
-            if (isset($filterCondition->isSearchOnParentField) && $filterCondition->isSearchOnParentField) {
-
-                $linkedTableName = $filterCondition->parentTable;
-                $linkedTableConnectionFieldName = 'id';
-
-                $query = $this->createJoinOnQuery($query,
-                    $mainTableName,
-                    $linkedTableName,
-                    $mainTableName . '.' . $filterCondition->fieldName,
-                    '=',
-                    $linkedTableName . '.' . $linkedTableConnectionFieldName);
-
-                $query = $query->where($linkedTableName . '.' . $filterCondition->parentField,
-                    $filterCondition->operator,
-                    $filterCondition->value);
-
-            } else {
-                $query = $query->where(
-                    $filterCondition->fieldName,
-                    $filterCondition->operator,
-                    $filterCondition->value
-                );
-            }
+        if (isset($queryParams['sortParameters'])) {
+            $sortParameters = $queryParams['sortParameters'];
+            $query->orderByParams($sortParameters);
         }
 
-        if (count($orderParams) > 0) {
-
-            // Currently supporting only one sort per query.
-
-            $sortingPrimaryCondition = $orderParams[0];
-
-            if (isset($sortingPrimaryCondition['isSortOnParentField'])) {
-
-                $linkedTableName = $sortingPrimaryCondition['parentTable'];
-                $linkedTableConnectionFieldName = 'id';
-
-                $query = $this->createJoinOnQuery($query,
-                    $mainTableName,
-                    $linkedTableName,
-                    //$mainTableName . '.' .
-                    $sortingPrimaryCondition['index'],
-                    '=',
-                    $linkedTableName . '.' . $linkedTableConnectionFieldName);
-
-                $query = $query->orderBy($linkedTableName . '.' . $sortingPrimaryCondition['parentField'],
-                    $sortingPrimaryCondition['order']);
-
-            } else {
-
-                $query = $query->orderBy(
-                    //$mainTableName . '.' .
-                    $sortingPrimaryCondition['index'],
-                    $sortingPrimaryCondition['order']
-                );
-            }
+        if (isset($queryParams['filters'])) {
+            $filterParam = $queryParams['filters'];
+            $query->filter($filterParam);
         }
 
-        return $query;
+        return $query->getOriginal();
     }
 
-    protected function createJoinOnQuery($query, $firstTableName, $secondTableName, $firstTableFieldFullName, $operator,
-                                         $secondTableFieldFullName)
+    protected function getTable()
     {
-        $joinExists = $this->findInExistingJoins($secondTableName,
-            $firstTableFieldFullName,
-            $operator,
-            $secondTableFieldFullName);
+        $class_item = $this->newItem();
+        $table_name = $class_item->getTable();
 
-        if ($joinExists) {
-            return $query;
-        } else {
-            $this->addJoinToExistingJoins($secondTableName,
-                $firstTableFieldFullName,
-                $operator,
-                $secondTableFieldFullName);
-
-            $resultQuery = $query->join($secondTableName,
-                $firstTableFieldFullName,
-                $operator,
-                $secondTableFieldFullName);
-
-            return $resultQuery;
-        }
+        return $table_name;
     }
 
-    protected function findInExistingJoins($secondTableName, $firstTableFieldFullName, $operator, $secondTableFieldFullName)
+    protected function newItem()
     {
-        foreach ($this->existingJoins as $join) {
-            if ($join->secondTableName == $secondTableName &&
-                $join->firstTableFieldFullName == $firstTableFieldFullName &&
-                $join->operator == $operator &&
-                $join->secondTableFieldFullName == $secondTableFieldFullName
-            ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    protected function addJoinToExistingJoins($secondTableName, $firstTableFieldFullName, $operator, $secondTableFieldFullName)
-    {
-        $join = new \stdClass();
-        $join->secondTableName = $secondTableName;
-        $join->firstTableFieldFullName = $firstTableFieldFullName;
-        $join->operator = $operator;
-        $join->secondTableFieldFullName = $secondTableFieldFullName;
-
-        $this->existingJoins[] = $join;
-    }
-
-    protected function calcFilterParams(Request $request, $class)
-    {
-        $filterParams = [];
-
-        /*
-         * Parent filtering.
-         */
-
-        if ($request->has(self::$PARENT_LINK_REQ_PARAM)) {
-            $filterParams[] = $this->calcParentFilterCondition($request, $class);
-        }
-
-        /*
-         * Search filtering.
-         */
-
-        if ($request->has(self::$SEARCH_REQ_PARAM) && $request->get(self::$SEARCH_REQ_PARAM) == 'true') {
-
-            $search_filters_json = $request->get('filters');
-            $search_filters = \GuzzleHttp\json_decode($search_filters_json);
-
-            $searchRoles = $search_filters->rules;
-
-            foreach ($searchRoles as $rule) {
-                $filterParams[] = $this->calcSearchFilterCondition($rule, $request, $class);
-            }
-        }
-
-        return $filterParams;
-    }
-
-    protected function calcParentFilterCondition($request, $class)
-    {
-        $filterCondition = new \stdClass();
-
-        $classObject = new $class();
-        $mainTableName = $classObject->getTable();
-
-        $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
-        //$linkInfo = $class::getLinkInfo($parentLink['childFieldName']);
-
-        $filterCondition->fieldName = $mainTableName . '.' . $parentLink['childFieldName']; //$linkInfo['fieldName'];
-        $filterCondition->operator = '=';
-        $filterCondition->value = $parentLink['id'];
-
-        return $filterCondition;
+        $item = new $this->class();
+        return $item;
     }
 
     protected function calcSearchFilterCondition($rule, $request, $class)
@@ -458,125 +306,57 @@ trait RestControllerTrait
         }
 
         $colModelExtraStr = $request->get(self::$COL_MODEL_EXTRA_REQ_PARAM);
+        $queryParams = $request->get('_query');
 
-        if ($colModelExtraStr && $colModelExtraStr != '') {
-            $parentToSearchBy = $this->calcLinkToOperateBy(
-                $colModelExtraStr,
-                $class,
-                self::$SEARCH_ON_LINK_FIELD_REQ_PARAM,
-                $fieldName);
-        }
-
-
-        $filterCondition->fieldName = $fieldName;
-        $filterCondition->operator = $operator;
-        $filterCondition->value = $searchData;
-
-        if (isset($parentToSearchBy) && $parentToSearchBy->exists) {
-            $filterCondition->isSearchOnParentField = $parentToSearchBy->exists;
-            $filterCondition->parentField = $parentToSearchBy->field;
-            $filterCondition->parentTable = $parentToSearchBy->table;
+        if ($queryParams && $queryParams['joinSelectCompositionFilterList']) {
+            foreach ($queryParams['joinSelectCompositionFilterList'] as $filterReq) {
+                $filterCondition->isOnJoin = true;
+                //$filterCondition->
+            }
+        } else {
+            $filterCondition->fieldName = $fieldName;
+            $filterCondition->operator = $operator;
+            $filterCondition->value = $searchData;
         }
 
         return $filterCondition;
     }
 
-    protected function calcOrderParams(Request $request, $class)
+    protected function calcRowsPerPage(\App\Utilities\JqGrid\Request $request)
     {
-        $orderParams = [];
-        $parentFieldToSortBy = null;
+        $calc_rows_per_page = null;
 
-        $classObject = new $class();
-        $mainTableName = $classObject->getTable();
-
-        if ($request->has(self::$SORTING_INDEX_REQ_PARAM)) {
-            $sortingIndex = $request->get(self::$SORTING_INDEX_REQ_PARAM);
-            $sortingOrder = $request->get(self::$SORTING_ORDER_REQ_PARAM);
-
-            $colModelExtraStr = $request->get(self::$COL_MODEL_EXTRA_REQ_PARAM);
-
-            if ($colModelExtraStr && $colModelExtraStr != '') {
-                $parentToSortBy = $this->calcLinkToOperateBy(
-                    $colModelExtraStr,
-                    $class,
-                    self::$SORT_ON_LINK_FIELD_REQ_PARAM,
-                    $sortingIndex);
+        if ($request->hasRowsPerPage()){
+            $calc_rows_per_page = $request->getRowsPerPage();
+            if ($calc_rows_per_page > self::$MAX_ROWS_PER_PAGE) {
+                throw new \Exception('requested rows amount exceeded max');
             }
 
-            /*$sortingIndexFragments = explode('.', $sortingIndex);
-            if (count($sortingIndexFragments) == 1) {
-                $sortingIndex =  $mainTableName . '.' . $sortingIndex;
-            }*/
-
-            $orderCondition = [
-                'index' => $sortingIndex,
-                'order' => $sortingOrder,
-            ];
-
-            if (isset($parentToSortBy) && $parentToSortBy->exists) {
-                $orderCondition['isSortOnParentField'] = $parentToSortBy->exists;
-                $orderCondition['parentField'] = $parentToSortBy->field;
-                $orderCondition['parentTable'] = $parentToSortBy->table;
-            }
-
-            $orderParams[] = $orderCondition;
-        }
-
-        return $orderParams;
-    }
-
-    protected function calcLinkToOperateBy($colModelExtraStr, $class, $operationReqParam, $fieldName)
-    {
-        $linkData = new \stdClass();
-        $linkData->exists = false;
-
-        $colModelExtra = \GuzzleHttp\json_decode($colModelExtraStr);
-
-        if (isset($colModelExtra->$fieldName)) {
-            $fieldExtra = $colModelExtra->$fieldName;
-
-            $attributeName = $operationReqParam;
-            if (isset($fieldExtra->$attributeName)) {
-                $linkData->exists = true;
-                $linkData->field = $fieldExtra->$attributeName;
-
-                $linkInfo = $class::getLinkInfo($fieldName);
-                $linkData->table = $linkInfo['linkedTable'];
-            }
-        }
-
-        return $linkData;
-    }
-
-    protected function calcRowsPerPage(Request $request)
-    {
-        $rows_per_page = self::$MAX_ROWS_PER_PAGE;
-
-        $requested_rows_per_page = $request->get('rows');
-
-        if (is_nan($requested_rows_per_page) || $requested_rows_per_page > self::$MAX_ROWS_PER_PAGE) {
-            // TODO: log error in input
         } else {
-            $rows_per_page = $requested_rows_per_page;
+            $calc_rows_per_page = null;
         }
 
-        return $rows_per_page;
+        return $calc_rows_per_page;
     }
 
     protected function calcFirstChildJoinParams($request, $class)
     {
-        $childJoinParams = [];
+        $query_params = [];
 
-        if ($request->has(self::$FIRST_CHILD_JOIN_REQ_PARAM)) {
-            $childJoinReqParamsStr = $request->get(self::$FIRST_CHILD_JOIN_REQ_PARAM);
-            $childJoinReqParams = \GuzzleHttp\json_decode($childJoinReqParamsStr);
-            foreach ($childJoinReqParams as $reqParam) {
-                $param = $this->calcChildJoinParam($reqParam, $class);
-                $childJoinParams[] = $param;
+        if ($request->has('_query')) {
+            $query = $request->get('_query');
+            if (isset($query['joinSelectChildren'])) {
+                foreach ($query['joinSelectChildren'] as $joinName) {
+                    $emptyItem = new $class();
+                    if (in_array($joinName, $emptyItem->relationshipMethods)) {
+                        $param = $this->createJoinDataFromModelLink($emptyItem->$joinName());
+                        $query_params[] = $param;
+                    }
+                }
             }
         }
 
-        return $childJoinParams;
+        return $query_params;
     }
 
     protected function calcChildJoinParam($reqParam, $class)

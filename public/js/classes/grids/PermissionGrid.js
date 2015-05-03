@@ -43,7 +43,7 @@ define([
             editable: true,
             editoptions: {}
         },
-        level: {
+        model: {
             label: lang.get('bo.permission_model'),
             name: 'model',
             editable: true,
@@ -67,6 +67,8 @@ define([
         self.columns().add(self.defaultColumnDefs.slug);
         self.columns().add(self.defaultColumnDefs.description);
         self.columns().add(self.defaultColumnDefs.model);
+
+        self.columns().selectAbsoluteAll();
     };
 
     Class.prototype = Object.create(Grid.prototype, {

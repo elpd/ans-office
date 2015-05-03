@@ -36,6 +36,7 @@ class ComposerServiceProvider extends ServiceProvider {
             'employee.cycles',
             'employee.groups',
             'employee.guides',
+            'employee.groupsMembersGuides',
             'employee.groupsMembers',
             'employee.etgar22RegistrationRequests',
         ], 'App\Http\ViewComposers\AppComposer');

@@ -11,7 +11,7 @@ define([
     Class.prototype = (function() {
       var Prototype = function Prototype() {
         this.toString = function() {
-          return this.startDate + ' - ' + this.num;
+          return this.id + ' - ' + this.startDate + ' - ' + this.num;
         };
       };
 

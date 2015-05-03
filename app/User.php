@@ -58,6 +58,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public $nullable = [];
 
+    protected $toStringFields = [
+        'email',
+        'name'
+    ];
+
     /*
      * Relationships
      */

@@ -13,4 +13,18 @@ class Permission extends \Bican\Roles\Models\Permission
 
     public $nullable = [];
     protected $rules = [];
+
+    protected $toStringFields = [
+        'name',
+        'slug'
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'users',
+        'roles',
+    ];
 }

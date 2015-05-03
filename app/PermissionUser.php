@@ -45,6 +45,20 @@ class PermissionUser extends Model
         ]
     ];
 
+    protected $toStringFields = [
+        'permission_id',
+        'user_id'
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'user',
+        'permission',
+    ];
+
     public function user() {
         return $this->belongsTo('App\User');
     }

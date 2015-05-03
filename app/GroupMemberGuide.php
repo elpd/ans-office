@@ -47,6 +47,20 @@ class GroupMemberGuide extends Model
         ],
     ];
 
+    protected $toStringFields = [
+        'groups_member_id',
+        'user_id'
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'groupMember',
+        'user',
+    ];
+
     public function groupMember() {
         return $this->belongsTo('App\GroupsMember', 'groups_member_id');
     }

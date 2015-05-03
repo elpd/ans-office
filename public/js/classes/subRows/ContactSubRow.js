@@ -38,7 +38,7 @@ define([
                             mainId: self.subRowId + '_etgar22',
                             Grid: require('classes/grids/Etgar22Grid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.contact_etgar22'),
+                            caption: _.capitalize(lang.get('bo.contact_etgar22')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -54,7 +54,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('contact_id');
+                                grid.columns().makeHidden('contact_id');
                             }
                         });
 
@@ -62,7 +62,7 @@ define([
                             mainId: self.subRowId + '_group_member',
                             Grid: require('classes/grids/GroupMemberGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.contact_group-members'),
+                            caption: _.capitalize(lang.get('bo.contact_group-members')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -78,7 +78,7 @@ define([
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().hide('contact_id');
+                                grid.columns().makeHidden('contact_id');
 
                             },
 

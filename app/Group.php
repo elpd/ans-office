@@ -50,6 +50,19 @@ class Group extends Model
         ],
     ];
 
+    protected $toStringFields = [
+        'name',
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'cycle',
+        'status',
+    ];
+
     public function cycle() {
       return $this->belongsTo('App\Cycle');
     }

@@ -16,5 +16,18 @@ class GroupStatus extends Model
             'status',
     );
     
-    protected $rules = array();    
+    protected $rules = array();
+
+    protected $toStringFields = [
+        'id',
+        'status',
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+
+    ];
 }
