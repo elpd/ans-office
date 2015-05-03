@@ -19,6 +19,7 @@ class GroupStatus extends Model
     protected $rules = array();
 
     protected $toStringFields = [
+        'id',
         'status',
     ];
 

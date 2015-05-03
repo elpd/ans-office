@@ -12,12 +12,7 @@ class GuideController extends ApiController {
 
 	protected function buildInitialQuery(Builder $query) {
 		$query->whoAreGuides();
-
-		return $query;
 	}
 
-	protected function setAdditionalQueryFilters(Builder $query){
-		//return $query->whoAreGuides();
-		return $query;
-	}
+
 }

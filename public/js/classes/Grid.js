@@ -580,11 +580,19 @@ define([
 
         function addSingular(childDef) {
             var customDef = _.cloneDeep(childDef);
+
             customDef.columns.forEach(function (columnDef) {
+                // Only one column in the all grid can be a key.
+                columnDef.key = false;
+
                 // Add child table name to column field name.
                 columnDef.name = childDef.queryJoinTable +
                     '.' +
                     columnDef.name;
+
+                // For now, no edit is allowed on children. Until code is available
+                // in controller infrastructure.
+                columnDef.editable = false;
             });
             self._children[childDef.name] = customDef;
         }
@@ -869,7 +877,7 @@ define([
             if (jqGridFilter.rules.length == 1) {
                 filter = calcJqGridSimpleFilter(self, jqGridFilter.rules[0]);
             } else {
-                filter = calcJqGridFilterToQueryFilter(jqGridFilter.groups[0]);
+                filter = calcJqGridFilterToQueryFilter(self, jqGridFilter.groups[0]);
             }
 
             return filter;
@@ -885,7 +893,7 @@ define([
         });
 
         _.forEach(jqGridFilter.groups, function (jqGridGroupFilter) {
-            var childFilter = calcJqGridFilterToQueryFilter(jqGridGroupFilter);
+            var childFilter = calcJqGridFilterToQueryFilter(self, jqGridGroupFilter);
             filter.nodes.push(childFilter);
         });
 
@@ -1018,7 +1026,10 @@ define([
             editSettings,
             addSettings,
             deleteSettings,
-            {multipleSearch : true} // enable the advanced searching
+            {
+                multipleSearch : true,
+                multipleGroup:true
+            } // enable the advanced searching
         );
 
         addFullScreenButtonsToNavGrid(self, $grid);

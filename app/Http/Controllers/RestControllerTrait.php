@@ -232,7 +232,7 @@ trait RestControllerTrait
         $query->addSelectAllMainFields($query);
 
         if (method_exists($this, 'buildInitialQuery')) {
-            $query = $this->buildInitialQuery($query->getOriginal());
+            $this->buildInitialQuery($query->getOriginal());
         }
 
         if (isset($queryParams['joinSelectChildren'])) {

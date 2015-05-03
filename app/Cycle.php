@@ -24,6 +24,20 @@ class Cycle extends Model
 
     public $nullable = [];
 
+    protected $toStringFields = [
+        'id',
+        'startDate',
+        'num',
+    ];
+
+    /*
+    * Relationships
+    */
+
+    public $relationshipMethods = [
+        'groups'
+    ];
+
     public function groups()
     {
       return $this->hasMany('App\Group');

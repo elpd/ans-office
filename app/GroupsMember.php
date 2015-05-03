@@ -61,6 +61,12 @@ class GroupsMember extends Model
         ],
     ];
 
+    protected $toStringFields = [
+        'id',
+        'group_id',
+        'contact_id',
+    ];
+
     /*
      * Relationships
      */

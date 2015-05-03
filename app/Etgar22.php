@@ -36,9 +36,19 @@ class Etgar22 extends Model
         ],
     ];
 
+    protected $toStringFields = [
+        'contact_id',
+        'parent_name',
+        'parent_email',
+    ];
+
     /*
     * Relationships
     */
+
+    public $relationshipMethods = [
+        'contact'
+    ];
 
     public function contact()
     {

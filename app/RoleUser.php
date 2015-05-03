@@ -44,6 +44,21 @@ class RoleUser extends Model
         ]
     ];
 
+    protected $toStringFields = [
+        'role_id',
+        'user_id'
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'user',
+        'role',
+    ];
+
+
     public function user() {
         return $this->belongsTo('App\User');
     }

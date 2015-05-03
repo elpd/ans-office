@@ -47,6 +47,11 @@ class GroupMemberGuide extends Model
         ],
     ];
 
+    protected $toStringFields = [
+        'groups_member_id',
+        'user_id'
+    ];
+
     /*
      * Relationships
      */

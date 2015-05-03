@@ -45,6 +45,20 @@ class PermissionRole extends Model
         ]
     ];
 
+    protected $toStringFields = [
+        'permission_id',
+        'role_id'
+    ];
+
+    /*
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'role',
+        'permission',
+    ];
+
     public function role() {
         return $this->belongsTo('App\Role');
     }

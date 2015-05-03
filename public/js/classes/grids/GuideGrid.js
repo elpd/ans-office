@@ -5,16 +5,15 @@ define([
     'classes/subRows/GuideSubRow',
     'classes/bi/User',
     'classes/bi/Role',
-    'services/language',
-    'services/userSettings'
+    'services/language'
 ], function (_,
              utilities,
              Grid,
              GuideSubRow,
              User,
              Role,
-             lang,
-             userSettingService) {
+             lang
+             ) {
 
     var CONTROLLER_URL = '/api/guide';
 
@@ -32,7 +31,7 @@ define([
             }
         },
         user_id: {
-            label: lang.get('bo.role-user_user-id'),
+            label: _.capitalize(lang.get('bo.role-user_user-id')),
             name: 'user_id',
             width: 200,
             editable: true,
@@ -42,10 +41,15 @@ define([
                 value: utilities.generateGetItems('/api/user', User)(),
                 dataUrl: '/api/user',
                 buildSelect: utilities.generateBuildSelect(User)
+            },
+            extraInfo: {
+                linkMethod: 'user',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         },
         role_id: {
-            label: lang.get('bo.role-user_role-id'),
+            label: _.capitalize(lang.get('bo.role-user_role-id')),
             name: 'role_id',
             width: 200,
             editable: true,
@@ -55,6 +59,11 @@ define([
                 value: utilities.generateGetItems('/api/role', Role)(),
                 dataUrl: '/api/role',
                 buildSelect: utilities.generateBuildSelect(Role)
+            },
+            extraInfo: {
+                linkMethod: 'role',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         }
     };

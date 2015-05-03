@@ -178,7 +178,7 @@ class Builder
         $selectedFieldDesc = $this->getSelectedField($fullFieldSortName);
         $order = $this->calcOrder($sortParam['order']);
 
-        if (isset($sortParam['isOnForeign']) && $sortParam['isOnForeign'] == true) {
+        if (isset($sortParam['isOnForeign']) && $sortParam['isOnForeign'] == 'true') {
             $linkedMethod = $sortParam['linkMethod'];
             $parentModelClass = $this->repository->getModelForTableName(
                 $selectedFieldDesc->tableName);
@@ -245,7 +245,7 @@ class Builder
             $this->fixFieldFullName($filterParam['fieldName'])
         );
 
-        if ($filterParam['isOnForeign'] == true) {
+        if ($filterParam['isOnForeign'] == 'true') {
             $connectionDetails = $this->getConnectionDetailsForField(
                 $filterParam['fieldName'],
                 $filterParam['linkMethod']
@@ -262,14 +262,18 @@ class Builder
                 $identityClause = $connectionDetails->second_table_field_name . ' = ' .
                     $connectionDetails->first_table_field_name;
 
-                $bindingName = $this->getNewBindingName();
+                //$bindingName = $this->getNewBindingName();
+                $targetValue = \DB::connection()->getPdo()->quote(
+                    $targetValue
+                );
                 $searchClause = $sqlToStringRepresentation . ' ' .
-                    $whereOperation . ' ' . ':' . $bindingName;
+                    $whereOperation . ' ' . $targetValue;
 
                 $subQuery->select(\DB::raw(1))
                     ->from($connectionDetails->second_table_name)
                     ->whereRaw($identityClause)
-                    ->whereRaw($searchClause, [$bindingName => $targetValue]);
+                    //->whereRaw($searchClause, [$bindingName => $targetValue]);
+                    ->whereRaw($searchClause);
 
             }, $booleanOp);
 
@@ -317,7 +321,7 @@ class Builder
                         $groupOperation);
                 }
             }
-        }, $booleanOp);
+        }, null, null, $booleanOp);
     }
 
     protected function fixGroupOperation($opStr)

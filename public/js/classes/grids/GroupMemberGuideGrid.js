@@ -45,6 +45,11 @@ define([
                 value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
                 dataUrl: '/api/groups-members',
                 buildSelect: utilities.generateBuildSelect(GroupsMembers)
+            },
+            extraInfo: {
+                linkMethod: 'groupMember',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         },
 
