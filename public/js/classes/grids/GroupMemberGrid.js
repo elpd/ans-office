@@ -45,6 +45,11 @@ define([
                 value: utilities.generateGetItems('/api/group', Group)(),
                 dataUrl: '/api/group',
                 buildSelect: utilities.generateBuildSelect(Group)
+            },
+            extraInfo: {
+                linkMethod: 'group',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         },
         contact_id: {
@@ -57,6 +62,11 @@ define([
                 value: utilities.generateGetItems('/api/contact', Contact)(),
                 dataUrl: '/api/contact',
                 buildSelect: utilities.generateBuildSelect(Contact)
+            },
+            extraInfo: {
+                linkMethod: 'contact',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         },
         status_id: {

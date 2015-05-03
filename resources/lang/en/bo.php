@@ -156,6 +156,7 @@ return [
     // group-member-guide
 
     'group-member-guide' => 'group member guide association',
-    'group-member-guide_group-member' => 'group member',
+    'group-member-guides' => 'group member guide association',
+    'group-member-guide_group-member-id' => 'group member',
     'group-member-guide_user-id' => 'guide',
 ];

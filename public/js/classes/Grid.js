@@ -528,9 +528,9 @@ define([
                     selectMainSingular(selectionParam);
                 }
             },
-            selectAbsoluteAll: function() {
+            selectAbsoluteAll: function () {
                 self._selectedMainColumns = [];
-                _.forEach(self.colModel, function(colDef, colKey){
+                _.forEach(self.colModel, function (colDef, colKey) {
                     selectMainSingular(colKey);
                 });
             }
@@ -672,6 +672,7 @@ define([
             params.direction = self.direction;
         }
         params.autowidth = true;
+        params.multiSort = true;
 
         if (self.hasSubGrid) {
             params.subGrid = self.hasSubGrid;
@@ -765,20 +766,178 @@ define([
 
         params.serializeGridData = function (postData) {
             var resultData = postData;
-            
-            resultData._query = {};
-            if (self._selectedChildrenGroups.length > 0) {
-                resultData._query.joinSelectChildren = _.map(self._selectedChildrenGroups,
-                    function(selection){
-                        var childrenGroupDef = self._children[selection];
-                        return childrenGroupDef.name;
-                    });
-            }
+
+            resultData._query = {
+                _filler: "filler"
+            };
+
+            calcInnerJoinSelectQueryOperation(self, postData, resultData._query);
+            calcFilterQueryOperation(self, postData, resultData._query);
+            calcSortQueryOperation(self, postData, resultData._query);
 
             return resultData;
         };
 
         return params;
+    }
+
+    function calcSortQueryOperation(self, postData, query) {
+        var jqGridSortIndexes = postData.sidx;
+        var jqGridSortOrder = postData.sord;
+
+        if (jqGridSortIndexes == '') {
+            return;
+        }
+
+        var tempSortIndexAndOrderPairs = jqGridSortIndexes.split(',');
+        var sortIndexAndOrderPairs = _.map(tempSortIndexAndOrderPairs, function (pairStr) {
+            var pairArray = _.words(pairStr, /[\w.]+/g);
+            var pair = {};
+            pair.index = pairArray[0];
+            if (pairArray.length > 1) {
+                pair.order = pairArray[1];
+            }
+
+            var fieldDef = getColModelDef(self, pair.index);
+            if (fieldDef.extraInfo && fieldDef.extraInfo.sortByForeignLinkToString) {
+                pair.isOnForeign = true;
+                pair.fieldModel = fieldDef.extraInfo.fieldModel;
+                pair.linkMethod = fieldDef.extraInfo.linkMethod;
+            }
+            return pair;
+        });
+
+        var last = _.last(sortIndexAndOrderPairs);
+        if (last.order) {
+            throw new Error('malformed jqgrid sort parameter');
+        }
+        last.order = jqGridSortOrder;
+
+        query.sortParameters = sortIndexAndOrderPairs;
+    }
+
+    function calcInnerJoinSelectQueryOperation(self, postData, query) {
+        if (self._selectedChildrenGroups.length > 0) {
+            query.joinSelectChildren = _.map(self._selectedChildrenGroups,
+                function (selection) {
+                    var childrenGroupDef = self._children[selection];
+                    return childrenGroupDef.name;
+                });
+        }
+    }
+
+    function calcFilterQueryOperation(self, postData, query) {
+        calcParentLinkFilter(self, postData, query);
+        calcSearchFilters(self, postData, query);
+    }
+
+    function calcParentLinkFilter(self, postData, query) {
+        if (self.parentLink) {
+            query.parentLinkFilter = {
+                parent_id: self.parentLink.id,
+                fieldToFilterBy: self.parentLink.childFieldName
+            }
+        }
+    }
+
+    function calcSearchFilters(self, postData, query) {
+        if (postData.filters && postData._search) {
+            var parseJqGridFilters = JSON.parse(postData.filters);
+            query.filters = calcJqGridFilterToQueryFilter(self, parseJqGridFilters);
+        }
+    }
+
+    function calcJqGridFilterToQueryFilter(self, jqGridFilter) {
+        var filter = {};
+
+        var rulesLength = jqGridFilter.rules ? jqGridFilter.rules.length : 0;
+        var groupsLength = jqGridFilter.groups ? jqGridFilter.groups.length : 0;
+
+        if (rulesLength == 0 && groupsLength == 0) {
+            filter.isGroup = false;
+            filter.operation = 'no_operation';
+
+            return filter;
+        }
+
+        if (
+            (rulesLength == 1 && groupsLength == 0) ||
+            (rulesLength == 0 && groupsLength == 1)
+        ) {
+
+            if (jqGridFilter.rules.length == 1) {
+                filter = calcJqGridSimpleFilter(self, jqGridFilter.rules[0]);
+            } else {
+                filter = calcJqGridFilterToQueryFilter(jqGridFilter.groups[0]);
+            }
+
+            return filter;
+        }
+
+        filter.isGroup = true;
+        filter.operation = jqGridFilter.groupOp;
+        filter.nodes = [];
+
+        _.forEach(jqGridFilter.rules, function (jqGridSimpleFilter) {
+            var childFilter = calcJqGridSimpleFilter(self, jqGridSimpleFilter);
+            filter.nodes.push(childFilter);
+        });
+
+        _.forEach(jqGridFilter.groups, function (jqGridGroupFilter) {
+            var childFilter = calcJqGridFilterToQueryFilter(jqGridGroupFilter);
+            filter.nodes.push(childFilter);
+        });
+
+        return filter;
+    }
+
+    function calcJqGridSimpleFilter(self, jqGridSimpleFilter) {
+        var filter = {};
+
+        filter.isGroup = false;
+        filter.operation = jqGridSimpleFilter.op;
+        filter.targetValue = jqGridSimpleFilter.data;
+        filter.fieldName = jqGridSimpleFilter.field;
+
+        var fieldDef = getColModelDef(self, jqGridSimpleFilter.field);
+        if (fieldDef.extraInfo && fieldDef.extraInfo.sortByForeignLinkToString) {
+            filter.isOnForeign = true;
+            filter.fieldModel = fieldDef.extraInfo.fieldModel;
+            filter.linkMethod = fieldDef.extraInfo.linkMethod;
+        }
+
+        return filter;
+    }
+
+    function isFieldDefinedAsSearchByForeign(self, fieldName) {
+        var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');
+        var result = _.find(currentColModel, function (columnDef) {
+            if (columnDef.name == fieldName && columnDef.extraSearchOptions) {
+                if (columnDef.extraSearchOptions.searchByForeignLinkToString) {
+                    return true;
+                }
+            }
+        });
+
+        if (result != null) {
+            return true
+        }
+
+        return false;
+    }
+
+    function getColModelDef(self, fieldName) {
+        var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');
+        var result = _.find(currentColModel, function (columnDef) {
+            if (columnDef.name == fieldName) {
+                    return true;
+            }
+        });
+
+        if (result == null) {
+            throw new Error('unintended code path');
+        }
+        return result;
     }
 
     function calcGridColModel(self) {
@@ -820,7 +979,7 @@ define([
     function calcGroupsHeaders(self) {
         var groupsHeadersDefs = [];
 
-        self._selectedChildrenGroups.forEach(function(groupName){
+        self._selectedChildrenGroups.forEach(function (groupName) {
             var headerDef = {};
 
             var childGroupDef = self._children[groupName];
@@ -975,9 +1134,9 @@ define([
             $dialogHeader, $dialogBody, $dialogFooter
         )
 
-        $saveButton.click(function(e){
+        $saveButton.click(function (e) {
             var selectedChildrenNames = []
-            $form.find('input.childSelection').each(function(index, element){
+            $form.find('input.childSelection').each(function (index, element) {
                 if ($(this).prop('checked')) {
                     selectedChildrenNames.push($(this).val());
                 }

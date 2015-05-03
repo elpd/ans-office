@@ -50,6 +50,10 @@
                                     <a href="/employee/guides" id="guides_section_link">
                                         @lang('main.guides_list_label')
                                     </a></li>
+                                 <li class=" @if(isset($selected_view) && $selected_view == 'groups_members_guides') active @endif">
+                                    <a href="/employee/groups-members-guides" id="guides_section_link">
+                                        @lang('main.groups-members-guides-list-label')
+                                    </a></li>
                                 <li class=" @if(isset($selected_view) && $selected_view == 'groups_members') active @endif">
                                     <a href="/employee/groups-members" id="groups_members_section_link">
                                         @lang('main.groups_members_list_label')

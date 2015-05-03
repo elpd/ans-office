@@ -53,6 +53,11 @@ class Contact extends Model
         "blacklisted" => array(),
     );
 
+    protected $toStringFields = [
+        'email',
+        'first_name'
+    ];
+
     /*
      * Relationships
      */

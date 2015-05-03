@@ -9,9 +9,4 @@ class ContactController extends ApiController {
 	protected $class = 'App\Contact';
 
 	use RestControllerTrait;
-
-	protected function buildInitialQuery(Builder $query) {
-
-		return $query;
-	}
 }

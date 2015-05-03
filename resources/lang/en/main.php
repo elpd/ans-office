@@ -26,6 +26,7 @@ return [
     'cycles_list_label' => 'Cycles',
     'groups_list_label' => 'Groups',
     'guides_list_label' => 'Guides',
+    'groups-members-guides-list-label' => 'Guides For Members',
     'groups_members_list_label' => 'Group Members',
     'etgar22_registration_requests_list_label' => 'Etgar 22 Registration Requests',
 

@@ -36,7 +36,7 @@ define([
         },
 
         groups_member_id: {
-            label: _.capitalize(lang.get('bo.group-member-guide_group_member')),
+            label: _.capitalize(lang.get('bo.group-member-guide_group-member-id')),
             name: 'groups_member_id',
             editable: true,
             edittype: 'select',
@@ -49,7 +49,7 @@ define([
         },
 
         user_id: {
-            label: _.capitalize(lang.get('bo.group-member-guide_user')),
+            label: _.capitalize(lang.get('bo.group-member-guide_user-id')),
             name: 'user_id',
             editable: true,
             edittype: 'select',
@@ -58,6 +58,11 @@ define([
                 value: utilities.generateGetItems('/api/user', User)(),
                 dataUrl: '/api/user',
                 buildSelect: utilities.generateBuildSelect(User)
+            },
+            extraInfo: {
+                linkMethod: 'user',
+                searchByForeignLinkToString: true,
+                sortByForeignLinkToString: true
             }
         }
     };
@@ -70,7 +75,7 @@ define([
         params.controllerUrl = CONTROLLER_URL;
         // todo: inharitance of attribute. array merge.
         if (!params.caption) {
-            params.caption = lang.get('bo.group-member-guides');
+            params.caption = _.capitalize(lang.get('bo.group-member-guides'));
         }
         params.SubRow = GroupMemberGuideSubRow;
         params.hasSubGrid = true;
