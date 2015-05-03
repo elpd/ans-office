@@ -235,6 +235,19 @@ trait RestControllerTrait
             $this->buildInitialQuery($query->getOriginal());
         }
 
+        if (isset($queryParams['parentLinkFilter'])) {
+            $parentParam = $queryParams['parentLinkFilter'];
+            $filterParam = [
+                'isGroup' => false,
+                'operation' => 'eq',
+                'targetValue' => $parentParam['parent_id'],
+                'fieldName' => $parentParam['fieldToFilterBy'],
+                'isOnForeign' => false
+            ];
+            
+            $query->filter($filterParam);
+        }
+
         if (isset($queryParams['joinSelectChildren'])) {
             $list = $queryParams['joinSelectChildren'];
             $query->joinSelectChildren($list);
@@ -326,7 +339,7 @@ trait RestControllerTrait
     {
         $calc_rows_per_page = null;
 
-        if ($request->hasRowsPerPage()){
+        if ($request->hasRowsPerPage()) {
             $calc_rows_per_page = $request->getRowsPerPage();
             if ($calc_rows_per_page > self::$MAX_ROWS_PER_PAGE) {
                 throw new \Exception('requested rows amount exceeded max');
