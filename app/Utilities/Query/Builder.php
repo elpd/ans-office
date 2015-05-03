@@ -237,10 +237,13 @@ class Builder
     protected function filterBasic($filterParam, $query, $booleanOp)
     {
         $whereOperation = $this->calcWhereOperation($filterParam['operation']);
+        $targetValue = $this->calcWhereTargetValueByOp(
+            $filterParam['targetValue'],
+            $filterParam['operation']);
+
         $fieldDesc = $this->getSelectedField(
             $this->fixFieldFullName($filterParam['fieldName'])
         );
-        $targetValue = $filterParam['targetValue'];
 
         if ($filterParam['isOnForeign'] == true) {
             $connectionDetails = $this->getConnectionDetailsForField(
@@ -248,9 +251,10 @@ class Builder
                 $filterParam['linkMethod']
             );
 
-            $query->whereExists(function($subQuery) use($connectionDetails,
-                $whereOperation, $targetValue)
-            {
+            $query->whereExists(function ($subQuery) use (
+                $connectionDetails,
+                $whereOperation, $targetValue
+            ) {
                 $sqlToStringRepresentation =
                     $connectionDetails->second_table_model->
                     calcSelectFieldsStringRepresentation();
@@ -260,8 +264,7 @@ class Builder
 
                 $bindingName = $this->getNewBindingName();
                 $searchClause = $sqlToStringRepresentation . ' ' .
-                    $whereOperation . ' ' . ':' . $bindingName
-                ;
+                    $whereOperation . ' ' . ':' . $bindingName;
 
                 $subQuery->select(\DB::raw(1))
                     ->from($connectionDetails->second_table_name)
@@ -278,7 +281,8 @@ class Builder
         }
     }
 
-    protected function getNewBindingName() {
+    protected function getNewBindingName()
+    {
         $numerator = $this->binding_numerator++;
         $name = 'binding_' . $numerator;
 
@@ -337,6 +341,21 @@ class Builder
             case 'cn' :
                 $operator = 'LIKE';
                 break;
+            case 'nc' :
+                $operator = 'NOT LIKE';
+                break;
+            case 'bw':
+                $operator = 'LIKE';
+                break;
+            case 'bn':
+                $operator = 'NOT LIKE';
+                break;
+            case 'ew':
+                $operator = 'LIKE';
+                break;
+            case 'en':
+                $operator = 'NOT LIKE';
+                break;
             case 'eq':
                 $operator = '=';
                 break;
@@ -360,5 +379,33 @@ class Builder
         }
 
         return $operator;
+    }
+
+    protected function calcWhereTargetValueByOp($targetValueRaw,
+                                                $opStr)
+    {
+        switch ($opStr) {
+            // cn: contains
+            case 'cn' :
+                $targetValue = '%' . $targetValueRaw . '%';
+                break;
+            case 'bw' :
+                $targetValue = $targetValueRaw . '%';
+                break;
+            case 'bn' :
+                $targetValue = $targetValueRaw . '%';
+                break;
+            case 'ew' :
+                $targetValue = '%' . $targetValueRaw;
+                break;
+            case 'en' :
+                $targetValue = '%' . $targetValueRaw;
+                break;
+
+            default:
+                $targetValue = $targetValueRaw;
+        }
+
+        return $targetValue;
     }
 }

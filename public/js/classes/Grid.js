@@ -25,6 +25,7 @@ define([
     var JQGRID_FN_EDIT_ROW = 'editRow';
     var JQGRID_FN_SET_ROW_DATA = 'setRowData';
     var JQGRID_FN_SET_GROUP_HEADERS = 'setGroupHeaders';
+    var JQGRID_FN_SEARCH_GRID = 'searchGrid';
 
     var GRID_LOADING_COMPLETE_EVENT_ID = 'grid_events:loading_complete';
     var GRID_LOADING_STARTED_EVENT_ID = 'grid_events:loading_started';
@@ -1016,7 +1017,8 @@ define([
             toolbarSettings,
             editSettings,
             addSettings,
-            deleteSettings
+            deleteSettings,
+            {multipleSearch : true} // enable the advanced searching
         );
 
         addFullScreenButtonsToNavGrid(self, $grid);
