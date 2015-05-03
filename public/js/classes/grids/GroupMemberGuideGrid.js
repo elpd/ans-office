@@ -20,57 +20,9 @@ define([
 
     var CONTROLLER_URL = '/api/group-member-guide';
 
-    var defaultColumns = {
-        id: {
-            label: _.capitalize(lang.get('bo.id')),
-            name: 'id',
-            width: 50,
-            key: true,
-            searchoptions: {
-                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-            }
-            ,
-            searchrules: {
-                integer: true
-            }
-        },
+    var defaultColumns = null;
 
-        groups_member_id: {
-            label: _.capitalize(lang.get('bo.group-member-guide_group-member-id')),
-            name: 'groups_member_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
-                dataUrl: '/api/groups-members',
-                buildSelect: utilities.generateBuildSelect(GroupsMembers)
-            },
-            extraInfo: {
-                linkMethod: 'groupMember',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        },
 
-        user_id: {
-            label: _.capitalize(lang.get('bo.group-member-guide_user-id')),
-            name: 'user_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/user', User)(),
-                dataUrl: '/api/user',
-                buildSelect: utilities.generateBuildSelect(User)
-            },
-            extraInfo: {
-                linkMethod: 'user',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        }
-    };
 
     var Class = function (params) {
         var self = this;
@@ -104,6 +56,10 @@ define([
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnDefs: {
             get: function () {
+                var self = this;
+                if (defaultColumns == null) {
+                    defaultColumns = generateDefaultColumns();
+                }
                 return _.cloneDeep(defaultColumns);
             }
         }
@@ -115,6 +71,62 @@ define([
         processedParams.colModel = colModel;
 
         return processedParams;
+    }
+
+    function generateDefaultColumns() {
+        var columnsDefs = {
+            id: {
+                label: _.capitalize(lang.get('bo.id')),
+                name: 'id',
+                width: 50,
+                key: true,
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                }
+                ,
+                searchrules: {
+                    integer: true
+                }
+            },
+
+            groups_member_id: {
+                label: _.capitalize(lang.get('bo.group-member-guide_group-member-id')),
+                name: 'groups_member_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
+                    dataUrl: '/api/groups-members',
+                    buildSelect: utilities.generateBuildSelect(GroupsMembers)
+                },
+                extraInfo: {
+                    linkMethod: 'groupMember',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            },
+
+            user_id: {
+                label: _.capitalize(lang.get('bo.group-member-guide_user-id')),
+                name: 'user_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/user', User)(),
+                    dataUrl: '/api/user',
+                    buildSelect: utilities.generateBuildSelect(User)
+                },
+                extraInfo: {
+                    linkMethod: 'user',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            }
+        };
+
+        return columnsDefs;
     }
 
     return Class;

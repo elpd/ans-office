@@ -22,72 +22,7 @@ define([
 
     var CONTROLLER_URL = '/api/groups-members';
 
-    var defaultColumns = {
-        id: {
-            label: _.capitalize(lang.get('bo.id')),
-            name: 'id',
-            width: 50,
-            key: true,
-            searchoptions: {
-                sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-            },
-            searchrules: {
-                integer: true
-            }
-        },
-        group_id: {
-            label: _.capitalize(lang.get('bo.group-member_group-id')),
-            name: 'group_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/group', Group)(),
-                dataUrl: '/api/group',
-                buildSelect: utilities.generateBuildSelect(Group)
-            },
-            extraInfo: {
-                linkMethod: 'group',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        },
-        contact_id: {
-            label: _.capitalize(lang.get('bo.group-member_contact-id')),
-            name: 'contact_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/contact', Contact)(),
-                dataUrl: '/api/contact',
-                buildSelect: utilities.generateBuildSelect(Contact)
-            },
-            extraInfo: {
-                linkMethod: 'contact',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        },
-        status_id: {
-            label: _.capitalize(lang.get('bo.group-member_status-id')),
-            name: 'status_id',
-            editable: true,
-            edittype: 'select',
-            formatter: 'select',
-            editoptions: {
-                value: utilities.generateGetItems('/api/group-members-status',
-                    GroupMembersStatus)(),
-                dataUrl: '/api/group-members-status',
-                buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
-            },
-            extraInfo: {
-                linkMethod: 'status',
-                searchByForeignLinkToString: true,
-                sortByForeignLinkToString: true
-            }
-        }
-    };
+    var defaultColumns = null;
 
     var Class = function (params) {
         var self = this;
@@ -127,6 +62,10 @@ define([
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnDefs: {
             get: function () {
+                var self = this;
+                if (defaultColumns == null) {
+                    defaultColumns = generateDefaultColumns();
+                }
                 return _.cloneDeep(defaultColumns);
             }
         },
@@ -136,6 +75,77 @@ define([
             }
         }
     });
+
+    function generateDefaultColumns() {
+        var columnsDefs = {
+            id: {
+                label: _.capitalize(lang.get('bo.id')),
+                name: 'id',
+                width: 50,
+                key: true,
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                },
+                searchrules: {
+                    integer: true
+                }
+            },
+            group_id: {
+                label: _.capitalize(lang.get('bo.group-member_group-id')),
+                name: 'group_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/group', Group)(),
+                    dataUrl: '/api/group',
+                    buildSelect: utilities.generateBuildSelect(Group)
+                },
+                extraInfo: {
+                    linkMethod: 'group',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            },
+            contact_id: {
+                label: _.capitalize(lang.get('bo.group-member_contact-id')),
+                name: 'contact_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/contact', Contact)(),
+                    dataUrl: '/api/contact',
+                    buildSelect: utilities.generateBuildSelect(Contact)
+                },
+                extraInfo: {
+                    linkMethod: 'contact',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            },
+            status_id: {
+                label: _.capitalize(lang.get('bo.group-member_status-id')),
+                name: 'status_id',
+                editable: true,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/group-members-status',
+                        GroupMembersStatus)(),
+                    dataUrl: '/api/group-members-status',
+                    buildSelect: utilities.generateBuildSelect(GroupMembersStatus)
+                },
+                extraInfo: {
+                    linkMethod: 'status',
+                    searchByForeignLinkToString: true,
+                    sortByForeignLinkToString: true
+                }
+            }
+        };
+
+        return columnsDefs;
+    }
 
     return Class;
 });
