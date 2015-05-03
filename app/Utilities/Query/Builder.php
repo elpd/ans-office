@@ -32,11 +32,21 @@ class Builder
             $fieldDesc = new FieldSelectDescription($this->getTable(), $fieldName);
             $this->addSelect($fieldDesc);
         }
+
+        $this->addSelectDateFields();
     }
 
     public function addSelectIdField()
     {
         $fieldSelectDesc = new FieldSelectDescription($this->getTable(), 'id');
+        $this->addSelect($fieldSelectDesc);
+    }
+
+    public function addSelectDateFields() {
+        $fieldSelectDesc = new FieldSelectDescription($this->getTable(), 'created_at');
+        $this->addSelect($fieldSelectDesc);
+
+        $fieldSelectDesc = new FieldSelectDescription($this->getTable(), 'updated_at');
         $this->addSelect($fieldSelectDesc);
     }
 

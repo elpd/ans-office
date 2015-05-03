@@ -5,9 +5,8 @@ define([
         'classes/SubRow',
         'classes/GridTab',
         'classes/ChildTabsPanel',
-        'classes/grids/Etgar22Grid',
-        'classes/grids/GroupMemberGrid',
-        'classes/grids/ContactNoteGrid',
+        'classes/grids/ContactGrid',
+        'classes/grids/UserGrid',
         'services/language',
         'services/userSettings'
     ],
@@ -17,9 +16,8 @@ define([
               SubRow,
               GridTab,
               ChildTabsPanel,
-              Etgar22Grid,
-              GroupMemberGrid,
-              ContactNoteGrid,
+              ContactGrid,
+              UserGrid,
               lang,
               userSettingsService) {
 
@@ -33,14 +31,13 @@ define([
                     var self = this;
 
                     userSettingsService.ready().then(function () {
-
                         var rowData = self.getRowData();
 
-                        var etgar22Tab = new GridTab({
-                            mainId: self.subRowId + '_etgar22',
-                            Grid: require('classes/grids/Etgar22Grid'),
+                        var contactTab = new GridTab({
+                            mainId: self.subRowId + '_contact',
+                            Grid: require('classes/grids/ContactGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.contact_etgar22')),
+                            caption: lang.get('bo.contact-note_contact_id'),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -50,21 +47,20 @@ define([
                                 };
                                 gridParams.hasParent = true;
                                 gridParams.parentLink = {
-                                    id: rowData.id,
-                                    childFieldName: 'contact_id'
+                                    id: rowData.contact_id,
+                                    childFieldName: 'id'
                                 };
                             },
 
                             beforeGridExecution: function (grid) {
-                                grid.columns().makeHidden('contact_id');
                             }
                         });
 
-                        var groupMembersTab = new GridTab({
-                            mainId: self.subRowId + '_group_member',
-                            Grid: require('classes/grids/GroupMemberGrid'),
+                        var userTab = new GridTab({
+                            mainId: self.subRowId + '_user',
+                            Grid: UserGrid,
                             direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.contact_group-members')),
+                            caption: _.capitalize(lang.get('bo.contact-note_user-id')),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();
@@ -74,57 +70,20 @@ define([
                                 };
                                 gridParams.hasParent = true;
                                 gridParams.parentLink = {
-                                    id: rowData.id,
-                                    childFieldName: 'contact_id'
+                                    id: rowData.user_id,
+                                    childFieldName: 'id'
                                 };
                             },
-
                             beforeGridExecution: function (grid) {
-                                grid.columns().makeHidden('contact_id');
-
-                            },
-
-                            afterGridExecution: function (grid) {
 
                             }
-
-                        });
-
-                        var contactNotesTab = new GridTab({
-                            mainId: self.subRowId + '_notes',
-                            Grid: require('classes/grids/ContactNoteGrid'),
-                            direction: userSettingsService.getLanguage().direction,
-                            caption: _.capitalize(lang.get('bo.contact-notes')),
-                            beforeGridCreation: function (gridParams) {
-                                gridParams.calcDesiredHeightInContainer = function () {
-                                    return self.calcGridDesiredHeight();
-                                };
-                                gridParams.calcDesiredWidthInContainer = function () {
-                                    return self.calcGridDesiredWidth();
-                                };
-                                gridParams.hasParent = true;
-                                gridParams.parentLink = {
-                                    id: rowData.id,
-                                    childFieldName: 'contact_id'
-                                };
-                            },
-
-                            beforeGridExecution: function (grid) {
-                                grid.columns().makeHidden('contact_id');
-                            },
-
-                            afterGridExecution: function (grid) {
-
-                            }
-
                         });
 
                         var childTabsPanel = new ChildTabsPanel({
                             mainId: self.subRowId,
                             tabs: [
-                                groupMembersTab,
-                                contactNotesTab,
-                                etgar22Tab
+                                contactTab,
+                                userTab
                             ],
                             direction: userSettingsService.getLanguage().direction
                         });
