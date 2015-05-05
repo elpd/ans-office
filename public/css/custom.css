@@ -161,3 +161,11 @@ select {
 td.first {
     padding-left: 15px;
 }
+
+/*
+* home
+*/
+
+.home_row {
+    margin-top:15px;
+}

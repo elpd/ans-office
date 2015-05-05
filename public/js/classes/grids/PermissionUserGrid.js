@@ -77,7 +77,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'permission',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
 
@@ -95,7 +95,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'user',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             }

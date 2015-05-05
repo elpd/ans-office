@@ -47,6 +47,7 @@ define([
             name: 'groupMember',
             title: lang.get('bo.group-member'),
             queryJoinTable: 'groups_members',
+            queryLinkMethod: 'groupMember',
             columns: _.values(GroupMemberGrid.prototype.defaultColumnDefs)
         });
 
@@ -102,7 +103,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'groupMember',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             },
@@ -120,7 +121,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'user',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             }

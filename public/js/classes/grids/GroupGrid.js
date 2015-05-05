@@ -44,6 +44,7 @@ define([
             name: 'cycle',
             title: lang.get('bo.cycle'),
             queryJoinTable: 'cycles',
+            queryLinkMethod: 'cycle',
             columns: _.values(CycleGrid.prototype.defaultColumnDefs)
         });
 
@@ -89,7 +90,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'cycle',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             },
@@ -115,7 +116,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'status',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             }

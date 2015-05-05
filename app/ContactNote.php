@@ -49,9 +49,20 @@ class ContactNote extends Model
         ],
     ];
 
+    protected $toStringFields = [
+        'id',
+        'contact_id',
+        'created_at',
+    ];
+
     /*
-    * Relationships
-    */
+     * Relationships
+     */
+
+    public $relationshipMethods = [
+        'contact',
+        'user',
+    ];
 
     public function contact()
     {

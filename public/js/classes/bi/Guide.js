@@ -11,7 +11,7 @@ define([
     Class.prototype = (function() {
       var Prototype = function Prototype() {
         this.toString = function() {
-          return this.name;
+          return this.user.name + ' -' + this.user.email;
         };
       };
 

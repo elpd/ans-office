@@ -22,7 +22,7 @@ define([], function () {
                     '0': '' // Represent null
                 };
 
-                $.ajax({
+                var dataPromise = $.ajax({
                     url: apiUrl,
                     async: false,
                     success: function (results) {
@@ -31,6 +31,13 @@ define([], function () {
                             items[element.id.toString()] = bi.toString();
                         });
                     }
+                });
+
+                Object.defineProperty(items, '_promise', {
+                    enumerable: false,
+                    configurable: false,
+                    writable: false,
+                    value: dataPromise
                 });
 
                 return items;

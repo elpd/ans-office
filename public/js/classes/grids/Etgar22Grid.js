@@ -82,7 +82,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'contact',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             },

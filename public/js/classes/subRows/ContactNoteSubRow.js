@@ -37,7 +37,7 @@ define([
                             mainId: self.subRowId + '_contact',
                             Grid: require('classes/grids/ContactGrid'),
                             direction: userSettingsService.getLanguage().direction,
-                            caption: lang.get('bo.contact-note_contact_id'),
+                            caption: lang.get('bo.contact-note_contact-id'),
                             beforeGridCreation: function (gridParams) {
                                 gridParams.calcDesiredHeightInContainer = function () {
                                     return self.calcGridDesiredHeight();

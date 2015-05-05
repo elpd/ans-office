@@ -3,7 +3,7 @@
 use App\Http\Requests;
 use App\Http\Controllers\ApiController;
 use App\Http\Controllers\RestControllerTrait;
-use Illuminate\Database\Eloquent\Builder;
+use App\Utilities\Query\Builder;
 
 class GuideController extends ApiController {
 	protected $class = 'App\RoleUser';
@@ -11,7 +11,7 @@ class GuideController extends ApiController {
 	use RestControllerTrait;
 
 	protected function buildInitialQuery(Builder $query) {
-		$query->whoAreGuides();
+		$query->getOriginal()->whoAreGuides()->with('user');
 	}
 
 

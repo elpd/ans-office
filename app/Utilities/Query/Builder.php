@@ -42,7 +42,8 @@ class Builder
         $this->addSelect($fieldSelectDesc);
     }
 
-    public function addSelectDateFields() {
+    public function addSelectDateFields()
+    {
         $fieldSelectDesc = new FieldSelectDescription($this->getTable(), 'created_at');
         $this->addSelect($fieldSelectDesc);
 
@@ -68,7 +69,7 @@ class Builder
     {
         $query = $this->getOriginal();
 
-        if ($filterParam['isGroup'] == 'true') {
+        if ($filterParam['filterType'] == 'group') {
             $this->filterGroup($filterParam, $query, 'and');
 
         } else {
@@ -190,6 +191,11 @@ class Builder
 
         if (isset($sortParam['isOnForeign']) && $sortParam['isOnForeign'] == 'true') {
             $linkedMethod = $sortParam['linkMethod'];
+            $temp = explode('.', $linkedMethod);
+            if (count($temp) == 2) {
+                $linkedMethod = $temp[1];
+            }
+
             $parentModelClass = $this->repository->getModelForTableName(
                 $selectedFieldDesc->tableName);
             $connectionDetails = (new $parentModelClass())->
@@ -246,53 +252,86 @@ class Builder
 
     protected function filterBasic($filterParam, $query, $booleanOp)
     {
-        $whereOperation = $this->calcWhereOperation($filterParam['operation']);
-        $targetValue = $this->calcWhereTargetValueByOp(
-            $filterParam['targetValue'],
-            $filterParam['operation']);
+        switch ($filterParam['filterType']) {
+            case 'simple':
+                $this->filterSimple($filterParam, $query, $booleanOp);
+                break;
+            case 'scope':
+                $this->filterScope($filterParam, $query, $booleanOp);
+                break;
+            case 'relationshipMethod' :
+                $this->filterRelationshipMethod($filterParam, $query, $booleanOp);
+                break;
+            default:
+                throw new \Exception('malformed filter type');
+        }
 
+
+    }
+
+    protected function filterSimple($filterParam, $query, $booleanOp)
+    {
         $fieldDesc = $this->getSelectedField(
-            $this->fixFieldFullName($filterParam['fieldName'])
+            $this->fixFieldFullName($filterParam['simpleData']['fieldName'])
         );
 
-        if ($filterParam['isOnForeign'] == 'true') {
-            $connectionDetails = $this->getConnectionDetailsForField(
-                $filterParam['fieldName'],
-                $filterParam['linkMethod']
-            );
+        $whereOperation = $this->calcWhereOperation(
+            $filterParam['simpleData']['operation']);
+        $targetValue = $this->calcWhereTargetValueByOp(
+            $filterParam['simpleData']['targetValue'],
+            $filterParam['simpleData']['operation']);
 
-            $query->whereExists(function ($subQuery) use (
-                $connectionDetails,
-                $whereOperation, $targetValue
-            ) {
-                $sqlToStringRepresentation =
-                    $connectionDetails->second_table_model->
-                    calcSelectFieldsStringRepresentation();
+        $query->where($fieldDesc->getFullName(),
+            $whereOperation,
+            $targetValue,
+            $booleanOp);
+    }
 
-                $identityClause = $connectionDetails->second_table_field_name . ' = ' .
-                    $connectionDetails->first_table_field_name;
+    protected function filterScope($filterParam, $query, $booleanOp)
+    {
+        $method = $filterParam['scopeData']['method'];
+        $parameter = $filterParam['scopeData']['parameter'];
 
-                //$bindingName = $this->getNewBindingName();
-                $targetValue = \DB::connection()->getPdo()->quote(
-                    $targetValue
-                );
-                $searchClause = $sqlToStringRepresentation . ' ' .
-                    $whereOperation . ' ' . $targetValue;
-
-                $subQuery->select(\DB::raw(1))
-                    ->from($connectionDetails->second_table_name)
-                    ->whereRaw($identityClause)
-                    //->whereRaw($searchClause, [$bindingName => $targetValue]);
-                    ->whereRaw($searchClause);
-
-            }, $booleanOp);
-
-        } else {
-            $query->where($fieldDesc->getFullName(),
-                $whereOperation,
-                $targetValue,
-                $booleanOp);
+        if (!$this->newEmptyItem()->hasScopeMethod($method)) {
+            throw new \Exception('malformed scope method');
         }
+
+        $query->$method($parameter);
+    }
+
+    protected function filterRelationshipMethod($filterParam, $query, $booleanOp)
+    {
+        $linkMethod = $filterParam['linkedData']['method']; // todo: verify
+        $whereOperation = $this->calcWhereOperation(
+            $filterParam['linkedData']['operation']);
+        $targetValue = $this->calcWhereTargetValueByOp(
+            $filterParam['linkedData']['targetValue'],
+            $filterParam['linkedData']['operation']);
+        $targetValue = \DB::connection()->getPdo()->quote($targetValue);
+
+        $query->whereHas($linkMethod, function ($subQuery)
+        use ($filterParam, $whereOperation, $targetValue) {
+
+            switch ($filterParam['linkedData']['targetType']) {
+                case 'field':
+                    $foreign_field = $filterParam['linkedData']['foreignField'];
+                    $subQuery->where($foreign_field, $whereOperation, $targetValue);
+                    break;
+
+                case 'toString':
+                    $subModelItem = $subQuery->getModel();
+                    $toStringSql = $subModelItem->generateToStringSql();
+                    $subQuery->whereRaw(
+                        $toStringSql . ' ' . $whereOperation . ' ' .
+                        $targetValue
+                    );
+                    break;
+
+                default:
+                    throw new \Exception('malformed target type');
+            }
+
+        });
     }
 
     protected function getNewBindingName()
@@ -319,16 +358,18 @@ class Builder
 
     protected function filterGroup($filterParam, $query, $booleanOp)
     {
-        $groupOperation = $this->fixGroupOperation($filterParam['operation']);
+        $groupOperation = $this->fixGroupOperation($filterParam['groupData']['operation']);
 
         $query->where(function ($subQuery) use ($filterParam, $groupOperation) {
-            foreach ($filterParam['nodes'] as $subFilterParam) {
-                if ($subFilterParam['isGroup'] == 'true') {
-                    $this->filterGroup($subFilterParam, $subQuery, $groupOperation);
+            if (isset($filterParam['groupData']['nodes'])) {
+                foreach ($filterParam['groupData']['nodes'] as $subFilterParam) {
+                    if ($subFilterParam['filterType'] == 'group') {
+                        $this->filterGroup($subFilterParam, $subQuery, $groupOperation);
 
-                } else {
-                    $this->filterBasic($subFilterParam, $subQuery,
-                        $groupOperation);
+                    } else {
+                        $this->filterBasic($subFilterParam, $subQuery,
+                            $groupOperation);
+                    }
                 }
             }
         }, null, null, $booleanOp);
@@ -421,5 +462,15 @@ class Builder
         }
 
         return $targetValue;
+    }
+
+    protected function verifyLinkMethod($method_name)
+    {
+        $newItem = $this->newEmptyItem();
+        if (!$newItem->hasLinkMethod($method_name)) {
+            throw new \Exception('method not found');
+        }
+
+        return $method_name;
     }
 }

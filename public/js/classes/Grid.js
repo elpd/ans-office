@@ -199,6 +199,15 @@ define([
                     return [];
                 }
             }
+        },
+
+        mainQueryFilter: {
+            require: true,
+            defaults: {
+                calculation: function () {
+                    return null;
+                }
+            }
         }
     };
 
@@ -303,8 +312,8 @@ define([
 
                 var isShrinkToFit = params.hasOwnProperty('shrinkToFit') ?
                     params.shrinkToFit : false;
-                isShrinkToFit = (desiredGridSize.width <= GRID_WIDTH_MIN) ?
-                    true : isShrinkToFit;
+                //isShrinkToFit = (desiredGridSize.width <= GRID_WIDTH_MIN) ?
+                //    true : isShrinkToFit;
 
                 self.redrawGridDimensionsPhase(desiredGridSize, isShrinkToFit);
             }
@@ -502,6 +511,20 @@ define([
                 self.get$Grid().jqGrid('GridUnload', self.gridId);
                 self.execute();
             }
+        },
+
+        ready: {
+            value: function () {
+                var self = this;
+                return self._readyPromise;
+            }
+        },
+
+        setMainQueryFilter: {
+            value: function (filter) {
+                var self = this;
+                self.mainQueryFilter = filter;
+            }
         }
     });
 
@@ -593,6 +616,14 @@ define([
                 // For now, no edit is allowed on children. Until code is available
                 // in controller infrastructure.
                 columnDef.editable = false;
+
+                columnDef.extraInfo = _.merge({}, columnDef.extraInfo,
+                    function(objectValue, sourceValue, key, object, source){
+                        if (key == 'linkMethod') {
+                            return customDef.queryLinkMethod + '.' +
+                                sourceValue;
+                        }
+                    });
             });
             self._children[childDef.name] = customDef;
         }
@@ -724,7 +755,12 @@ define([
         };
 
         params.beforeRequest = function () {
-            $grid = self.get$Grid();
+            var $grid = self.get$Grid();
+            self._readyPromise = new Promise(function (resolve, reject) {
+                $grid.on(GRID_LOADING_COMPLETE_EVENT_ID, function (e) {
+                    resolve();
+                });
+            });
             $grid.trigger(GRID_LOADING_STARTED_EVENT_ID);
 
             // Values: false: stop request. true - continue with request;
@@ -850,10 +886,32 @@ define([
     }
 
     function calcSearchFilters(self, postData, query) {
+        var mainFilter = calcMainFilter(self);
+
         if (postData.filters && postData._search) {
             var parseJqGridFilters = JSON.parse(postData.filters);
-            query.filters = calcJqGridFilterToQueryFilter(self, parseJqGridFilters);
+            mainFilter.groupData.nodes.push(
+                calcJqGridFilterToQueryFilter(self, parseJqGridFilters)
+            );
         }
+
+        query.filters = mainFilter;
+    }
+
+    function calcMainFilter(self) {
+        var mainFilter = {
+            filterType: 'group',
+            groupData: {
+                operation: 'and',
+                nodes: []
+            }
+        };
+
+        if (self.mainQueryFilter != null) {
+            mainFilter.groupData.nodes.push(self.mainQueryFilter);
+        }
+
+        return mainFilter;
     }
 
     function calcJqGridFilterToQueryFilter(self, jqGridFilter) {
@@ -863,9 +921,9 @@ define([
         var groupsLength = jqGridFilter.groups ? jqGridFilter.groups.length : 0;
 
         if (rulesLength == 0 && groupsLength == 0) {
-            filter.isGroup = false;
+            filter.filterType = 'no_operation';
             filter.operation = 'no_operation';
-
+            // todo: maybe to throw
             return filter;
         }
 
@@ -883,18 +941,20 @@ define([
             return filter;
         }
 
-        filter.isGroup = true;
-        filter.operation = jqGridFilter.groupOp;
-        filter.nodes = [];
+        filter.filterType = 'group';
+        filter.groupData = {
+            operation: jqGridFilter.groupOp,
+            nodes: []
+        };
 
         _.forEach(jqGridFilter.rules, function (jqGridSimpleFilter) {
             var childFilter = calcJqGridSimpleFilter(self, jqGridSimpleFilter);
-            filter.nodes.push(childFilter);
+            filter.groupData.nodes.push(childFilter);
         });
 
         _.forEach(jqGridFilter.groups, function (jqGridGroupFilter) {
             var childFilter = calcJqGridFilterToQueryFilter(self, jqGridGroupFilter);
-            filter.nodes.push(childFilter);
+            filter.groupData.nodes.push(childFilter);
         });
 
         return filter;
@@ -903,24 +963,29 @@ define([
     function calcJqGridSimpleFilter(self, jqGridSimpleFilter) {
         var filter = {};
 
-        filter.isGroup = false;
-        filter.operation = jqGridSimpleFilter.op;
-        filter.targetValue = jqGridSimpleFilter.data;
-        filter.fieldName = jqGridSimpleFilter.field;
-
         var fieldDef = getColModelDef(self, jqGridSimpleFilter.field);
-        if (fieldDef.extraInfo && fieldDef.extraInfo.sortByForeignLinkToString) {
-            filter.isOnForeign = true;
-            filter.fieldModel = fieldDef.extraInfo.fieldModel;
-            filter.linkMethod = fieldDef.extraInfo.linkMethod;
+        if (fieldDef.extraInfo && fieldDef.extraInfo.searchByRelationshipMethod) {
+            filter.filterType = 'relationshipMethod';
+            filter.linkedData = {
+                method: fieldDef.extraInfo.linkMethod,
+                operation: jqGridSimpleFilter.op,
+                targetValue: jqGridSimpleFilter.data,
+                targetType: 'toString' //,
+                //foreignField:
+            };
         } else {
-            filter.isOnForeign = false;
+            filter.filterType = 'simple';
+            filter.simpleData = {
+                operation: jqGridSimpleFilter.op,
+                targetValue: jqGridSimpleFilter.data,
+                fieldName: jqGridSimpleFilter.field
+            }
         }
 
         return filter;
     }
 
-    function isFieldDefinedAsSearchByForeign(self, fieldName) {
+    /*function isFieldDefinedAsSearchByForeign(self, fieldName) {
         var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');
         var result = _.find(currentColModel, function (columnDef) {
             if (columnDef.name == fieldName && columnDef.extraSearchOptions) {
@@ -935,13 +1000,13 @@ define([
         }
 
         return false;
-    }
+    }*/
 
     function getColModelDef(self, fieldName) {
         var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');
         var result = _.find(currentColModel, function (columnDef) {
             if (columnDef.name == fieldName) {
-                    return true;
+                return true;
             }
         });
 
@@ -1027,8 +1092,8 @@ define([
             addSettings,
             deleteSettings,
             {
-                multipleSearch : true,
-                multipleGroup:true
+                multipleSearch: true,
+                multipleGroup: true
             } // enable the advanced searching
         );
 

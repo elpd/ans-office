@@ -232,19 +232,20 @@ trait RestControllerTrait
         $query->addSelectAllMainFields($query);
 
         if (method_exists($this, 'buildInitialQuery')) {
-            $this->buildInitialQuery($query->getOriginal());
+            $this->buildInitialQuery($query);
         }
 
         if (isset($queryParams['parentLinkFilter'])) {
             $parentParam = $queryParams['parentLinkFilter'];
             $filterParam = [
-                'isGroup' => false,
-                'operation' => 'eq',
-                'targetValue' => $parentParam['parent_id'],
-                'fieldName' => $parentParam['fieldToFilterBy'],
-                'isOnForeign' => false
+                'filterType' => 'simple',
+                'simpleData' => [
+                    'operation' => 'eq',
+                    'targetValue' => $parentParam['parent_id'],
+                    'fieldName' => $parentParam['fieldToFilterBy'],
+                ]
             ];
-            
+
             $query->filter($filterParam);
         }
 

@@ -72,9 +72,17 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         return $this->hasOne('App\Settings');
     }
 
+    public function guidedGroupMembers() {
+        return $this->hasManyThrough('App\GroupsMember', 'App\GroupMemberGuide', 'user_id', 'groups_member_id');
+    }
+
     /*
     * Scopes
     */
 
-
+    public function scopeAreGuides($query) {
+        return $query->whereHas('role', function($subQuery){
+           $subQuery->where('roles.slug', '=', 'guide');
+        });
+    }
 }
