@@ -63,12 +63,24 @@ class Contact extends Model
      */
 
     public $relationshipMethods = [
-        'etgar22'
+        'etgar22',
+        'guides',
+    ];
+
+    public $scopeMethods = [
+        'singular',
+        'inGroup',
+        'guidedByUser'
     ];
 
     public function etgar22()
     {
         return $this->hasOne('App\Etgar22');
+    }
+
+    public function groupMembers()
+    {
+        return $this->hasMany('App\GroupsMember');
     }
 
     /**
@@ -92,6 +104,32 @@ class Contact extends Model
             ->where('first_name', '=', $firstName);
     }
 
+    public function scopeInGroup($query, $group_id)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery)
+        use ($group_id) {
+
+            $groupMembersQuery->whereHas('group', function ($groupQuery)
+            use ($group_id) {
+
+                $groupQuery->where('groups.id', '=', $group_id);
+            });
+        });
+    }
+
+    public function scopeGuidedByUser($query, $guide_id)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery)
+        use ($guide_id) {
+
+            $groupMembersQuery->whereHas('guides', function ($guidesQuery)
+            use ($guide_id) {
+
+                $guidesQuery->where('users.id', '=', $guide_id);
+            });
+        });
+    }
+
     /*
      * Static helpers
      */
@@ -113,10 +151,11 @@ class Contact extends Model
         return $contactNames;
     }
 
-    public static function findByEmailName($email, $firstName) {
+    public static function findByEmailName($email, $firstName)
+    {
         $contactResults = self::singular($email, $firstName)->get();
 
-        switch($contactResults->count()) {
+        switch ($contactResults->count()) {
             case 0:
                 return null;
             case 1:
@@ -127,7 +166,8 @@ class Contact extends Model
         }
     }
 
-    public static function findByEmailNameOrNew($email, $firstName){
+    public static function findByEmailNameOrNew($email, $firstName)
+    {
         $contacts = self::singular($email, $firstName)->get();
 
         if ($contacts->count() == 0) {

@@ -11,24 +11,24 @@ class Group extends Model
     use GeneralModel;
 
     public $fillable = array(
-            'cycle_id',
-            'name',
-            'status_id',
+        'cycle_id',
+        'name',
+        'status_id',
     );
 
     protected $rules = array(
-            'cycle_id' => array(
-                    'required',
-                    'exists:cycles,id'
-            ),
-            "name" => array(
-                    'required',
-                    'alpha_dash'
-            ),
-            "status_id" => array(
-                    'required',
-                    'exists:group_status,id'
-            ),
+        'cycle_id' => array(
+            'required',
+            'exists:cycles,id'
+        ),
+        "name" => array(
+            'required',
+            'alpha_dash'
+        ),
+        "status_id" => array(
+            'required',
+            'exists:group_status,id'
+        ),
     );
 
     public $nullable = [];
@@ -63,11 +63,31 @@ class Group extends Model
         'status',
     ];
 
-    public function cycle() {
-      return $this->belongsTo('App\Cycle');
+    public function cycle()
+    {
+        return $this->belongsTo('App\Cycle');
     }
 
-    public function status() {
+    public function status()
+    {
         return $this->belongsTo('App\GroupStatus');
+    }
+
+    public function groupMembers()
+    {
+        return $this->hasMany('App\GroupsMember');
+    }
+
+    public function scopeGuidedByUser($query, $guide_id)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery)
+        use ($guide_id) {
+
+            $groupMembersQuery->whereHas('guides', function ($guidesQuery)
+            use ($guide_id) {
+
+                $guidesQuery->where('users.id', '=', $guide_id);
+            });
+        });
     }
 }

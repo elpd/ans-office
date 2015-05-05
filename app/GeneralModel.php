@@ -68,4 +68,36 @@ trait GeneralModel
 
         return $fullSql;
     }
+
+    public function hasLinkMethod($method_name) {
+        foreach ($this->relationshipMethods as $relMethod){
+            if ($method_name == $relMethod){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function hasScopeMethod($method_name) {
+        foreach ($this->scopeMethods as $scopeMethod){
+            if ($method_name == $scopeMethod){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public function generateToStringSql() {
+        $sql = "CONCAT_WS('-' ";
+
+        foreach ($this->toStringFields as $field_name) {
+            $sql .= ", " . $this->getTable() . '.' . $field_name;
+        }
+
+        $sql .= ")";
+
+        return $sql;
+    }
 }

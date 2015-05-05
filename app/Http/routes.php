@@ -69,10 +69,11 @@ Route::put('api/user-email', 'api\User\EmailController@update');
 Route::put('api/user-password', 'api\User\PasswordController@update');
 Route::get('api/user-settings', 'api\User\SettingsController@show');
 Route::put('api/user-settings', 'api\User\SettingsController@update');
+Route::get('api/user-role', 'api\User\RoleController@show');
+Route::get('api/user-guided-group', 'api\User\GuidedGroupController@show');
+Route::get('api/user-data', 'api\User\DataController@show');
 
 Route::get('api/language', 'api\LanguageController@index');
-
-
 
 if (App::environment('local', 'testing')) {
     // For testing purpose. Let test clear database.

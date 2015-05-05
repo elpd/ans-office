@@ -44,6 +44,7 @@ define([
             name: 'etgar22',
             title: lang.get('bo.etgar22'),
             queryJoinTable: 'etgar22',
+            queryLinkMethod: 'etgar22',
             columns: _.values(Etgar22Grid.prototype.defaultColumnDefs)
         });
 

@@ -9,4 +9,10 @@ class ContactController extends ApiController {
 	protected $class = 'App\Contact';
 
 	use RestControllerTrait;
+
+	public function buildInitialQuery($query) {
+		/*$query->getOriginal()->whereHas('guides', function($subQuery){
+			$subQuery->where('user_id', '=', '6');
+		});*/
+	}
 }
