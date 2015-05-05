@@ -11,7 +11,7 @@ class GuideController extends ApiController {
 	use RestControllerTrait;
 
 	protected function buildInitialQuery(Builder $query) {
-		$query->getOriginal()->whoAreGuides();
+		$query->getOriginal()->whoAreGuides()->with('user');
 	}
 
 

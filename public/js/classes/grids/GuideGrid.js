@@ -83,7 +83,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'user',
-                    searchByRelationshipMethod: true,
+                    searchByForeignLinkToString: true,
                     sortByForeignLinkToString: true
                 }
             },
@@ -101,7 +101,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'role',
-                    searchByRelationshipMethod: true,
+                    searchByForeignLinkToString: true,
                     sortByForeignLinkToString: true
                 }
             }

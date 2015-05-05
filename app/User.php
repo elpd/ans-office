@@ -80,5 +80,9 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     * Scopes
     */
 
-
+    public function scopeAreGuides($query) {
+        return $query->whereHas('role', function($subQuery){
+           $subQuery->where('roles.slug', '=', 'guide');
+        });
+    }
 }
