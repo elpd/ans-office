@@ -46,6 +46,7 @@ define([
             name: 'group',
             title: lang.get('bo.group'),
             queryJoinTable: 'groups',
+            queryLinkMethod: 'group',
             columns: _.values(GroupGrid.prototype.defaultColumnDefs)
         });
 
@@ -53,6 +54,7 @@ define([
             name: 'contact',
             title: lang.get('bo.contact'),
             queryJoinTable: 'contacts',
+            queryLinkMethod: 'contact',
             columns: _.values(ContactGrid.prototype.defaultColumnDefs)
         });
 
@@ -103,7 +105,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'group',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             },
@@ -120,7 +122,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'contact',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             },
@@ -138,7 +140,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'status',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             }

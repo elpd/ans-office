@@ -238,13 +238,14 @@ trait RestControllerTrait
         if (isset($queryParams['parentLinkFilter'])) {
             $parentParam = $queryParams['parentLinkFilter'];
             $filterParam = [
-                'isGroup' => false,
-                'operation' => 'eq',
-                'targetValue' => $parentParam['parent_id'],
-                'fieldName' => $parentParam['fieldToFilterBy'],
-                'isOnForeign' => false
+                'filterType' => 'simple',
+                'simpleData' => [
+                    'operation' => 'eq',
+                    'targetValue' => $parentParam['parent_id'],
+                    'fieldName' => $parentParam['fieldToFilterBy'],
+                ]
             ];
-            
+
             $query->filter($filterParam);
         }
 

@@ -8,12 +8,12 @@
             <div class="row">
 
                 <div class="col-md-10 col-md-offset-1" id="guide_contact_by_guide_grid_subsection">
-                    <h2>Contacts For Guide</h2>
+                    <h2>Contacts Associated With Guide</h2>
 
                     <form>
                         <div class="form-group">
                             <label for="groups_selector_on_contacts_by_guide">Group</label>
-                            <select id="groups_selector_on_contacts_by_guide" >
+                            <select id="groups_selector_on_contacts_by_guide" class="form-control">
 
                             </select>
                         </div>

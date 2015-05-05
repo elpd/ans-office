@@ -4,13 +4,15 @@ define([
     'classes/Grid',
     'classes/subRows/ContactNoteSubRow',
     'services/language',
-    'classes/bi/User'
+    'classes/bi/User',
+    'classes/bi/Contact'
 ], function (_,
              utilities,
              Grid,
              ContactNoteSubRow,
              lang,
-             User) {
+             User,
+             Contact) {
 
     var CONTROLLER_URL = '/api/contact-note';
 
@@ -28,6 +30,7 @@ define([
         Grid.call(this, params);
 
         self.columns().add(self.defaultColumnDefs.id);
+        self.columns().add(self.defaultColumnDefs.contact_id);
         self.columns().add(self.defaultColumnDefs.user_id);
         self.columns().add(self.defaultColumnDefs.text);
         self.columns().add(self.defaultColumnDefs.created_at);
@@ -61,6 +64,24 @@ define([
                     integer: true
                 }
             },
+            contact_id: {
+                label: _.capitalize(lang.get('bo.contact-note_contact-id')),
+                name: 'contact_id',
+                width: 200,
+                editable: false,
+                edittype: 'select',
+                formatter: 'select',
+                editoptions: {
+                    value: utilities.generateGetItems('/api/contact', Contact)(),
+                    dataUrl: '/api/contact',
+                    buildSelect: utilities.generateBuildSelect(Contact)
+                },
+                extraInfo: {
+                    linkMethod: 'user',
+                    searchByRelationshipMethod: true,
+                    sortByForeignLinkToString: true
+                }
+            },
             user_id: {
                 label: _.capitalize(lang.get('bo.contact-note_user-id')),
                 name: 'user_id',
@@ -75,7 +96,7 @@ define([
                 },
                 extraInfo: {
                     linkMethod: 'user',
-                    searchByForeignLinkToString: true,
+                    searchByRelationshipMethod: true,
                     sortByForeignLinkToString: true
                 }
             },

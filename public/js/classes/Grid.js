@@ -985,7 +985,7 @@ define([
         return filter;
     }
 
-    function isFieldDefinedAsSearchByForeign(self, fieldName) {
+    /*function isFieldDefinedAsSearchByForeign(self, fieldName) {
         var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');
         var result = _.find(currentColModel, function (columnDef) {
             if (columnDef.name == fieldName && columnDef.extraSearchOptions) {
@@ -1000,7 +1000,7 @@ define([
         }
 
         return false;
-    }
+    }*/
 
     function getColModelDef(self, fieldName) {
         var currentColModel = self.get$Grid().jqGrid('getGridParam', 'colModel');

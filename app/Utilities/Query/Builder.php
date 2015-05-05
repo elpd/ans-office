@@ -191,6 +191,11 @@ class Builder
 
         if (isset($sortParam['isOnForeign']) && $sortParam['isOnForeign'] == 'true') {
             $linkedMethod = $sortParam['linkMethod'];
+            $temp = explode('.', $linkedMethod);
+            if (count($temp) == 2) {
+                $linkedMethod = $temp[1];
+            }
+
             $parentModelClass = $this->repository->getModelForTableName(
                 $selectedFieldDesc->tableName);
             $connectionDetails = (new $parentModelClass())->
