@@ -2,6 +2,7 @@
 
 use App\Utilities\GeneralUtilities as Utils;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\Request;
 use Watson\Validating\ValidationException;
 
@@ -152,19 +153,22 @@ trait RestControllerTrait
      * @param  int $id
      * @return Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Application $app, $id)
     {
-        $class = $this->class;
-
-        $item = $class::findOrFail($id);
-
-        $input = $this->getOnly($request, $class);
-
-        foreach ($input as $inputKey => $inputValue) {
-            $item->$inputKey = $inputValue;
-        }
-
         try {
+
+            $class = $this->class;
+
+            $item = $class::findOrFail($id);
+
+            $input = $this->getOnly($request, $class);
+            $childrenInput = $this->getChildrenInput($request);
+
+            foreach ($input as $inputKey => $inputValue) {
+                $item->$inputKey = $inputValue;
+            }
+
+
             $item->saveOrFail();
 
             \Log::info('record update', [
@@ -172,9 +176,18 @@ trait RestControllerTrait
                 'user' => \Auth::user()->email,
                 'record_id' => $item->id]);
 
+            $children_responses = [];
+            foreach ($childrenInput as $childName => $childInput) {
+                $child_request = $this->generateChildRequest($childName, $childInput, $request);
+                $app->instance('request', $child_request);
+                $child_response = \Route::dispatch($child_request);
+                $children_responses[$childName] = $child_response;
+            }
+
             return [
                 'success' => true,
                 'item_id' => $item->id,
+                'children_responses' => $children_responses,
             ];
         } catch (\Watson\Validating\ValidationException $e) {
             return response()->json([
@@ -212,6 +225,95 @@ trait RestControllerTrait
         }
 
         return $inputs;
+    }
+
+    protected function getChildrenInput($request)
+    {
+        $children_input = [];
+
+        $params = $request->all();
+        foreach ($params as $paramKey => $paramValue) {
+            if ($paramKey[0] != "_") {
+                $child_data = explode('_', $paramKey);
+                if (count($child_data) > 1) {
+                    $child_name = $child_data[0];
+                    if (!$this->childRouteExists($child_name)) {
+                        throw new \Exception('child route for child parameters does not exist on controller');
+                    }
+                    if (!isset($children_input[$child_name])) {
+                        $children_input[$child_name] = [];
+                    }
+                    $child_array_sub_name = array_slice($child_data, 1);
+                    $child_sub_name = implode('.', $child_array_sub_name);
+
+                    $children_input[$child_name][$child_sub_name] = $paramValue;
+                }
+            }
+        }
+
+        return $children_input;
+    }
+
+    protected function childRouteExists($child_name)
+    {
+        if (!isset($this->children_routes)) {
+            return false;
+        }
+
+        foreach ($this->children_routes as $child_route_name => $child_route) {
+            if ($child_name == $child_route_name) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    protected function generateChildRequest($child_name, $child_input, $request)
+    {
+        $childRequestData = $this->getChildRequestData($child_name);
+        $child_route_url = $childRequestData . '/' . $child_input['id'];
+        //$childRequest = Request::create($child_route_url, 'PUT', $child_input, $request->cookie());
+        $server = $request->server();
+        $server['REDIRECT_URL'] = $child_route_url;
+        $server['REQUEST_URI'] = $child_route_url;
+        $child_input['_token'] = $request->get('_token');
+
+        $childRequest = $request->duplicate(null, $child_input, null, null, null, $server);
+        //$childRequest->replace($child_input);
+        //$childRequest->setMethod('PUT');
+        //$childRequest = $request->create(
+        //    $child_route_url, 'PUT', $child_input, $request->cookie(), [], $server, null);
+        // $childRequest->setSession($request->session());
+        $childRequest->initialize(
+        //query
+            [],
+            // request
+            $child_input,
+            // attributes
+            [],
+            // cookies
+            $request->cookie(),
+            // files
+            [],
+            // server
+            $server,
+            // content
+            null
+        );
+
+        return $childRequest;
+    }
+
+    protected function getChildRequestData($child_name)
+    {
+        foreach ($this->children_routes as $child_route_name => $child_route) {
+            if ($child_name == $child_route_name) {
+                return $child_route;
+            }
+        }
+
+        throw new \Exception('child route data does not exist for: ' . $child_name);
     }
 
     protected function buildQueryParams($class, $request)

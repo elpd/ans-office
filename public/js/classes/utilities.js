@@ -71,6 +71,10 @@ define([], function () {
                 dateFormat: 'yy-mm-dd',
                 timeFormat: 'HH:mm:ss'
             });
+        },
+
+        strEndsWith: function (str, suffix) {
+            return str.indexOf(suffix, str.length - suffix.length) !== -1;
         }
     };
 

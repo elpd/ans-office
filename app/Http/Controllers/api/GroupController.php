@@ -7,6 +7,9 @@ use App\Http\Controllers\RestControllerTrait;
 class GroupController extends ApiController {
 
 	protected $class = 'App\Group';
+	protected $children_routes = [
+		'cycles' => '/api/cycle'
+	];
 
 	use RestControllerTrait;
 }
