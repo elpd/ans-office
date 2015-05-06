@@ -62,7 +62,7 @@ trait RestControllerTrait
     {
         $class = $this->class;
 
-        $input = $this->getOnly($class);
+        $input = $this->getOnly($request, $class);
         $parentLink = $request->get(self::$PARENT_LINK_REQ_PARAM);
 
         $item = new $class($input);
@@ -152,13 +152,13 @@ trait RestControllerTrait
      * @param  int $id
      * @return Response
      */
-    public function update($id)
+    public function update(Request $request, $id)
     {
         $class = $this->class;
 
         $item = $class::findOrFail($id);
 
-        $input = $this->getOnly($class);
+        $input = $this->getOnly($request, $class);
 
         foreach ($input as $inputKey => $inputValue) {
             $item->$inputKey = $inputValue;
@@ -197,13 +197,13 @@ trait RestControllerTrait
 
     }
 
-    protected function getOnly($class)
+    protected function getOnly($request, $class)
     {
         $inputs = [];
         $object = new $class();
 
         $fillable = $object->getFillable();
-        $all = \Request::all();
+        $all = $request->all();
 
         foreach ($fillable as $key) {
             if (array_key_exists($key, $all)) {
