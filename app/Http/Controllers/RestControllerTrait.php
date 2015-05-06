@@ -234,7 +234,7 @@ trait RestControllerTrait
         $params = $request->all();
         foreach ($params as $paramKey => $paramValue) {
             if ($paramKey[0] != "_") {
-                $child_data = explode('_', $paramKey);
+                $child_data = explode('.', $paramKey);
                 if (count($child_data) > 1) {
                     $child_name = $child_data[0];
                     if (!$this->childRouteExists($child_name)) {

@@ -797,6 +797,7 @@ define([
                 var processedData = postdata;
                 if (postdata.oper && postdata.oper == POST_DATA_OPERATION_EDIT) {
                     processedData = calcOnlyModifiedFields(postdata, self.beforeEditGridData);
+                    processedData= calcChildrenGroupsFields(processedData);
                     processedData.oper = postdata.oper;
                     processedData._token = postdata._token;
                 }
@@ -1390,6 +1391,50 @@ define([
             });
 
             return processedData;
+        }
+
+        function calcChildrenGroupsFields(postData) {
+            var groupsNames = calcGroupsNamesOnData(postData);
+            var groups = {};
+
+            _.forEach(groupsNames, function(groupName){
+               var group = calcGroupOnData(postData, groupName);
+                groups[groupName] = group;
+            });
+
+            postData._children = groups;
+
+            return postData;
+        }
+
+        function calcGroupsNamesOnData(data) {
+            var groupsNames = [];
+
+            _.forEach(data, function(postVal, postKey){
+                if (_.indexOf(postKey, '.') > 0) {
+                    var keyArrays = _.words(postKey, /[^.]+/g);
+                    if (groupsNames.indexOf(keyArrays[0]) < 0) {
+                        groupsNames.push(keyArrays[0]);
+                    }
+                }
+            });
+
+            return groupsNames;
+        }
+
+        function calcGroupOnData(data, groupName) {
+            var group = {};
+
+            _.forEach(data, function(dataVal, dataKey){
+                if (_.startsWith(dataKey, groupName) && dataKey.indexOf('.') > 0) {
+                    var keyArrays = _.words(dataKey,  /[^.]+/g);
+                    var newKeyArrays = _.slice(keyArrays, 1);
+                    var computedKey = newKeyArrays.join('.');
+                    group[computedKey] = dataVal;
+                }
+            });
+
+            return group;
         }
 
         function openRowForInlineEditing(self, rowBusinuessObjectId) {
