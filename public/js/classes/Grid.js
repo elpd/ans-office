@@ -1234,7 +1234,7 @@ define([
             edit: false,
             add: true,
             del: true,
-            refresh: false,
+            refresh: true,
             view: false
         };
 
