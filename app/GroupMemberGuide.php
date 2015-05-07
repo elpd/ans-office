@@ -68,4 +68,18 @@ class GroupMemberGuide extends Model
     public function user() {
         return $this->belongsTo('App\User');
     }
+
+    /*
+     * Mutators
+     */
+
+    public function setUserIdAttribute($value)
+    {
+        $user = \App\User::findOrFail($value);
+        if (! $user->is('guide')){
+            throw new \Exception('user must have a guide role');
+        }
+
+        $this->attributes['user_id'] = $value;
+    }
 }
