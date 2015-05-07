@@ -761,7 +761,7 @@ define([
             params.ondblClickRow = function (rowBusinuessObjectId, rowIndex,
                                              columnIndex, e) {
                 e.stopPropagation();
-                openRowForInlineEditing(self, rowBusinuessObjectId);
+                openRowForInlineEditing(self, rowBusinuessObjectId, e.target);
             };
 
             params.beforeRequest = function () {
@@ -1399,7 +1399,9 @@ define([
 
             _.forEach(groupsNames, function(groupName){
                var group = calcGroupOnData(postData, groupName);
-                groups[groupName] = group;
+                if (! (_.size(group) == 1 && group.hasOwnProperty('id'))) {
+                    groups[groupName] = group;
+                }
             });
 
             postData._children = groups;
@@ -1437,7 +1439,7 @@ define([
             return group;
         }
 
-        function openRowForInlineEditing(self, rowBusinuessObjectId) {
+        function openRowForInlineEditing(self, rowBusinuessObjectId, targetCell) {
             self.beforeEditGridData = self.getRowData(rowBusinuessObjectId);
 
             var $grid = self.get$Grid();
@@ -1448,6 +1450,7 @@ define([
 
             var editOptions = calcRowEditOptions(self, rowBusinuessObjectId);
             $grid.jqGrid(JQGRID_FN_EDIT_ROW, rowBusinuessObjectId, editOptions);
+            $("input, select", targetCell).focus();
 
             self.previousEditedRowBoId = rowBusinuessObjectId;
         }
@@ -1457,7 +1460,7 @@ define([
 
             // Set keys: ENTER - save, ESC - cancel.
             options.keys = true;
-            //options.focusField = 4; // TODO: research ?
+            options.focusField = false;
             options.url = self.controllerUrl + '/' + rowBusinuessObjectId;
             options.extraparam = {
                 _token: $_token // TODO: from AMD

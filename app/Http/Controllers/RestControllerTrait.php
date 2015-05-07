@@ -156,39 +156,42 @@ trait RestControllerTrait
     public function update(Request $request, Application $app, $id)
     {
         try {
+            \DB::transaction(function () use ($request, $app, $id) {
+                $class = $this->class;
 
-            $class = $this->class;
+                $item = $class::findOrFail($id);
 
-            $item = $class::findOrFail($id);
+                $input = $this->getOnly($request, $class);
+                $childrenInput = $request->get('_children', []);
 
-            $input = $this->getOnly($request, $class);
-            $childrenInput = $this->getChildrenInput($request);
+                foreach ($input as $inputKey => $inputValue) {
+                    $item->$inputKey = $inputValue;
+                }
 
-            foreach ($input as $inputKey => $inputValue) {
-                $item->$inputKey = $inputValue;
-            }
+                $item->saveOrFail();
 
+                \Log::info('record update', [
+                    'class ' => $class,
+                    'user' => \Auth::user()->email,
+                    'record_id' => $item->id]);
 
-            $item->saveOrFail();
+                $children_responses = [];
+                foreach ($childrenInput as $childName => $childInput) {
+                    $child_request = $this->generateChildRequest($childName, $childInput, $request);
+                    $app->instance('request', $child_request);
+                    $child_response = \Route::dispatch($child_request);
+                    $children_responses[$childName] = $child_response;
+                    if ($child_response->getStatusCode() != 200) {
+                        throw new \Exception('error in child update');
+                    }
+                }
 
-            \Log::info('record update', [
-                'class ' => $class,
-                'user' => \Auth::user()->email,
-                'record_id' => $item->id]);
-
-            $children_responses = [];
-            foreach ($childrenInput as $childName => $childInput) {
-                $child_request = $this->generateChildRequest($childName, $childInput, $request);
-                $app->instance('request', $child_request);
-                $child_response = \Route::dispatch($child_request);
-                $children_responses[$childName] = $child_response;
-            }
-
-            return [
-                'success' => true,
-                'item_id' => $item->id,
-                'children_responses' => $children_responses,
-            ];
+                return [
+                    'success' => true,
+                    'item_id' => $item->id,
+                    'children_responses' => $children_responses,
+                ];
+            });
         } catch (\Watson\Validating\ValidationException $e) {
             return response()->json([
                 'success' => false,
@@ -225,33 +228,6 @@ trait RestControllerTrait
         }
 
         return $inputs;
-    }
-
-    protected function getChildrenInput($request)
-    {
-        $children_input = [];
-
-        $params = $request->all();
-        foreach ($params as $paramKey => $paramValue) {
-            if ($paramKey[0] != "_") {
-                $child_data = explode('.', $paramKey);
-                if (count($child_data) > 1) {
-                    $child_name = $child_data[0];
-                    if (!$this->childRouteExists($child_name)) {
-                        throw new \Exception('child route for child parameters does not exist on controller');
-                    }
-                    if (!isset($children_input[$child_name])) {
-                        $children_input[$child_name] = [];
-                    }
-                    $child_array_sub_name = array_slice($child_data, 1);
-                    $child_sub_name = implode('.', $child_array_sub_name);
-
-                    $children_input[$child_name][$child_sub_name] = $paramValue;
-                }
-            }
-        }
-
-        return $children_input;
     }
 
     protected function childRouteExists($child_name)

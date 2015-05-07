@@ -36,6 +36,7 @@ class UserTableSeeder extends Seeder
                 'roles' => [
                     $adminRole,
                     $employeeRole,
+                    $guideRole,
                 ],
                 'settings' => [
                     'ui_language' => $englishUiLanguage,
