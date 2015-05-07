@@ -106,6 +106,12 @@ class Builder
             $fieldDesc = new FieldSelectDescription($table_name, $field_name);
             $this->addSelect($fieldDesc);
         }
+
+        $fieldDesc = new FieldSelectDescription($table_name, 'created_at');
+        $this->addSelect($fieldDesc);
+
+        $fieldDesc = new FieldSelectDescription($table_name, 'updated_at');
+        $this->addSelect($fieldDesc);
     }
 
     protected function getMainFields()

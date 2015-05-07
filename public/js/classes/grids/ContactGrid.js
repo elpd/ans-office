@@ -39,6 +39,7 @@ define([
         self.columns().add(self.defaultColumnDefs.birth_year);
         self.columns().add(self.defaultColumnDefs.donate);
         self.columns().add(self.defaultColumnDefs.blacklisted);
+        self.columns().add(self.defaultColumnDefs.updated_at);
 
         self.children().add({
             name: 'etgar22',
@@ -175,6 +176,28 @@ define([
                 searchoptions: {
                     sopt: ['eq', 'ne'],
                     value: ":All;1:Yes;0:No"
+                }
+            },
+            updated_at: {
+                label: _.capitalize(lang.get('bo.general_updated-at')),
+                name: 'updated_at',
+                editable: true,
+                formatter: 'datetime',
+                datefmt: 'yyyy-mm-dd',
+                editoptions: {
+                    readonly: true,
+                    // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                    // use it to place a third party control to customize the toolbar
+                    dataInit: utilities.generateDateTimePicker
+                },
+                //stype: 'datetime',
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                    // TODO: bug in jqgrid ? find out why same id as parent search.
+                    //dataInit: generateDateTimePicker
+                },
+                searchrules: {
+                    date: true
                 }
             }
         };

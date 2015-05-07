@@ -161,6 +161,8 @@ trait RestControllerTrait
 
                 $item = $class::findOrFail($id);
 
+                $this->checkSecurityStaleUpdateDate($item, $request);
+
                 $input = $this->getOnly($request, $class);
                 $childrenInput = $request->get('_children', []);
 
@@ -464,5 +466,18 @@ trait RestControllerTrait
         $param->requestedFields = $reqParam->selectFields;
 
         return $param;
+    }
+
+    protected function checkSecurityStaleUpdateDate($item, $request){
+        $db_item_update_date = $item->updated_at;
+
+        if (! $request->has('updated_at')){
+            throw new \Exception('update item needs update_at column info');
+        }
+        $rq_item_update_date = $request->get('updated_at');
+
+        if ($db_item_update_date != $rq_item_update_date) {
+            throw new \Exception('stale item. can not update');
+        }
     }
 }

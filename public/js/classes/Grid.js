@@ -1394,10 +1394,20 @@ define([
                         processedData[key] = val;
                     }
 
-                    // always send id data
+                    // always send id, created and updated data
+
                     if (key == 'id' || utilities.strEndsWith(key, '.id')) {
                         processedData[key] = val;
                     }
+
+                    if (key == 'created_at' || utilities.strEndsWith(key, '.created_at')) {
+                        processedData[key] = val;
+                    }
+
+                    if (key == 'updated_at' || utilities.strEndsWith(key, '.updated_at')) {
+                        processedData[key] = val;
+                    }
+
                 } else {
                     processedData[key] = val;
                 }

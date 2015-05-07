@@ -14,7 +14,8 @@ return [
 
     'id' => 'ID',
     'general_id' => 'ID',
-    'general_created_at' => 'Created At',
+    'general_created-at' => 'Created At',
+    'general_updated-at' => 'Updated At',
 
     // User
 

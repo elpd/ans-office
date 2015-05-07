@@ -39,6 +39,7 @@ define([
         self.columns().add(self.defaultColumnDefs.why_go_vegan);
         self.columns().add(self.defaultColumnDefs.parent_name);
         self.columns().add(self.defaultColumnDefs.parent_email);
+        self.columns().add(self.defaultColumnDefs.updated_at);
 
         self.columns().selectAbsoluteAll();
     };
@@ -197,6 +198,28 @@ define([
                 //search:true,
                 //stype:'text',
 
+            },
+            updated_at: {
+                label: _.capitalize(lang.get('bo.general_updated-at')),
+                name: 'updated_at',
+                editable: true,
+                formatter: 'datetime',
+                datefmt: 'yyyy-mm-dd',
+                editoptions: {
+                    readonly: true,
+                    // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                    // use it to place a third party control to customize the toolbar
+                    dataInit: utilities.generateDateTimePicker
+                },
+                //stype: 'datetime',
+                searchoptions: {
+                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                    // TODO: bug in jqgrid ? find out why same id as parent search.
+                    //dataInit: generateDateTimePicker
+                },
+                searchrules: {
+                    date: true
+                }
             }
         };
 
