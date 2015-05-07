@@ -1354,6 +1354,19 @@ define([
                         var $errorItem = $('<li>' + errorKey + ': ' + errorValue + '</li>');
                         $messageHtml.append($errorItem);
                     });
+
+                    if (response.hasOwnProperty('exception')) {
+                        if (response.exception.hasOwnProperty('xdebug_message')){
+
+                            var $xdebug_table_message = $('<table></table>');
+                            var $server_message = $(response.exception.xdebug_message);
+                            $xdebug_table_message.append($server_message);
+                            var $errorItem = $('<li>' + 'xdebug: ' + '</li>');
+                            $errorItem.append($xdebug_table_message);
+
+                            $messageHtml.append($errorItem);
+                        }
+                    }
                 }
             }
 
@@ -1489,7 +1502,8 @@ define([
                     '<div class="ui-state-error">' + errorMessage.html + '</div>',
                     $.jgrid.edit.bClose,
                     {
-                        buttonalign: 'right'
+                        buttonalign: 'right',
+                        width: 700
                     });
 
                 return false;

@@ -68,7 +68,7 @@ class CreateEtgar22Tables extends Migration
             function ($table) {
                 $table->increments('id')->unsigned();
                 $table->date('startDate')
-                    ->unique();;
+                    ->unique();
                 $table->integer('num');
                 $table->timestamps();
 
@@ -121,7 +121,8 @@ class CreateEtgar22Tables extends Migration
                 $table->integer('cycle_id')
                     ->unsigned()
                     ->index();
-                $table->string('name', 30);
+                $table->string('name', 30)
+                    ->unique();
                 $table->integer('status_id')
                     ->unsigned()
                     ->index();

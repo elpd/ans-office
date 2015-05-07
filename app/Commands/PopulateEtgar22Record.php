@@ -27,6 +27,7 @@ class PopulateEtgar22Record extends Command implements SelfHandling {
 	{
 		$contact = $this->findOutContact();
 		$contactEtgar22 = $this->findOutEtgar22ForContact($contact);
+		$this->putContactInGroup($contact);
 	}
 
 	protected function findOutContact() {
@@ -87,5 +88,18 @@ class PopulateEtgar22Record extends Command implements SelfHandling {
 		$contact->etgar22()->save($etgar22);
 
 		return $etgar22;
+	}
+
+	protected function putContactInGroup($contact){
+		$group_name = $this->etgar22Record->getFacebookEtgar22GroupStr();
+		$group = \App\Group::where('name', '=', $group_name)->firstOrFail();
+		$newStatus = \App\GroupMembersStatus::where('status', '=', 'new')->firstOrFail();
+
+		$membership = new \App\GroupsMember();
+		$membership->group()->associate($group);
+		$membership->contact()->associate($contact);
+		$membership->status()->associate($newStatus);
+
+		$membership->saveOrFail();
 	}
 }

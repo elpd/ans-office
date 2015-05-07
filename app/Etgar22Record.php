@@ -2,7 +2,8 @@
 
 use Carbon\Carbon;
 
-class Etgar22Record {
+class Etgar22Record
+{
 
     public $registrationDateStr;
     public $notesStr;
@@ -25,27 +26,31 @@ class Etgar22Record {
     public $idStr;
     public $doneStr;
 
-    public function getRecordContact() {
+    public function getRecordContact()
+    {
         $recordContact = new Etgar22RecordContact($this);
 
         return $recordContact;
     }
 
-    public function getRegistrationDate() {
+    public function getRegistrationDate()
+    {
         return Carbon::parse($this->registrationDateStr);
     }
 
-    public function getParentName() {
+    public function getParentName()
+    {
         $parentName = $this->parentNameStr;
 
-        if ($parentName == 'שם ההורה/ים'){
+        if ($parentName == 'שם ההורה/ים') {
             $parentName = '';
         }
 
         return $parentName;
     }
 
-    public function getParentEmail() {
+    public function getParentEmail()
+    {
         $parentEmail = $this->parentEmailStr;
 
         if ($parentEmail == 'אימייל ההורה/ים') {
@@ -55,7 +60,8 @@ class Etgar22Record {
         return $parentEmail;
     }
 
-    public function getFlagFacebookKnowHow() {
+    public function getFlagFacebookKnowHow()
+    {
         $flag = null;
 
         switch ($this->flagFacebookKnowHowStr) {
@@ -75,7 +81,8 @@ class Etgar22Record {
         return $flag;
     }
 
-    public function getFlagCallForFacebookHelp() {
+    public function getFlagCallForFacebookHelp()
+    {
         $flag = false;
 
         switch ($this->flagCallMeForFacebookHelpStr) {
@@ -93,11 +100,18 @@ class Etgar22Record {
         return $flag;
     }
 
-    public function getNotes() {
+    public function getNotes()
+    {
         return $this->notesStr;
     }
 
-    public function getWhyGoVegan() {
+    public function getWhyGoVegan()
+    {
         return $this->whyGoVeganStr;
+    }
+
+    public function getFacebookEtgar22GroupStr()
+    {
+        return $this->facebookEtgar22GroupStr;
     }
 }

@@ -23,7 +23,7 @@ class Group extends Model
         ),
         "name" => array(
             'required',
-            'alpha_dash'
+            'regex:/^[a-zA-Z0-9_.]+$/'
         ),
         "status_id" => array(
             'required',
