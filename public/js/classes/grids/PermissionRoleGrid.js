@@ -28,77 +28,56 @@ define([
 
         Grid.call(this, params);
 
-        self.columns().add(self.defaultColumnDefs.id);
-        self.columns().add(self.defaultColumnDefs.permission_id);
-        self.columns().add(self.defaultColumnDefs.role_id);
+        self.columns().add(_.values(Object.create(Class.prototype).getDefaultColumnsDefinitions()));
 
-        self.columns().selectAbsoluteAll();
+        self.columns().selectAbsolute([
+            'id',
+            'permission_id',
+            'role_id',
+            'updated_at'
+        ]);
     };
 
     Class.prototype = Object.create(Grid.prototype, {
-        defaultColumnDefs: {
-            get: function () {
-                var self = this;
-                if (defaultColumns == null) {
-                    defaultColumns = generateDefaultColumns();
+        defaultColumnsDefinitions: {
+            value: {
+                permission_id: {
+                    label: _.capitalize(lang.get('bo.permission-role_permission-id')),
+                    name: 'permission_id',
+                    editable: true,
+                    edittype: 'select',
+                    formatter: 'select',
+                    editoptions: {
+                        value: utilities.generateGetItems('/api/permission', Permission)(),
+                        dataUrl: '/api/permission',
+                        buildSelect: utilities.generateBuildSelect(Permission)
+                    },
+                    extraInfo: {
+                        linkMethod: 'permission',
+                        searchByRelationshipMethod: true,
+                        sortByForeignLinkToString: true
+                    }
+                },
+                role_id: {
+                    label: _.capitalize(lang.get('bo.permission-role_role-id')),
+                    name: 'role_id',
+                    editable: true,
+                    edittype: 'select',
+                    formatter: 'select',
+                    editoptions: {
+                        value: utilities.generateGetItems('/api/role', Role)(),
+                        dataUrl: '/api/role',
+                        buildSelect: utilities.generateBuildSelect(Role)
+                    },
+                    extraInfo: {
+                        linkMethod: 'role',
+                        searchByRelationshipMethod: true,
+                        sortByForeignLinkToString: true
+                    }
                 }
-                return _.cloneDeep(defaultColumns);
             }
         }
     });
-
-    function generateDefaultColumns() {
-        var columnsDefs = {
-            id: {
-                label: _.capitalize(lang.get('bo.id')),
-                name: 'id',
-                width: 50,
-                key: true,
-                searchoptions: {
-                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                },
-                searchrules: {
-                    integer: true
-                }
-            },
-            permission_id: {
-                label: _.capitalize(lang.get('bo.permission-role_permission-id')),
-                name: 'permission_id',
-                editable: true,
-                edittype: 'select',
-                formatter: 'select',
-                editoptions: {
-                    value: utilities.generateGetItems('/api/permission', Permission)(),
-                    dataUrl: '/api/permission',
-                    buildSelect: utilities.generateBuildSelect(Permission)
-                },
-                extraInfo: {
-                    linkMethod: 'permission',
-                    searchByRelationshipMethod: true,
-                    sortByForeignLinkToString: true
-                }
-            },
-            role_id: {
-                label: _.capitalize(lang.get('bo.permission-role_role-id')),
-                name: 'role_id',
-                editable: true,
-                edittype: 'select',
-                formatter: 'select',
-                editoptions: {
-                    value: utilities.generateGetItems('/api/role', Role)(),
-                    dataUrl: '/api/role',
-                    buildSelect: utilities.generateBuildSelect(Role)
-                },
-                extraInfo: {
-                    linkMethod: 'role',
-                    searchByRelationshipMethod: true,
-                    sortByForeignLinkToString: true
-                }
-            }
-        };
-
-        return columnsDefs;
-    }
 
     return Class;
 });

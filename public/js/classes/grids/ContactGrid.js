@@ -29,181 +29,137 @@ define([
 
         Grid.call(this, params);
 
-        self.columns().add(self.defaultColumnDefs.id);
-        self.columns().add(self.defaultColumnDefs.registration_date);
-        self.columns().add(self.defaultColumnDefs.email);
-        self.columns().add(self.defaultColumnDefs.first_name);
-        self.columns().add(self.defaultColumnDefs.last_name);
-        self.columns().add(self.defaultColumnDefs.phone);
-        self.columns().add(self.defaultColumnDefs.facebook);
-        self.columns().add(self.defaultColumnDefs.birth_year);
-        self.columns().add(self.defaultColumnDefs.donate);
-        self.columns().add(self.defaultColumnDefs.blacklisted);
-        self.columns().add(self.defaultColumnDefs.updated_at);
+        self.columns().add(_.values(Object.create(Class.prototype).getDefaultColumnsDefinitions()));
 
         self.children().add({
             name: 'etgar22',
             title: lang.get('bo.etgar22'),
             queryJoinTable: 'etgar22',
             queryLinkMethod: 'etgar22',
-            columns: _.values(Etgar22Grid.prototype.defaultColumnDefs)
+            columns: _.values(_.values(Object.create(Etgar22Grid.prototype).getDefaultColumnsDefinitions()))
         });
 
-        self.columns().selectAbsoluteAll();
+        self.columns().selectAbsolute([
+           'id',
+            'registration_date',
+            'email',
+            'first_name',
+            'last_name',
+            'phone',
+            'facebook',
+            'birth_year',
+            'donate',
+            'blacklisted',
+            'updated_at'
+        ]);
     };
 
     Class.prototype = Object.create(Grid.prototype, {
-        defaultColumnDefs: {
-            get: function () {
-                var self = this;
-                if (defaultColumns == null) {
-                    defaultColumns = generateDefaultColumns();
+        defaultColumnsDefinitions: {
+            value: {
+                registration_date: {
+                    label: _.capitalize(lang.get('bo.registration_date')),
+                    name: 'registration_date',
+                    editable: true,
+                    //edittype: 'select',
+                    formatter: 'datetime',
+                    datefmt: 'yyyy-mm-dd',
+                    editoptions: {
+                        // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                        // use it to place a third party control to customize the toolbar
+                        dataInit: utilities.generateDateTimePicker
+                    },
+                    //stype: 'datetime',
+                    searchoptions: {
+                        sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'],
+                        dataInit: utilities.generateDateTimePicker
+                    },
+                    searchrules: {
+                        date: true
+                    }
+                },
+                email: {
+                    label: _.capitalize(lang.get('bo.email')),
+                    name: 'email',
+                    editable: true,
+                    editoptions: {}
+                    //search:true,
+                    //stype:'text',
+
+                },
+                first_name: {
+                    label: _.capitalize(lang.get('bo.first_name')),
+                    name: 'first_name',
+                    editable: true,
+                    editoptions: {}
+                },
+                last_name: {
+                    label: _.capitalize(lang.get('bo.last_name')),
+                    name: 'last_name',
+                    editable: true,
+                    editoptions: {}
+                },
+                phone: {
+                    label: _.capitalize(lang.get('bo.phone')),
+                    name: 'phone',
+                    editable: true,
+                    editoptions: {}
+                },
+                facebook: {
+                    label: _.capitalize(lang.get('bo.facebook_account')),
+                    name: 'facebook',
+                    editable: true,
+                    editoptions: {}
+                },
+                birth_year: {
+                    label: _.capitalize(lang.get('bo.birth_year')),
+                    name: 'birth_year',
+                    editable: true,
+                    editoptions: {},
+                    searchoptions: {
+                        // show search options
+                        sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                    }
+                },
+                donate: {
+                    label: _.capitalize(lang.get('bo.donate')),
+                    name: 'donate',
+                    editable: true,
+                    formatter: 'checkbox',
+                    align: 'center',
+                    width: 100,
+                    fixed: true,
+                    edittype: 'checkbox',
+                    editoptions: {
+                        value: "1:0"
+                    },
+                    stype: "select",
+                    searchoptions: {
+                        sopt: ['eq', 'ne'],
+                        value: ":All;1:Yes;0:No"
+                    }
+                },
+                blacklisted: {
+                    label: _.capitalize(lang.get('bo.blacklisted')),
+                    name: 'blacklisted',
+                    editable: true,
+                    formatter: 'checkbox',
+                    align: 'center',
+                    width: 100,
+                    fixed: true,
+                    edittype: 'checkbox',
+                    editoptions: {
+                        value: "1:0"
+                    },
+                    stype: "select",
+                    searchoptions: {
+                        sopt: ['eq', 'ne'],
+                        value: ":All;1:Yes;0:No"
+                    }
                 }
-                return _.cloneDeep(defaultColumns);
             }
         }
     });
-
-    function generateDefaultColumns() {
-        var columnsDefs = {
-            id: {
-                label: _.capitalize(lang.get('bo.id')),
-                name: 'id',
-                width: 50,
-                key: true,
-                searchoptions: {
-                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                },
-                searchrules: {
-                    integer: true
-                }
-            },
-            registration_date: {
-                label: _.capitalize(lang.get('bo.registration_date')),
-                name: 'registration_date',
-                editable: true,
-                //edittype: 'select',
-                formatter: 'datetime',
-                datefmt: 'yyyy-mm-dd',
-                editoptions: {
-                    // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
-                    // use it to place a third party control to customize the toolbar
-                    dataInit: utilities.generateDateTimePicker
-                },
-                //stype: 'datetime',
-                searchoptions: {
-                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'],
-                    dataInit: utilities.generateDateTimePicker
-                },
-                searchrules: {
-                    date: true
-                }
-            },
-            email: {
-                label: _.capitalize(lang.get('bo.email')),
-                name: 'email',
-                editable: true,
-                editoptions: {}
-                //search:true,
-                //stype:'text',
-
-            },
-            first_name: {
-                label: _.capitalize(lang.get('bo.first_name')),
-                name: 'first_name',
-                editable: true,
-                editoptions: {}
-            },
-            last_name: {
-                label: _.capitalize(lang.get('bo.last_name')),
-                name: 'last_name',
-                editable: true,
-                editoptions: {}
-            },
-            phone: {
-                label: _.capitalize(lang.get('bo.phone')),
-                name: 'phone',
-                editable: true,
-                editoptions: {}
-            },
-            facebook: {
-                label: _.capitalize(lang.get('bo.facebook_account')),
-                name: 'facebook',
-                editable: true,
-                editoptions: {}
-            },
-            birth_year: {
-                label: _.capitalize(lang.get('bo.birth_year')),
-                name: 'birth_year',
-                editable: true,
-                editoptions: {},
-                searchoptions: {
-                    // show search options
-                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                }
-            },
-            donate: {
-                label: _.capitalize(lang.get('bo.donate')),
-                name: 'donate',
-                editable: true,
-                formatter: 'checkbox',
-                align: 'center',
-                width: 100,
-                fixed: true,
-                edittype: 'checkbox',
-                editoptions: {
-                    value: "1:0"
-                },
-                stype: "select",
-                searchoptions: {
-                    sopt: ['eq', 'ne'],
-                    value: ":All;1:Yes;0:No"
-                }
-            },
-            blacklisted: {
-                label: _.capitalize(lang.get('bo.blacklisted')),
-                name: 'blacklisted',
-                editable: true,
-                formatter: 'checkbox',
-                align: 'center',
-                width: 100,
-                fixed: true,
-                edittype: 'checkbox',
-                editoptions: {
-                    value: "1:0"
-                },
-                stype: "select",
-                searchoptions: {
-                    sopt: ['eq', 'ne'],
-                    value: ":All;1:Yes;0:No"
-                }
-            },
-            updated_at: {
-                label: _.capitalize(lang.get('bo.general_updated-at')),
-                name: 'updated_at',
-                editable: true,
-                formatter: 'datetime',
-                datefmt: 'yyyy-mm-dd',
-                editoptions: {
-                    readonly: true,
-                    // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
-                    // use it to place a third party control to customize the toolbar
-                    dataInit: utilities.generateDateTimePicker
-                },
-                //stype: 'datetime',
-                searchoptions: {
-                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                    // TODO: bug in jqgrid ? find out why same id as parent search.
-                    //dataInit: generateDateTimePicker
-                },
-                searchrules: {
-                    date: true
-                }
-            }
-        };
-
-        return columnsDefs;
-    }
 
     return Class;
 });
