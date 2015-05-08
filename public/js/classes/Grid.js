@@ -221,6 +221,63 @@ define([
         };
 
         Class.prototype = Object.create(AttributesObject.prototype, {
+            defaultColumnsDefinitions: {
+                value: {
+                    id: {
+                        label: _.capitalize(lang.get('bo.id')),
+                        name: 'id',
+                        width: 50,
+                        key: true,
+                        searchoptions: {
+                            sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                        },
+                        searchrules: {
+                            integer: true
+                        }
+                    },
+                    updated_at: {
+                        label: _.capitalize(lang.get('bo.general_updated-at')),
+                        name: 'updated_at',
+                        editable: true,
+                        formatter: 'datetime',
+                        datefmt: 'yyyy-mm-dd',
+                        editoptions: {
+                            readonly: true,
+                            // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                            // use it to place a third party control to customize the toolbar
+                            //dataInit: utilities.generateDateTimePicker
+                        },
+                        //stype: 'datetime',
+                        searchoptions: {
+                            sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                            // TODO: bug in jqgrid ? find out why same id as parent search.
+                            //dataInit: generateDateTimePicker
+                        },
+                        searchrules: {
+                            date: true
+                        }
+                    }
+                }
+            },
+
+            getDefaultColumnsDefinitions: {
+                value: function () {
+                    var self = this;
+                    var columns = {};
+
+                    if (self.hasOwnProperty('defaultColumnsDefinitions')){
+                        columns = _.merge({}, _.cloneDeep(self.defaultColumnsDefinitions));
+                    }
+
+                    var parent = self.__proto__;
+                    if (typeof(parent.getDefaultColumnsDefinitions) !== 'undefined') {
+                        var parentColumns = parent.getDefaultColumnsDefinitions();
+                        columns = _.merge({}, columns, parentColumns);
+                    }
+
+                    return columns;
+                }
+            },
 
             execute: {
                 value: function () {
@@ -1036,14 +1093,32 @@ define([
             });
 
             self._selectedChildrenGroups.forEach(function (selectedChildGroupName) {
+                var calcChildResult = [];
                 var childGroup = self._children[selectedChildGroupName];
                 childGroup.columns.forEach(function (childColumnDef) {
                     var selectedModel = _.cloneDeep(childColumnDef);
-                    calcResult.push(selectedModel);
+                    calcChildResult.push(selectedModel);
                 });
+                calcChildResult = arrangeColumnsInChild(calcChildResult);
+                calcResult = calcResult.concat(calcChildResult);
             });
 
             return calcResult;
+        }
+
+        function arrangeColumnsInChild(columns) {
+            var id_index = _.findIndex(columns, function(element) {
+                return (utilities.strEndsWith(element.name, '.id'));
+            });
+            utilities.arrayMove(columns, id_index, 0);
+
+            var updated_index = _.findIndex(columns, function(element){
+                return (utilities.strEndsWith(element.name, '.updated_at'));
+            });
+            var last_index = columns.length - 1;
+            utilities.arrayMove(columns, updated_index, last_index);
+
+            return columns;
         }
 
         function setGridComponent(self) {
@@ -1070,7 +1145,10 @@ define([
                 var headerDef = {};
 
                 var childGroupDef = self._children[groupName];
-                var firstColumnDef = childGroupDef.columns[0];
+                var id_index = _.findIndex(childGroupDef.columns, function(element) {
+                    return (utilities.strEndsWith(element.name, '.id'));
+                });
+                var firstColumnDef = childGroupDef.columns[id_index];
                 headerDef.startColumnName = firstColumnDef.name;
                 headerDef.numberOfColumns = childGroupDef.columns.length;
                 headerDef.titleText = '<em>' + childGroupDef.title + '</em>';
@@ -1394,10 +1472,20 @@ define([
                         processedData[key] = val;
                     }
 
-                    // always send id data
+                    // always send id, created and updated data
+
                     if (key == 'id' || utilities.strEndsWith(key, '.id')) {
                         processedData[key] = val;
                     }
+
+                    if (key == 'created_at' || utilities.strEndsWith(key, '.created_at')) {
+                        processedData[key] = val;
+                    }
+
+                    if (key == 'updated_at' || utilities.strEndsWith(key, '.updated_at')) {
+                        processedData[key] = val;
+                    }
+
                 } else {
                     processedData[key] = val;
                 }

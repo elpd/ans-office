@@ -16,8 +16,6 @@ define([
 
     var defaultColumns = null;
 
-
-
     var Class = function (params) {
         var self = this;
 
@@ -29,88 +27,68 @@ define([
 
         Grid.call(this, params);
 
-        self.columns().add(self.defaultColumnDefs.id);
-        self.columns().add(self.defaultColumnDefs.name);
-        self.columns().add(self.defaultColumnDefs.email);
-        self.columns().add(self.defaultColumnDefs.password);
-        self.columns().add(self.defaultColumnDefs.password_confirmation);
+        self.columns().add(_.values(Object.create(Class.prototype).getDefaultColumnsDefinitions()));
 
-        self.columns().selectAbsoluteAll();
+        self.columns().selectAbsolute([
+            'id',
+            'name',
+            'email',
+            'password',
+            'password_confirmation',
+            'updated_at'
+        ]);
     };
 
     Class.prototype = Object.create(Grid.prototype, {
-        defaultColumnDefs: {
-            get: function () {
-                var self = this;
-                if (defaultColumns == null) {
-                    defaultColumns = generateDefaultColumns();
+        defaultColumnsDefinitions: {
+            value: {
+                name: {
+                    label: lang.get('bo.user_name'),
+                    name: 'name',
+                    editable: true,
+                    //edittype: 'select',
+                    //formatter: 'integer',
+                    editoptions: {}
+                },
+                email: {
+                    label: lang.get('bo.user_email'),
+                    name: 'email',
+                    editable: true,
+                    //edittype: 'select',
+                    //formatter: 'integer',
+                    editoptions: {},
+                    editrules: {
+                        required: true,
+                        email: true
+                    }
+                },
+                password: {
+                    label: lang.get('bo.user_password'),
+                    name: 'password',
+                    editable: true,
+                    //hidden: true,
+                    edittype: 'password',
+                    editoptions: {},
+                    editrules: {
+                        edithidden: true//,
+                        //required: true
+                    }
+                },
+                password_confirmation: {
+                    label: lang.get('bo.user_password_confirmation'),
+                    name: 'password_confirmation',
+                    editable: true,
+                    //hidden: true,
+                    edittype: 'password',
+                    editrules: {
+                        edithidden: true//,
+                        //required: true
+                    }
                 }
-                return _.cloneDeep(defaultColumns);
             }
         }
+
     });
-
-    function generateDefaultColumns() {
-        var columnsDefs = {
-            id: {
-                label: _.capitalize(lang.get('bo.id')),
-                name: 'id',
-                width: 50,
-                key: true,
-                searchoptions: {
-                    sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                },
-                searchrules: {
-                    integer: true
-                }
-            },
-            name: {
-                label: lang.get('bo.user_name'),
-                name: 'name',
-                editable: true,
-                //edittype: 'select',
-                //formatter: 'integer',
-                editoptions: {}
-            },
-            email: {
-                label: lang.get('bo.user_email'),
-                name: 'email',
-                editable: true,
-                //edittype: 'select',
-                //formatter: 'integer',
-                editoptions: {},
-                editrules: {
-                    required: true,
-                    email: true
-                }
-            },
-            password: {
-                label: lang.get('bo.user_password'),
-                name: 'password',
-                editable: true,
-                //hidden: true,
-                edittype: 'password',
-                editoptions: {},
-                editrules: {
-                    edithidden: true//,
-                    //required: true
-                }
-            },
-            password_confirmation: {
-                label: lang.get('bo.user_password_confirmation'),
-                name: 'password_confirmation',
-                editable: true,
-                //hidden: true,
-                edittype: 'password',
-                editrules: {
-                    edithidden: true//,
-                    //required: true
-                }
-            }
-        };
-
-        return columnsDefs;
-    }
 
     return Class;
 });
