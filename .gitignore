@@ -9,3 +9,4 @@
 composer.lock
 npm-debug.log
 .directory
+*.csv
