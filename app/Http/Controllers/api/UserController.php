@@ -8,6 +8,7 @@ use App\Settings;
 use App\UiLanguage;
 use App\UiBootstrapTheme;
 use App\UiJqueryUiTheme;
+use Illuminate\Foundation\Application;
 
 class UserController extends ApiController
 {
@@ -47,7 +48,7 @@ class UserController extends ApiController
         $user->settings()->save($userSettings);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Application $app, $id)
     {
         $this->validate($request, [
             'password' => 'confirmed|alpha_dash|between:6,20',
@@ -56,6 +57,6 @@ class UserController extends ApiController
         $hashedPassword = \Hash::make($request->get('password'));
         $request->merge(['password' => $hashedPassword]);
 
-        return $this->generalUpdate($id);
+        return $this->generalUpdate($request, $app, $id);
     }
 }
