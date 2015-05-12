@@ -169,3 +169,15 @@ td.first {
 .home_row {
     margin-top:15px;
 }
+
+/*
+* data from csv
+*/
+
+#dataFromCsv_page #loading_indicator {
+    margin-top: 20px;
+}
+
+#dataFromCsv_page #action_output {
+    margin-top: 20px;
+}

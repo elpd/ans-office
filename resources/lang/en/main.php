@@ -55,4 +55,13 @@ return [
 
     'dialog-field-chooser_header' => 'Fields Chooser',
     'dialog-field-chooser_children_header' => 'Children Groups',
+
+    'admin_data' => 'Data',
+    'admin_data_from-csv' => 'From Csv',
+
+    'dataFromCsv_header' => 'Csv Etgar 22 Google Docs Conversion',
+    'dataFromCsv_label_choose-csv-file-to-process' => 'Choose csv file to process',
+    'dataFromCsv_errors' => 'Errors',
+    'dataFromCsv_info' => 'Info',
+    'dataFromCsv_label_overwrite_etgar22' => 'Overwrite existing etgar22 records',
 ];

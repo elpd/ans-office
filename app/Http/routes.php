@@ -37,6 +37,7 @@ Route::group(['middleware' => 'user.settings'], function() {
     Route::get('admin/users', 'UserController@index');
     Route::get('admin/roles', 'RoleController@index');
     Route::get('admin/permissions', 'PermissionController@index');
+    Route::get('admin/data_from_csv', 'DataFromCsvController@index');
 });
 
 Route::resource('api/contact', 'api\ContactController');
@@ -74,6 +75,10 @@ Route::get('api/user-guided-group', 'api\User\GuidedGroupController@show');
 Route::get('api/user-data', 'api\User\DataController@show');
 
 Route::get('api/language', 'api\LanguageController@index');
+
+Route::post('api/data-from-csv/add', [
+    'as' => 'api.data-from-csv.add', 'uses' => 'api\DataFromCsvController@add'
+]);
 
 if (App::environment('local', 'testing')) {
     // For testing purpose. Let test clear database.

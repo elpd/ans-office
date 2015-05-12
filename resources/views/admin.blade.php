@@ -38,6 +38,14 @@
 								<li><a href="/admin/permissions" data-action="permissionsList">
 									@lang('main.permissions_list_label')</a>
 								</li>
+								<li>
+									<a >@lang('main.admin_data')</a>
+									<ul>
+										<li>
+											<a href="/admin/data_from_csv" data-action="dataFromCsv">@lang('main.admin_data_from-csv')</a>
+										</li>
+									</ul>
+								</li>
 							</ul>
 						</div>
 						<!--/.nav-collapse -->

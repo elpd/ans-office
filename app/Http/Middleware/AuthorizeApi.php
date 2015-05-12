@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 
 class AuthorizeApi {
 
-    protected static $CONTROLLER_ACTIONS_NAMES = ['index', 'show', 'store', 'update', 'destroy'];
+    protected static $CONTROLLER_ACTIONS_NAMES = ['index', 'show', 'store', 'update', 'destroy', 'add'];
 
 	/**
 	 * Handle an incoming request.

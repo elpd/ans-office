@@ -43,7 +43,7 @@ class Contact extends Model
         ),
         "phone" => array(
             'required',
-            'phone:IL',
+        //    'phone:IL',
         ),
         "facebook" => array(),
         "birth_year" => [

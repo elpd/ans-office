@@ -567,6 +567,11 @@ class PermissionTableSeeder extends Seeder
                 'slug' => 'api.group-member-guide.action.destroy',
                 'description' => '',
                 'model' => '',
+            ], [
+                'name' => 'api.data-from-csv.action.add',
+                'slug' => 'api.data-from-csv.action.add',
+                'description' => '',
+                'model' => '',
             ]
         ];
 
