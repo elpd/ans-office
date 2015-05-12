@@ -39,48 +39,57 @@ define([
         ]);
     };
 
+    var static_defaultColumnsDefinitions = null;
+
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnsDefinitions: {
-            value: {
-                user_id: {
-                    label: _.capitalize(lang.get('bo.role-user_user-id')),
-                    name: 'user_id',
-                    width: 200,
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/user', User)(),
-                        dataUrl: '/api/user',
-                        buildSelect: utilities.generateBuildSelect(User)
+            get: function () {
+                if (static_defaultColumnsDefinitions != null) {
+                    return static_defaultColumnsDefinitions;
+                }
+
+                static_defaultColumnsDefinitions = {
+                    user_id: {
+                        label: _.capitalize(lang.get('bo.role-user_user-id')),
+                        name: 'user_id',
+                        width: 200,
+                        editable: true,
+                        edittype: 'select',
+                        formatter: 'select',
+                        editoptions: {
+                            value: utilities.generateGetItems('/api/user', User)(),
+                            dataUrl: '/api/user',
+                            buildSelect: utilities.generateBuildSelect(User)
+                        },
+                        extraInfo: {
+                            linkMethod: 'user',
+                            searchByForeignLinkToString: true,
+                            sortByForeignLinkToString: true
+                        }
                     },
-                    extraInfo: {
-                        linkMethod: 'user',
-                        searchByForeignLinkToString: true,
-                        sortByForeignLinkToString: true
-                    }
-                },
-                role_id: {
-                    label: _.capitalize(lang.get('bo.role-user_role-id')),
-                    name: 'role_id',
-                    width: 200,
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/role', Role)(),
-                        dataUrl: '/api/role',
-                        buildSelect: utilities.generateBuildSelect(Role)
-                    },
-                    extraInfo: {
-                        linkMethod: 'role',
-                        searchByForeignLinkToString: true,
-                        sortByForeignLinkToString: true
+                    role_id: {
+                        label: _.capitalize(lang.get('bo.role-user_role-id')),
+                        name: 'role_id',
+                        width: 200,
+                        editable: true,
+                        edittype: 'select',
+                        formatter: 'select',
+                        editoptions: {
+                            value: utilities.generateGetItems('/api/role', Role)(),
+                            dataUrl: '/api/role',
+                            buildSelect: utilities.generateBuildSelect(Role)
+                        },
+                        extraInfo: {
+                            linkMethod: 'role',
+                            searchByForeignLinkToString: true,
+                            sortByForeignLinkToString: true
+                        }
                     }
                 }
+                return static_defaultColumnsDefinitions;
             }
-        }
 
+        }
     });
 
     return Class;

@@ -55,44 +55,55 @@ define([
         ]);
     };
 
+    var static_defaultColumnsDefinitions = null;
+    
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnsDefinitions: {
-            value: {
-                groups_member_id: {
-                    label: _.capitalize(lang.get('bo.group-member-guide_group-member-id')),
-                    name: 'groups_member_id',
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
-                        dataUrl: '/api/groups-members',
-                        buildSelect: utilities.generateBuildSelect(GroupsMembers)
-                    },
-                    extraInfo: {
-                        linkMethod: 'groupMember',
-                        searchByRelationshipMethod: true,
-                        sortByForeignLinkToString: true
-                    }
-                },
+            get: function () {
+                if (static_defaultColumnsDefinitions != null) {
+                    return static_defaultColumnsDefinitions;
+                }
 
-                user_id: {
-                    label: _.capitalize(lang.get('bo.group-member-guide_user-id')),
-                    name: 'user_id',
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/user', User)(),
-                        dataUrl: '/api/user',
-                        buildSelect: utilities.generateBuildSelect(User)
+                static_defaultColumnsDefinitions =
+                {
+                    groups_member_id: {
+                        label: _.capitalize(lang.get('bo.group-member-guide_group-member-id')),
+                        name: 'groups_member_id',
+                        editable: true,
+                        edittype: 'select',
+                        formatter: 'select',
+                        editoptions: {
+                            value: utilities.generateGetItems('/api/groups-members', GroupsMembers)(),
+                            dataUrl: '/api/groups-members',
+                            buildSelect: utilities.generateBuildSelect(GroupsMembers)
+                        },
+                        extraInfo: {
+                            linkMethod: 'groupMember',
+                            searchByRelationshipMethod: true,
+                            sortByForeignLinkToString: true
+                        }
                     },
-                    extraInfo: {
-                        linkMethod: 'user',
-                        searchByRelationshipMethod: true,
-                        sortByForeignLinkToString: true
+
+                    user_id: {
+                        label: _.capitalize(lang.get('bo.group-member-guide_user-id')),
+                        name: 'user_id',
+                        editable: true,
+                        edittype: 'select',
+                        formatter: 'select',
+                        editoptions: {
+                            value: utilities.generateGetItems('/api/user', User)(),
+                            dataUrl: '/api/user',
+                            buildSelect: utilities.generateBuildSelect(User)
+                        },
+                        extraInfo: {
+                            linkMethod: 'user',
+                            searchByRelationshipMethod: true,
+                            sortByForeignLinkToString: true
+                        }
                     }
                 }
+
+                return static_defaultColumnsDefinitions;
             }
         }
     });

@@ -35,48 +35,60 @@ define([
         ]);
     };
 
+    var static_defaultColumnsDefinitions = null;
+
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnsDefinitions: {
-            value: {
-                startDate: {
-                    label: _.capitalize(lang.get('bo.cycle_start_date')),
-                    name: 'startDate',
-                    editable: true,
-                    //edittype: 'select',
-                    formatter: 'datetime',
-                    datefmt: 'yyyy-mm-dd',
-                    editoptions: {
-                        // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
-                        // use it to place a third party control to customize the toolbar
-                        dataInit: utilities.generateDateTimePicker
-                    },
-                    //stype: 'datetime',
-                    searchoptions: {
-                        sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'],
-                        dataInit: utilities.generateDateTimePicker
-                    },
-                    searchrules: {
-                        date: true
-                    }
-                },
-                num: {
-                    label: _.capitalize(lang.get('bo.cycle_num')),
-                    name: 'num',
-                    editable: true,
-                    editoptions: {},
-                    editrules: {
-                        integer: true
-                    },
-                    searchoptions: {
-                        // show search options
-                        sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
-                    },
-                    searchrules: {
-                        integer: true
-                    }
-
+            get: function () {
+                if (static_defaultColumnsDefinitions != null) {
+                    return static_defaultColumnsDefinitions;
                 }
+
+                static_defaultColumnsDefinitions =
+                {
+                    startDate: {
+                        label: _.capitalize(lang.get('bo.cycle_start_date')),
+                        name: 'startDate',
+                        editable: true,
+                        //edittype: 'select',
+                        formatter: 'datetime',
+                        datefmt: 'yyyy-mm-dd',
+                        editoptions: {
+                            // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
+                            // use it to place a third party control to customize the toolbar
+                            dataInit: utilities.generateDateTimePicker
+                        },
+                        //stype: 'datetime',
+                        searchoptions: {
+                            sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge'],
+                            dataInit: utilities.generateDateTimePicker
+                        },
+                        searchrules: {
+                            date: true
+                        }
+                    },
+                    num: {
+                        label: _.capitalize(lang.get('bo.cycle_num')),
+                        name: 'num',
+                        editable: true,
+                        editoptions: {},
+                        editrules: {
+                            integer: true
+                        },
+                        searchoptions: {
+                            // show search options
+                            sopt: ['eq', 'ne', 'lt', 'le', 'gt', 'ge']
+                        },
+                        searchrules: {
+                            integer: true
+                        }
+
+                    }
+                }
+
+                return static_defaultColumnsDefinitions;
             }
+
         }
     });
 

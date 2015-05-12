@@ -14,8 +14,6 @@ define([
 
     var CONTROLLER_URL = '/api/user';
 
-    var defaultColumns = null;
-
     var Class = function (params) {
         var self = this;
 
@@ -39,55 +37,65 @@ define([
         ]);
     };
 
+    var static_defaultColumnsDefinitions = null;
+
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnsDefinitions: {
-            value: {
-                name: {
-                    label: lang.get('bo.user_name'),
-                    name: 'name',
-                    editable: true,
-                    //edittype: 'select',
-                    //formatter: 'integer',
-                    editoptions: {}
-                },
-                email: {
-                    label: lang.get('bo.user_email'),
-                    name: 'email',
-                    editable: true,
-                    //edittype: 'select',
-                    //formatter: 'integer',
-                    editoptions: {},
-                    editrules: {
-                        required: true,
-                        email: true
-                    }
-                },
-                password: {
-                    label: lang.get('bo.user_password'),
-                    name: 'password',
-                    editable: true,
-                    //hidden: true,
-                    edittype: 'password',
-                    editoptions: {},
-                    editrules: {
-                        edithidden: true//,
-                        //required: true
-                    }
-                },
-                password_confirmation: {
-                    label: lang.get('bo.user_password_confirmation'),
-                    name: 'password_confirmation',
-                    editable: true,
-                    //hidden: true,
-                    edittype: 'password',
-                    editrules: {
-                        edithidden: true//,
-                        //required: true
+            get: function () {
+                if (static_defaultColumnsDefinitions != null) {
+                    return static_defaultColumnsDefinitions;
+                }
+
+                static_defaultColumnsDefinitions = {
+                    name: {
+                        label: lang.get('bo.user_name'),
+                        name: 'name',
+                        editable: true,
+                        //edittype: 'select',
+                        //formatter: 'integer',
+                        editoptions: {}
+                    },
+                    email: {
+                        label: lang.get('bo.user_email'),
+                        name: 'email',
+                        editable: true,
+                        //edittype: 'select',
+                        //formatter: 'integer',
+                        editoptions: {},
+                        editrules: {
+                            required: true,
+                            email: true
+                        }
+                    },
+                    password: {
+                        label: lang.get('bo.user_password'),
+                        name: 'password',
+                        editable: true,
+                        //hidden: true,
+                        edittype: 'password',
+                        editoptions: {},
+                        editrules: {
+                            edithidden: true//,
+                            //required: true
+                        }
+                    },
+                    password_confirmation: {
+                        label: lang.get('bo.user_password_confirmation'),
+                        name: 'password_confirmation',
+                        editable: true,
+                        //hidden: true,
+                        edittype: 'password',
+                        editrules: {
+                            edithidden: true//,
+                            //required: true
+                        }
                     }
                 }
-            }
-        }
 
+                return static_defaultColumnsDefinitions;
+            }
+
+        }
     });
 
     return Class;

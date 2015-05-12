@@ -54,52 +54,110 @@ define([
         ]);
     };
 
+    var static_defaultColumnsDefinitions = null;
+
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnsDefinitions: {
-            value: {
-                cycle_id: {
-                    label: _.capitalize(lang.get('bo.group_cycle-id')),
-                    name: 'cycle_id',
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/cycle', Cycle)(),
-                        dataUrl: '/api/cycle',
-                        buildSelect: utilities.generateBuildSelect(Cycle)
-                    },
-                    extraInfo: {
-                        linkMethod: 'cycle',
-                        searchByRelationshipMethod: true,
-                        sortByForeignLinkToString: true
-                    }
-                },
-                name: {
-                    label: _.capitalize(lang.get('bo.group_name')),
-                    name: 'name',
-                    editable: true,
-                    editoptions: {}
-                    //search:true,
-                    //stype:'text',
+            get: function() {
+                if (static_defaultColumnsDefinitions != null) {
+                    return static_defaultColumnsDefinitions;
+                }
 
-                },
-                status_id: {
-                    label: _.capitalize(lang.get('bo.group_status-id')),
-                    name: 'status_id',
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
-                        dataUrl: '/api/group-status',
-                        buildSelect: utilities.generateBuildSelect(GroupStatus)
-                    },
-                    extraInfo: {
-                        linkMethod: 'status',
-                        searchByRelationshipMethod: true,
-                        sortByForeignLinkToString: true
+                static_defaultColumnsDefinitions =
+                {
+                    cycle_id: {
+                        label: _.capitalize(lang.get('bo.group_cycle-id')),
+                            name
+                    :
+                        'cycle_id',
+                            editable
+                    :
+                        true,
+                            edittype
+                    :
+                        'select',
+                            formatter
+                    :
+                        'select',
+                            editoptions
+                    :
+                        {
+                            value: utilities.generateGetItems('/api/cycle', Cycle)(),
+                                dataUrl
+                        :
+                            '/api/cycle',
+                                buildSelect
+                        :
+                            utilities.generateBuildSelect(Cycle)
+                        }
+                    ,
+                        extraInfo: {
+                            linkMethod: 'cycle',
+                                searchByRelationshipMethod
+                        :
+                            true,
+                                sortByForeignLinkToString
+                        :
+                            true
+                        }
+                    }
+                ,
+                    name: {
+                        label: _.capitalize(lang.get('bo.group_name')),
+                            name
+                    :
+                        'name',
+                            editable
+                    :
+                        true,
+                            editoptions
+                    :
+                        {
+                        }
+                        //search:true,
+                        //stype:'text',
+
+                    }
+                ,
+                    status_id: {
+                        label: _.capitalize(lang.get('bo.group_status-id')),
+                            name
+                    :
+                        'status_id',
+                            editable
+                    :
+                        true,
+                            edittype
+                    :
+                        'select',
+                            formatter
+                    :
+                        'select',
+                            editoptions
+                    :
+                        {
+                            value: utilities.generateGetItems('/api/group-status', GroupStatus)(),
+                                dataUrl
+                        :
+                            '/api/group-status',
+                                buildSelect
+                        :
+                            utilities.generateBuildSelect(GroupStatus)
+                        }
+                    ,
+                        extraInfo: {
+                            linkMethod: 'status',
+                                searchByRelationshipMethod
+                        :
+                            true,
+                                sortByForeignLinkToString
+                        :
+                            true
+                        }
                     }
                 }
+
+                return static_defaultColumnsDefinitions;
             }
         }
 

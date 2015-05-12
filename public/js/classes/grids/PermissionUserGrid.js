@@ -36,45 +36,54 @@ define([
         ]);
     };
 
+    var static_defaultColumnsDefinitions = null;
+
     Class.prototype = Object.create(Grid.prototype, {
         defaultColumnsDefinitions: {
-            value: {
-                permission_id: {
+            get: function () {
+                if (static_defaultColumnsDefinitions != null) {
+                    return static_defaultColumnsDefinitions;
+                }
 
-                    label: _.capitalize(lang.get('bo.permission-user_permission-id')),
-                    name: 'permission_id',
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/permission', Permission)(),
-                        dataUrl: '/api/permission',
-                        buildSelect: utilities.generateBuildSelect(Permission)
-                    },
-                    extraInfo: {
-                        linkMethod: 'permission',
-                        searchByRelationshipMethod: true,
-                        sortByForeignLinkToString: true
-                    }
+                static_defaultColumnsDefinitions = {
+                    permission_id: {
 
-                },
-                user_id: {
-                    label: _.capitalize(lang.get('bo.permission-user_user-id')),
-                    name: 'user_id',
-                    editable: true,
-                    edittype: 'select',
-                    formatter: 'select',
-                    editoptions: {
-                        value: utilities.generateGetItems('/api/user', User)(),
-                        dataUrl: '/api/user',
-                        buildSelect: utilities.generateBuildSelect(User)
+                        label: _.capitalize(lang.get('bo.permission-user_permission-id')),
+                        name: 'permission_id',
+                        editable: true,
+                        edittype: 'select',
+                        formatter: 'select',
+                        editoptions: {
+                            value: utilities.generateGetItems('/api/permission', Permission)(),
+                            dataUrl: '/api/permission',
+                            buildSelect: utilities.generateBuildSelect(Permission)
+                        },
+                        extraInfo: {
+                            linkMethod: 'permission',
+                            searchByRelationshipMethod: true,
+                            sortByForeignLinkToString: true
+                        }
+
                     },
-                    extraInfo: {
-                        linkMethod: 'user',
-                        searchByRelationshipMethod: true,
-                        sortByForeignLinkToString: true
+                    user_id: {
+                        label: _.capitalize(lang.get('bo.permission-user_user-id')),
+                        name: 'user_id',
+                        editable: true,
+                        edittype: 'select',
+                        formatter: 'select',
+                        editoptions: {
+                            value: utilities.generateGetItems('/api/user', User)(),
+                            dataUrl: '/api/user',
+                            buildSelect: utilities.generateBuildSelect(User)
+                        },
+                        extraInfo: {
+                            linkMethod: 'user',
+                            searchByRelationshipMethod: true,
+                            sortByForeignLinkToString: true
+                        }
                     }
                 }
+                return static_defaultColumnsDefinitions;
             }
         }
     });
