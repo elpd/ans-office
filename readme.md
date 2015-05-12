@@ -10,7 +10,7 @@ Documentation for the framework can be found on the site.
 
 ## Contributing
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the contribution documentations.
+Thank you for considering contributing to the ANS Office System! The contribution guide can be found in the contribution documentations.
 
 ### License
 
