@@ -11,3 +11,4 @@ npm-debug.log
 .directory
 *.csv
 .~lock*
+env_specific
