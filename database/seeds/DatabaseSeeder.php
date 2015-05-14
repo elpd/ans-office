@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
         $this->call('UiBootstrapThemeTableSeeder');
         $this->call('UiJqueryUiThemeTableSeeder');
         $this->call('RequestStatusTableSeeder');
+        $this->call('Etgar22ProgressStatusTableSeeder');
         $this->call('PermissionTableSeeder');
         $this->call('RoleTableSeeder');
         $this->call('UserTableSeeder');

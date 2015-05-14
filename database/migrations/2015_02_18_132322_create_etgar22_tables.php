@@ -90,6 +90,14 @@ class CreateEtgar22Tables extends Migration
                 $table->timestamps();
             });
 
+        // Create the group status table
+        Schema::create('etgar22_progress_statuses',
+            function ($table) {
+                $table->increments('id')->unsigned();
+                $table->string('name', 30);
+                $table->timestamps();
+            });
+
         // Create the etgar22 table
         Schema::create('etgar22',
             function ($table) {
@@ -105,11 +113,19 @@ class CreateEtgar22Tables extends Migration
                 $table->string('why_go_vegan', 1000);
                 $table->string('parent_name', 30);
                 $table->string('parent_email', 100);
+                $table->integer('progress_status_id')
+                    ->unsigned();
                 $table->timestamps();
 
                 $table->foreign('contact_id')
                     ->references('id')
                     ->on('contacts')
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
+
+                $table->foreign('progress_status_id')
+                    ->references('id')
+                    ->on('etgar22_progress_statuses')
                     ->onUpdate('cascade')
                     ->onDelete('cascade');
             });
@@ -258,6 +274,7 @@ class CreateEtgar22Tables extends Migration
         Schema::table('etgar22',
             function (Blueprint $table) {
                 $table->dropForeign('etgar22_contact_id_foreign');
+                $table->dropForeign('etgar22_progress_status_id_foreign');
             });
 
         Schema::table('groups',
@@ -298,6 +315,7 @@ class CreateEtgar22Tables extends Migration
         Schema::drop('ui_bootstrap_themes');
         Schema::drop('ui_jquery_ui_themes');
         Schema::drop('groups_members_guides');
+        Schema::drop('etgar22_progress_statuses');
     }
 
 }

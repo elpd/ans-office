@@ -22,6 +22,7 @@ class RoleTableSeeder extends Seeder
             Permission::where('slug', '=', 'api.uijqueryuitheme.action.index')->firstOrFail(),
             Permission::where('slug', '=', 'api.language.action.index')->firstOrFail(),
             Permission::where('slug', '=', 'api.request.status.action.index')->firstOrFail(),
+            Permission::where('slug', '=', 'api.etgar22.progress.status.action.index')->firstOrFail(),
         ];
 
         $employeeReadingPermissions = [
