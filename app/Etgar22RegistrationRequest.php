@@ -173,7 +173,7 @@ class Etgar22RegistrationRequest extends Model
             $etgar22->contact()->associate($contact);
 
             // Defaults
-            $onTheRoadTheVeganStatus = \App\Etgar22ProgressStatus::where('name', '=', 'בדרך לטבעונות')->firstOrFail();
+            $onTheRoadToVeganStatus = \App\Etgar22ProgressStatus::where('name', '=', 'בדרך לטבעונות')->firstOrFail();
             $etgar22->progressStatus()->associate($onTheRoadToVeganStatus);
         }
 
