@@ -242,7 +242,7 @@ define([
                         formatter: 'datetime',
                         datefmt: 'yyyy-mm-dd',
                         editoptions: {
-                            readonly: true,
+                            readonly: true
                             // dataInit is the client-side event that fires upon initializing the toolbar search field for a column
                             // use it to place a third party control to customize the toolbar
                             //dataInit: utilities.generateDateTimePicker
@@ -774,7 +774,7 @@ define([
              * options:
              * - "" : all rows
              */
-            params.rowNum = 1000;
+            params.rowNum = 50;
             params.datatype = 'json';
             params.pager = '#' + self.pagerId;
             params.rowList = [30, 50, 100, 200, 1000];
