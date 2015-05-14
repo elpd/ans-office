@@ -64,7 +64,7 @@ return [
     'birth_year' => 'Birth Year',
     'donate' => 'Donate',
     'blacklisted' => 'Blacklisted',
-    'contact_group-members' => 'membership in groups',
+    'contact_group-members' => 'groups',
     'contact_etgar22' => 'etgar 22',
 
     // Etgar 22
