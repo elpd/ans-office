@@ -66,4 +66,7 @@ return [
     'dataFromCsv_errors' => 'Errors',
     'dataFromCsv_info' => 'Info',
     'dataFromCsv_label_overwrite_etgar22' => 'Overwrite existing etgar22 records',
+
+    'guide-page_guide-select_no-guide-option' => 'No Guide',
+    'guide-page_guide-select_any-guide-option' => 'Any Guide',
 ];

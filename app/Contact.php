@@ -72,6 +72,8 @@ class Contact extends Model
         'inGroup',
         'inAnyRunningGroup',
         'guidedByUser',
+        'withNoAssociatedGuides',
+        'withAnyAssociatedGuide',
     ];
 
     public function etgar22()
@@ -140,6 +142,19 @@ class Contact extends Model
                 $runningStatus = \App\GroupStatus::where('status', '=', 'running')->firstOrFail();
                 $groupQuery->where('groups.status_id', '=', $runningStatus->id);
             });
+        });
+    }
+
+    public function scopeWithNoAssociatedGuides($query)
+    {
+        $query->has('groupMembers.guides', '<', 1);
+    }
+
+    public function scopeWithAnyAssociatedGuide($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->has('guides');
         });
     }
 

@@ -33,7 +33,7 @@ define([
             var pageFilter = {
                 filterType: 'scope',
                 scopeData: {
-                    method: 'inAnyRunningGroup',
+                    method: 'inAnyRunningGroup'
                     //parameter: itemId
                 }
             };
@@ -114,7 +114,21 @@ define([
 
     function generateGuideSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
         var $select = $('#guides_selector_on_contacts_by_guide');
+
+        // Option: empty. no scope.
         $select.append('<option value="0"></option>');
+
+        // Option: no guide.
+        $select.append(
+            '<option value="query_no_guide">' +
+            lang.get('main.guide-page_guide-select_no-guide-option') +
+            '</option>');
+
+        // Option: any guide.
+        $select.append(
+            '<option value="query_any_guide">' +
+            lang.get('main.guide-page_guide-select_any-guide-option') +
+            '</option>');
 
         var guides = utilities.generateGetItems('/api/guide', Guide)();
         guides._promise.then(function (data) {
@@ -141,7 +155,7 @@ define([
 
         var $guideSelect = $('#guides_selector_on_contacts_by_guide');
         var selectedGuide = $guideSelect.val();
-        var guideFilter = generateFilter(selectedGuide, 'guidedByUser');
+        var guideFilter = generateGuideFilter(selectedGuide);
 
         var allFilter = {
             filterType: 'group',
@@ -156,6 +170,43 @@ define([
 
         contactsByGuideGrid.setMainQueryFilter(allFilter);
         contactsByGuideGrid.refreshGridIncludeDefinitions();
+    }
+
+    function generateGuideFilter(groupValue) {
+        var filter = null;
+
+        if (Number.isNaN(parseInt(groupValue))){
+            switch (groupValue) {
+                case 'query_no_guide':
+                    filter = {
+                        filterType: 'scope',
+                        scopeData: {
+                            method: 'withNoAssociatedGuides'
+                            //parameter: itemId
+                        }
+                    };
+                    break;
+
+                case 'query_any_guide':
+                    filter = {
+                        filterType: 'scope',
+                        scopeData: {
+                            method: 'withAnyAssociatedGuide'
+                            //parameter: itemId
+                        }
+                    };
+                    break;
+
+                default:
+                    filter = null;
+                    break;
+            }
+
+        } else {
+            filter = generateFilter(groupValue, 'guidedByUser');
+        }
+
+        return filter;
     }
 
     function generateFilter(itemId, method) {
