@@ -97,7 +97,7 @@ define([
 
                     },
                     created_at: {
-                        label: _.capitalize(lang.get('bo.contact-note_created_at')),
+                        label: _.capitalize(lang.get('bo.contact-note_created-at')),
                         name: 'created_at',
                         editable: false,
                         formatter: 'datetime',

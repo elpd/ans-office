@@ -133,8 +133,8 @@ return [
     'contact-note_contact-id' => 'contact',
     'contact-note_user-id' => 'user',
     'contact-note_text' => 'text',
-    'contact-note_created_at' => 'created at',
-    'contact-note_updated_at' => 'updated at',
+    'contact-note_created-at' => 'called at',
+    'contact-note_updated-at' => 'updated at',
 
     // etgar-22-registration-requests
 
