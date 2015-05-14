@@ -14,6 +14,8 @@ return [
     'home_menu_label' => 'Home',
     'admin_menu_label' => 'Admin',
     'table_menu_label' => 'Tables',
+    'guide_menu_label' => 'Guide',
+    'etgar22_registrar_menu_label' => 'Etgar 22 Registrar',
 
     'menu_settings_label' => 'Settings',
     'menu_logout_label' => 'Logout',

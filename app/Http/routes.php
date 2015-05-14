@@ -25,19 +25,23 @@ Route::group(['middleware' => 'user.settings'], function() {
     Route::get('user/settings/general', 'User\Settings\GeneralController@index');
 
     Route::get('table', 'TableController@index');
-    Route::get('table/contacts', 'ContactController@index');
-    Route::get('table/groups', 'GroupController@index');
-    Route::get('table/guides', 'GuideController@index');
-    Route::get('table/groups-members-guides', 'GroupMemberGuideController@index');
-    Route::get('table/groups-members', 'GroupsMembersController@index');
-    Route::get('table/cycles', 'CycleController@index');
-    Route::get('table/etgar22-registration-requests', 'Etgar22RegistrationRequestController@index');
+    Route::get('table/contacts', 'Tables\ContactController@index');
+    Route::get('table/groups', 'Tables\GroupController@index');
+    Route::get('table/guides', 'Tables\GuideController@index');
+    Route::get('table/groups-members-guides', 'Tables\GroupMemberGuideController@index');
+    Route::get('table/groups-members', 'Tables\GroupsMembersController@index');
+    Route::get('table/cycles', 'Tables\CycleController@index');
+    Route::get('table/etgar22-registration-requests', 'Tables\Etgar22RegistrationRequestController@index');
 
     Route::get('admin', 'AdminController@index');
     Route::get('admin/users', 'UserController@index');
     Route::get('admin/roles', 'RoleController@index');
     Route::get('admin/permissions', 'PermissionController@index');
     Route::get('admin/data_from_csv', 'DataFromCsvController@index');
+
+    Route::get('guide', 'GuideController@index');
+
+    Route::get('etgar22-registrar', 'Etgar22RegistrarController@index');
 });
 
 Route::resource('api/contact', 'api\ContactController');

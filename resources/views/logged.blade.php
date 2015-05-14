@@ -28,6 +28,12 @@
                     @role('admin')
                     <li><a href="/table" id="table_section_link">@lang('main.table_menu_label')</a></li>
                     @endrole
+                    @role('guide')
+                    <li><a href="/guide" id="guide_section_link">@lang('main.guide_menu_label')</a></li>
+                    @endrole
+                    @role('etgar22registrar')
+                    <li><a href="/etgar22-registrar" id="registrar_section_link">@lang('main.etgar22_registrar_menu_label')</a></li>
+                    @endrole
                 </ul>
 
                 <ul class="nav navbar-nav

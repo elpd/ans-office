@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-class GuideController extends Controller {
+class Etgar22RegistrarController extends Controller {
 
 	/*
 	|--------------------------------------------------------------------------
@@ -30,7 +30,7 @@ class GuideController extends Controller {
 	 */
 	public function index()
 	{
-		return view('guide');
+		return view('etgar22registrar');
 	}
 
 }

@@ -1,6 +1,8 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Tables;
 
-class GroupController extends Controller {
+use App\Http\Controllers\Controller;
+
+class GuideController extends Controller {
 	/**
 	 * Create a new controller instance.
 	 *
@@ -18,7 +20,7 @@ class GroupController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.groups')->with('selected_view', 'groups');;
+		return view('table.guides')->with('selected_view', 'guides');;
 	}
 
 }

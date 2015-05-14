@@ -18,8 +18,9 @@ class UserTableSeeder extends Seeder
         $adminRole = Role::where('slug', '=', 'admin')->firstOrFail();
         $employeeRole = Role::where('slug', '=', 'employee')->firstOrFail();
         $userRole = Role::where('slug', '=', 'user')->firstOrFail();
-        $etgar22registratorRole = Role::where('slug', '=', 'etgar22registrator')->firstOrFail();
+        $etgar22firstTimeRegistarRole = Role::where('slug', '=', 'etgar22firsttimeregistrar')->firstOrFail();
         $guideRole = Role::where('slug', '=', 'guide')->firstOrFail();
+        $etgar22registrarRole = Role::where('slug', '=', 'etgar22registrar')->firstOrFail();
 
         $englishUiLanguage = UiLanguage::where('name', '=', 'English')->firstOrFail();
         $hebrewUiLanguage = UiLanguage::where('name', '=', 'Hebrew')->firstOrFail();
@@ -37,6 +38,7 @@ class UserTableSeeder extends Seeder
                     $adminRole,
                     $employeeRole,
                     $guideRole,
+                    $etgar22registrarRole,
                 ],
                 'settings' => [
                     'ui_language' => $englishUiLanguage,
@@ -81,7 +83,7 @@ class UserTableSeeder extends Seeder
                     'password' => \Hash::make('user1_etgar22registrator'),
                 ],
                 'roles' => [
-                    $etgar22registratorRole
+                    $etgar22firstTimeRegistarRole
                 ],
                 'settings' => [
                     'ui_language' => $hebrewUiLanguage,

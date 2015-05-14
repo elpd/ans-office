@@ -1,6 +1,10 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Tables;
 
-class ContactController extends Controller {
+use App\Http\Controllers\Controller;
+
+class CycleController extends Controller {
+
+
 	/**
 	 * Create a new controller instance.
 	 *
@@ -18,7 +22,7 @@ class ContactController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.contacts')->with('selected_view', 'contacts');
+		return view('table.cycles')->with('selected_view', 'cycles');;
 	}
 
 }
