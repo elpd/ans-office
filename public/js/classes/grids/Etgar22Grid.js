@@ -4,12 +4,14 @@ define([
     'classes/Grid',
     'classes/subRows/Etgar22SubRow',
     'classes/bi/Contact',
+    'classes/bi/Etgar22ProgressStatus',
     'services/language'
 ], function (_,
              utilities,
              Grid,
              Etgar22SubRow,
              Contact,
+             Etgar22ProgressStatus,
              lang) {
 
     var CONTROLLER_URL = '/api/etgar22';
@@ -42,6 +44,7 @@ define([
             'why_go_vegan',
             'parent_name',
             'parent_email',
+            'progress_status_id',
             'updated_at'
         ]);
     };
@@ -186,6 +189,24 @@ define([
                         //search:true,
                         //stype:'text',
 
+                    },
+                    progress_status_id: {
+                        label: _.capitalize(lang.get('bo.etgar22_progress-status-id')),
+                        name: 'progress_status_id',
+                        editable: true,
+                        edittype: 'select',
+                        formatter: 'select',
+                        editoptions: {
+                            value: utilities.generateGetItems('/api/etgar22-progress-status', Etgar22ProgressStatus)(),
+                            dataUrl: '/api/etgar22-progress-status',
+                            buildSelect: utilities.generateBuildSelect(Etgar22ProgressStatus)
+                        }
+                        ,
+                        extraInfo: {
+                            linkMethod: 'progressStatus',
+                            searchByRelationshipMethod: true,
+                            sortByForeignLinkToString: true
+                        }
                     }
                 }
 

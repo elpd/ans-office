@@ -22,6 +22,7 @@ class Etgar22 extends Model
         'why_go_vegan',
         'parent_name',
         'parent_email',
+        'progress_status_id',
     ];
 
     protected $rules = [];
@@ -47,11 +48,17 @@ class Etgar22 extends Model
     */
 
     public $relationshipMethods = [
-        'contact'
+        'contact',
+        'progressStatus',
     ];
 
     public function contact()
     {
         return $this->belongsTo('App\Contact');
+    }
+
+    public function progressStatus()
+    {
+        return $this->belongsTo('App\Etgar22ProgressStatus', 'progress_status_id');
     }
 }

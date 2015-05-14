@@ -171,6 +171,10 @@ class Etgar22RegistrationRequest extends Model
         if ($etgar22 == null) {
             $etgar22 = new Etgar22();
             $etgar22->contact()->associate($contact);
+
+            // Defaults
+            $onTheRoadTheVeganStatus = \App\Etgar22ProgressStatus::where('name', '=', 'בדרך לטבעונות')->firstOrFail();
+            $etgar22->progressStatus()->associate($onTheRoadToVeganStatus);
         }
 
         return $etgar22;

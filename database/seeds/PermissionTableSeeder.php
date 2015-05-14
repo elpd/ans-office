@@ -572,7 +572,33 @@ class PermissionTableSeeder extends Seeder
                 'slug' => 'api.data-from-csv.action.add',
                 'description' => '',
                 'model' => '',
-            ]
+            ],
+            [
+                'name' => 'api.etgar22-progress-status.action.index',
+                'slug' => 'api.etgar22-progress-status.action.index',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.etgar22-progress-status.action.show',
+                'slug' => 'api.etgar22-progress-status.action.show',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.etgar22-progress-status.action.store',
+                'slug' => 'api.etgar22-progress-status.action.store',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.etgar22-progress-status.action.update',
+                'slug' => 'api.etgar22-progress-status.action.update',
+                'description' => '',
+                'model' => '',
+            ], [
+                'name' => 'api.etgar22-progress-status.action.destroy',
+                'slug' => 'api.etgar22-progress-status.action.destroy',
+                'description' => '',
+                'model' => '',
+            ],
         ];
 
         foreach ($itemsData as $itemData) {

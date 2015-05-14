@@ -78,6 +78,7 @@ return [
     'etgar22_why-go-vegan' => 'Why Go Vegan',
     'etgar22_parent-name' => 'Parent Name',
     'etgar22_parent-email' => 'Parent Email',
+    'etgar22_progress-status-id' => 'progress',
 
     // Cycle
 

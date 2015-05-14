@@ -87,6 +87,8 @@ class PopulateEtgar22Record extends Command implements SelfHandling
             $etgar22->contact()->associate($contact);
         }
 
+        $onTheRoadToVeganStatus = \App\Etgar22ProgressStatus::where('name', '=', 'בדרך לטבעונות')->firstOrFail();
+
         $etgar22->facebook_know_how = $this->etgar22Record->getFlagFacebookKnowHow();
         $etgar22->call_for_facebook_help = $this->etgar22Record->getFlagCallForFacebookHelp();
         $etgar22->registration_date = $this->etgar22Record->getRegistrationDate();
@@ -94,6 +96,9 @@ class PopulateEtgar22Record extends Command implements SelfHandling
         $etgar22->why_go_vegan = $this->etgar22Record->getWhyGoVegan();
         $etgar22->parent_name = $this->etgar22Record->getParentName();
         $etgar22->parent_email = $this->etgar22Record->getParentEmail();
+
+        // Defaults
+        $etgar22->progressStatus()->associate($onTheRoadToVeganStatus);
 
         $contact->etgar22()->save($etgar22);
 
