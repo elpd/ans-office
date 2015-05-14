@@ -43,7 +43,7 @@ class Contact extends Model
         ),
         "phone" => array(
             'required',
-        //    'phone:IL',
+            //    'phone:IL',
         ),
         "facebook" => array(),
         "birth_year" => [
@@ -70,7 +70,8 @@ class Contact extends Model
     public $scopeMethods = [
         'singular',
         'inGroup',
-        'guidedByUser'
+        'inAnyRunningGroup',
+        'guidedByUser',
     ];
 
     public function etgar22()
@@ -126,6 +127,18 @@ class Contact extends Model
             use ($guide_id) {
 
                 $guidesQuery->where('users.id', '=', $guide_id);
+            });
+        });
+    }
+
+    public function scopeInAnyRunningGroup($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->whereHas('group', function ($groupQuery) {
+
+                $runningStatus = \App\GroupStatus::where('status', '=', 'running')->firstOrFail();
+                $groupQuery->where('groups.status_id', '=', $runningStatus->id);
             });
         });
     }

@@ -1,7 +1,7 @@
 @extends('logged')
 
 @section('main_content')
-    
+
 @endsection
 
 @section('childScript')

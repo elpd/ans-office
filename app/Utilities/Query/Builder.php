@@ -296,13 +296,18 @@ class Builder
     protected function filterScope($filterParam, $query, $booleanOp)
     {
         $method = $filterParam['scopeData']['method'];
-        $parameter = $filterParam['scopeData']['parameter'];
 
         if (!$this->newEmptyItem()->hasScopeMethod($method)) {
             throw new \Exception('malformed scope method');
         }
 
-        $query->$method($parameter);
+        if (isset($filterParam['scopeData']['parameter'])) {
+            $parameter = $filterParam['scopeData']['parameter'];
+            $query->$method($parameter);
+
+        } else {
+            $query->$method();
+        }
     }
 
     protected function filterRelationshipMethod($filterParam, $query, $booleanOp)

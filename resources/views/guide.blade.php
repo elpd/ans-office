@@ -8,7 +8,7 @@
             <div class="row">
 
                 <div class="col-md-10 col-md-offset-1" id="guide_contact_by_guide_grid_subsection">
-                    <h2>Contacts Associated With Guide</h2>
+                    <h2>Guides and Callers</h2>
 
                     <div class="row home_row">
                         <form class="form-inline">

@@ -30,8 +30,16 @@ define([
         userDataService.ready().then(function () {
             turnOffAllSections();
 
+            var pageFilter = {
+                filterType: 'scope',
+                scopeData: {
+                    method: 'inAnyRunningGroup',
+                    //parameter: itemId
+                }
+            };
+
             if (userDataService.roles().hasRoleGuide()) {
-                activateGuideSection();
+                activateGuideSection(pageFilter);
             }
         });
     });
@@ -42,7 +50,7 @@ define([
         });
     }
 
-    function activateGuideSection() {
+    function activateGuideSection(pageFilter) {
         ContactGrid = require('classes/grids/ContactGrid');
 
         var $section = $('#' + 'guide_section');
@@ -50,12 +58,12 @@ define([
 
         var originalMainQueryFilter = contactsByGuideGrid.mainQueryFilter;
 
-        generateGroupSelectBox(contactsByGuideGrid, originalMainQueryFilter);
-        generateGuideSelectBox(contactsByGuideGrid, originalMainQueryFilter);
+        generateGroupSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
+        generateGuideSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
 
         contactsByGuideGrid.ready().then(function () {
             $('#guides_selector_on_contacts_by_guide option[value="' +
-            userDataService.getUser().id + '"]').prop('selected',true);
+            userDataService.getUser().id + '"]').prop('selected', true);
 
             contactsByGuideGrid.ready().then(function () {
                 $('#guides_selector_on_contacts_by_guide').trigger('change');
@@ -86,7 +94,7 @@ define([
         return grid;
     }
 
-    function generateGroupSelectBox(contactsByGuideGrid, originalMainQueryFilter) {
+    function generateGroupSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
         var groupsForUser = utilities.generateGetItems('/api/user-guided-group', Group)();
         var $select = $('#groups_selector_on_contacts_by_guide');
         groupsForUser._promise.then(function (data) {
@@ -100,11 +108,11 @@ define([
         });
 
         $select.change(function (e) {
-            calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter);
+            calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
         });
     }
 
-    function generateGuideSelectBox(contactsByGuideGrid, originalMainQueryFilter) {
+    function generateGuideSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
         var $select = $('#guides_selector_on_contacts_by_guide');
         $select.append('<option value="0"></option>');
 
@@ -122,11 +130,11 @@ define([
         });
 
         $select.change(function (e) {
-            calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter);
+            calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
         });
     }
 
-    function calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter) {
+    function calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
         var $groupSelect = $('#groups_selector_on_contacts_by_guide');
         var selectedGroup = $groupSelect.val();
         var groupFilter = generateFilter(selectedGroup, 'inGroup');
@@ -139,7 +147,9 @@ define([
             filterType: 'group',
             groupData: {
                 operation: 'and',
-                nodes: _.compact([originalMainQueryFilter, groupFilter,
+                nodes: _.compact([originalMainQueryFilter,
+                    pageFilter,
+                    groupFilter,
                     guideFilter])
             }
         };
