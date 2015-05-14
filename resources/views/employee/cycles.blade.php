@@ -1,4 +1,4 @@
-@extends('employee')
+@extends('table')
 
 @section('subContent')
     <div id="cycles_page" class="sub_content">

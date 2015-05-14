@@ -35,31 +35,31 @@
                                 @endif
                                     ">
                                 <li class=" @if(isset($selected_view) && $selected_view == 'contacts') active @endif">
-                                    <a href="/employee/contacts" id="contacts_section_link">
+                                    <a href="/table/contacts" id="contacts_section_link">
                                         @lang('main.contacts_list_label')
                                     </a></li>
                                 <li class=" @if(isset($selected_view) && $selected_view == 'cycles') active @endif">
-                                    <a href="/employee/cycles" id="cycles_section_link">
+                                    <a href="/table/cycles" id="cycles_section_link">
                                         @lang('main.cycles_list_label')
                                     </a></li>
                                 <li class=" @if(isset($selected_view) && $selected_view == 'groups') active @endif">
-                                    <a href="/employee/groups" id="groups_section_link">
+                                    <a href="/table/groups" id="groups_section_link">
                                         @lang('main.groups_list_label')
                                     </a></li>
                                 <li class=" @if(isset($selected_view) && $selected_view == 'guides') active @endif">
-                                    <a href="/employee/guides" id="guides_section_link">
+                                    <a href="/table/guides" id="guides_section_link">
                                         @lang('main.guides_list_label')
                                     </a></li>
                                  <li class=" @if(isset($selected_view) && $selected_view == 'groups_members_guides') active @endif">
-                                    <a href="/employee/groups-members-guides" id="guides_section_link">
+                                    <a href="/table/groups-members-guides" id="guides_section_link">
                                         @lang('main.groups-members-guides-list-label')
                                     </a></li>
                                 <li class=" @if(isset($selected_view) && $selected_view == 'groups_members') active @endif">
-                                    <a href="/employee/groups-members" id="groups_members_section_link">
+                                    <a href="/table/groups-members" id="groups_members_section_link">
                                         @lang('main.groups_members_list_label')
                                     </a></li>
                                 <li class=" @if(isset($selected_view) && $selected_view == 'etgar22_registration_requests') active @endif">
-                                    <a href="/employee/etgar22-registration-requests" id="etgar22_registration_requests_section_link">
+                                    <a href="/table/etgar22-registration-requests" id="etgar22_registration_requests_section_link">
                                         @lang('main.etgar22_registration_requests_list_label')
                                     </a></li>
                             </ul>

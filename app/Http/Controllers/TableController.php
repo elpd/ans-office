@@ -1,6 +1,6 @@
 <?php namespace App\Http\Controllers;
 
-class EmployeeController extends Controller {
+class TableController extends Controller {
 
 
 	/**
@@ -20,7 +20,7 @@ class EmployeeController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee');
+		return view('table');
 	}
 
 }

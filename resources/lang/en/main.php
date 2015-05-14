@@ -13,7 +13,7 @@ return [
     'anonymouse_org_short_label' => 'ANS',
     'home_menu_label' => 'Home',
     'admin_menu_label' => 'Admin',
-    'employee_menu_label' => 'Employee',
+    'table_menu_label' => 'Tables',
 
     'menu_settings_label' => 'Settings',
     'menu_logout_label' => 'Logout',

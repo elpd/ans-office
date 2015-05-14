@@ -24,14 +24,14 @@ Route::group(['middleware' => 'user.settings'], function() {
     Route::get('user/settings', 'User\SettingsController@index');
     Route::get('user/settings/general', 'User\Settings\GeneralController@index');
 
-    Route::get('employee', 'EmployeeController@index');
-    Route::get('employee/contacts', 'ContactController@index');
-    Route::get('employee/groups', 'GroupController@index');
-    Route::get('employee/guides', 'GuideController@index');
-    Route::get('employee/groups-members-guides', 'GroupMemberGuideController@index');
-    Route::get('employee/groups-members', 'GroupsMembersController@index');
-    Route::get('employee/cycles', 'CycleController@index');
-    Route::get('employee/etgar22-registration-requests', 'Etgar22RegistrationRequestController@index');
+    Route::get('table', 'TableController@index');
+    Route::get('table/contacts', 'ContactController@index');
+    Route::get('table/groups', 'GroupController@index');
+    Route::get('table/guides', 'GuideController@index');
+    Route::get('table/groups-members-guides', 'GroupMemberGuideController@index');
+    Route::get('table/groups-members', 'GroupsMembersController@index');
+    Route::get('table/cycles', 'CycleController@index');
+    Route::get('table/etgar22-registration-requests', 'Etgar22RegistrationRequestController@index');
 
     Route::get('admin', 'AdminController@index');
     Route::get('admin/users', 'UserController@index');

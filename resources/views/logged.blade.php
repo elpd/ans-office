@@ -25,8 +25,8 @@
                     @role('admin')
                     <li><a href="/admin" id="admin_section_link">@lang('main.admin_menu_label')</a></li>
                     @endrole
-                    @role('employee')
-                    <li><a href="/employee" id="employee_section_link">@lang('main.employee_menu_label')</a></li>
+                    @role('admin')
+                    <li><a href="/table" id="table_section_link">@lang('main.table_menu_label')</a></li>
                     @endrole
                 </ul>
 
