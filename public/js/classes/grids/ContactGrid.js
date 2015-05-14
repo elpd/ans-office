@@ -36,7 +36,8 @@ define([
             title: lang.get('bo.etgar22'),
             queryJoinTable: 'etgar22',
             queryLinkMethod: 'etgar22',
-            columns: _.values(_.values(Object.create(Etgar22Grid.prototype).getDefaultColumnsDefinitions()))
+            columns: _.values(Object.create(Etgar22Grid.prototype).getDefaultColumnsDefinitions()),
+            parentColumn: 'contact_id'
         });
 
         self.columns().selectAbsolute([

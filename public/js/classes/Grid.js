@@ -669,14 +669,19 @@ define([
                     // Only one column in the all grid can be a key.
                     columnDef.key = false;
 
-                    // For now, no edit is allowed on children. Until code is available
-                    // in controller infrastructure.
-                    //columnDef.editable = false;
+                    // Protect id
                     if (columnDef.name == 'id') {
                         columnDef.editable = true;
                         columnDef.editoptions = {
                             readonly: true
                         };
+                    }
+
+                    // Protect parent column reference.
+                    if (customDef.parentColumn) {
+                        if (columnDef.name == customDef.parentColumn) {
+                            columnDef.hidden = true;
+                        }
                     }
 
                     // Add child table name to column field name.
@@ -691,6 +696,8 @@ define([
                                     sourceValue;
                             }
                         });
+
+
                 });
                 self._children[childDef.name] = customDef;
             }
