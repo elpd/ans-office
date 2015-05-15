@@ -63,6 +63,10 @@ class Group extends Model
         'status',
     ];
 
+    public $scopeMethods = [
+        'arrangeByCycleDateDesc'
+    ];
+
     public function cycle()
     {
         return $this->belongsTo('App\Cycle');
@@ -78,6 +82,10 @@ class Group extends Model
         return $this->hasMany('App\GroupsMember');
     }
 
+    /*
+     * Scopes
+     */
+
     public function scopeGuidedByUser($query, $guide_id)
     {
         $query->whereHas('groupMembers', function ($groupMembersQuery)
@@ -89,5 +97,14 @@ class Group extends Model
                 $guidesQuery->where('users.id', '=', $guide_id);
             });
         });
+    }
+
+    public function scopeArrangeByCycleDateDesc($query)
+    {
+        $sql = 'select startDate
+                from cycles
+                where cycles.id = groups.id';
+        $sql = '(' . $sql . ') DESC';
+        $query->orderByRaw($sql);
     }
 }

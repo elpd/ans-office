@@ -6,9 +6,9 @@ define([
              ContactGrid,
              userDataService) {
 
-    var Class = function () {
+    var Class = function (params) {
         var self = this;
-        Page.apply(self, arguments);
+        Page.apply(self, params);
     };
 
     Class.prototype = Object.create(Page.prototype, {

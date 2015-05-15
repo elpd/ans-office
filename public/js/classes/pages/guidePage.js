@@ -2,78 +2,148 @@ define([
     'require',
     'lodash',
     'classes/utilities',
+    'classes/Page',
     'services/language',
     'services/userDataService',
+    'classes/services/GroupService',
     'classes/grids/ContactGrid',
     'classes/bi/Group',
     'classes/bi/Guide'
 ], function (require,
              _,
              utilities,
+             Page,
              lang,
              userDataService,
+             GroupService,
              ContactGrid,
              Group,
              Guide) {
 
-    var sections = [
-        'guide_section'
-    ];
+    var groupService = new GroupService();
 
-    var Class = function () {
-
+    var Class = function (params) {
+        var self = this;
+        Page.apply(self, params);
     };
 
-    Class.prototype = Object.create(Object.prototype, {});
+    Class.prototype = Object.create(Page.prototype, {
+        execute: {
+            value: function () {
+                var self = this;
+                $(document).ready(function () {
+                    userDataService.ready().then(function () {
 
-    $(document).ready(function () {
-        userDataService.ready().then(function () {
-            turnOffAllSections();
+                        generateGroupSelect(self);
+                        generateGuideSelect(self);
+                        generateContactGrid(self);
+                        self.contactGrid.ready().then(function () {
+                            selectCurrentUserInGuideSelection(self);
+                        });
+                    });
+                });
+            }
+        },
 
-            var pageFilter = {
+        get$GuideSelect: {
+            value: function () {
+                return $('#guides_selector_on_contacts_by_guide');
+            }
+        },
+
+        get$GroupSelect: {
+            value: function () {
+                return $('#groups_selector_on_contacts_by_guide');
+            }
+        },
+
+        pageFilter: {
+            value: {
                 filterType: 'scope',
                 scopeData: {
                     method: 'inAnyRunningGroup'
                     //parameter: itemId
                 }
-            };
-
-            if (userDataService.roles().hasRoleGuide()) {
-                activateGuideSection(pageFilter);
             }
-        });
+        }
     });
 
-    function turnOffAllSections() {
-        _.forEach(sections, function (sectionId) {
-            $('#' + sectionId).hide();
-        });
+    function selectCurrentUserInGuideSelection(self) {
+        var $select = self.get$GuideSelect();
+        var $currentUserOption = $select.find(
+            'option[value="' +
+            userDataService.getUser().id + '"]'
+        );
+
+        $currentUserOption.prop('selected', true);
+        $select.trigger('change');
     }
 
-    function activateGuideSection(pageFilter) {
-        ContactGrid = require('classes/grids/ContactGrid');
+    function generateGroupSelect(self) {
+        var $select = self.get$GroupSelect();
+        $select.empty();
 
-        var $section = $('#' + 'guide_section');
-        var contactsByGuideGrid = generateContactsByGuideGrid();
+        // Option: empty. no scope.
+        $select.append('<option value="0">* All</option>');
 
-        var originalMainQueryFilter = contactsByGuideGrid.mainQueryFilter;
-
-        generateGroupSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
-        generateGuideSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
-
-        contactsByGuideGrid.ready().then(function () {
-            $('#guides_selector_on_contacts_by_guide option[value="' +
-            userDataService.getUser().id + '"]').prop('selected', true);
-
-            contactsByGuideGrid.ready().then(function () {
-                $('#guides_selector_on_contacts_by_guide').trigger('change');
+        var groupsPromise = groupService.query({
+            filter: {
+                filterType: 'scope',
+                scopeData: {
+                    method: 'arrangeByCycleDateDesc'
+                    //parameter: itemId
+                }
+            }
+        });
+        groupsPromise.then(function (groups) {
+            var groupsSelectOptions = utilities.generateOptions(groups, Group);
+            _.forEach(groupsSelectOptions, function ($option) {
+                $select.append($option);
             });
         });
 
-        $section.show();
+        $select.change(function (e) {
+            calcFiltersAndRedrawGrid(self);
+        });
     }
 
-    function generateContactsByGuideGrid() {
+    function generateGuideSelect(self) {
+        var $select = self.get$GuideSelect();
+        $select.empty();
+
+        // Option: empty. no scope.
+        $select.append('<option value="0">* All</option>');
+
+        // Option: no guide.
+        $select.append(
+            '<option value="query_no_guide">' +
+            '* ' + lang.get('main.guide-page_guide-select_no-guide-option') +
+            '</option>');
+
+        // Option: any guide.
+        $select.append(
+            '<option value="query_any_guide">' +
+            '* ' + lang.get('main.guide-page_guide-select_any-guide-option') +
+            '</option>');
+
+        var guides = utilities.generateGetItems('/api/guide', Guide)();
+        guides._promise.then(function (data) {
+            _.forEach(data.rows, function (row) {
+                var toStr = row.cell.user.name + ' - ' + row.cell.user.email;
+                var id = row.cell.user.id;
+
+                var $option = $('<option>' + toStr + '</option>');
+                $option.attr('value', id);
+                $select.append($option);
+            });
+        });
+
+        $select.change(function (e) {
+            calcFiltersAndRedrawGrid(self);
+        });
+    }
+
+    function generateContactGrid(self) {
         var grid = new ContactGrid({
             gridId: 'contact_by_guide_grid',
             direction: userDataService.getLanguageDesc().direction,
@@ -91,69 +161,16 @@ define([
             grid.children().selectAbsolute(['etgar22']);
         });
 
-        return grid;
+        self.contactGrid = grid;
+        self.originalMainQueryFilter = grid.mainQueryFilter;
     }
 
-    function generateGroupSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
-        var groupsForUser = utilities.generateGetItems('/api/group', Group)();
-        var $select = $('#groups_selector_on_contacts_by_guide');
-        groupsForUser._promise.then(function (data) {
-            _.forEach(groupsForUser, function (groupToStr, groupId) {
-                if (groupsForUser.hasOwnProperty(groupId)) {
-                    var $option = $('<option>' + groupToStr + '</option>');
-                    $option.attr('value', groupId);
-                    $select.append($option);
-                }
-            });
-        });
-
-        $select.change(function (e) {
-            calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
-        });
-    }
-
-    function generateGuideSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
-        var $select = $('#guides_selector_on_contacts_by_guide');
-
-        // Option: empty. no scope.
-        $select.append('<option value="0"></option>');
-
-        // Option: no guide.
-        $select.append(
-            '<option value="query_no_guide">' +
-            lang.get('main.guide-page_guide-select_no-guide-option') +
-            '</option>');
-
-        // Option: any guide.
-        $select.append(
-            '<option value="query_any_guide">' +
-            lang.get('main.guide-page_guide-select_any-guide-option') +
-            '</option>');
-
-        var guides = utilities.generateGetItems('/api/guide', Guide)();
-        guides._promise.then(function (data) {
-            _.forEach(data.rows, function (row) {
-                var toStr = row.cell.user.name + ' - ' + row.cell.user.email;
-                var id = row.cell.user.id;
-
-                var $option = $('<option>' + toStr + '</option>');
-                $option.attr('value', id);
-                $select.append($option);
-
-            });
-        });
-
-        $select.change(function (e) {
-            calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter, pageFilter);
-        });
-    }
-
-    function calcFiltersAndRedrawGrid(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
-        var $groupSelect = $('#groups_selector_on_contacts_by_guide');
+    function calcFiltersAndRedrawGrid(self) {
+        var $groupSelect = self.get$GroupSelect();
         var selectedGroup = $groupSelect.val();
-        var groupFilter = generateFilter(selectedGroup, 'inGroup');
+        var groupFilter = generateGroupFilter(selectedGroup, 'inGroup');
 
-        var $guideSelect = $('#guides_selector_on_contacts_by_guide');
+        var $guideSelect = self.get$GuideSelect();
         var selectedGuide = $guideSelect.val();
         var guideFilter = generateGuideFilter(selectedGuide);
 
@@ -161,22 +178,28 @@ define([
             filterType: 'group',
             groupData: {
                 operation: 'and',
-                nodes: _.compact([originalMainQueryFilter,
-                    pageFilter,
+                nodes: _.compact([self.originalMainQueryFilter,
+                    self.pageFilter,
                     groupFilter,
                     guideFilter])
             }
         };
 
-        contactsByGuideGrid.setMainQueryFilter(allFilter);
-        contactsByGuideGrid.refreshGridIncludeDefinitions();
+        self.contactGrid.ready().then(function () {
+            self.contactGrid.setMainQueryFilter(allFilter);
+            self.contactGrid.refreshGridIncludeDefinitions();
+        });
     }
 
-    function generateGuideFilter(groupValue) {
+    function generateGroupFilter(groupValue, method) {
+        return generateFilter(groupValue, method);
+    }
+
+    function generateGuideFilter(guideValue) {
         var filter = null;
 
-        if (Number.isNaN(parseInt(groupValue))){
-            switch (groupValue) {
+        if (Number.isNaN(parseInt(guideValue))) {
+            switch (guideValue) {
                 case 'query_no_guide':
                     filter = {
                         filterType: 'scope',
@@ -203,7 +226,7 @@ define([
             }
 
         } else {
-            filter = generateFilter(groupValue, 'guidedByUser');
+            filter = generateFilter(guideValue, 'guidedByUser');
         }
 
         return filter;
@@ -226,6 +249,9 @@ define([
 
         return scopeFilter;
     }
+
+    var instance = new Class({});
+    instance.execute();
 
     //return Class;
 });
