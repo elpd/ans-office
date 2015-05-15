@@ -95,7 +95,7 @@ define([
     }
 
     function generateGroupSelectBox(contactsByGuideGrid, originalMainQueryFilter, pageFilter) {
-        var groupsForUser = utilities.generateGetItems('/api/user-guided-group', Group)();
+        var groupsForUser = utilities.generateGetItems('/api/group', Group)();
         var $select = $('#groups_selector_on_contacts_by_guide');
         groupsForUser._promise.then(function (data) {
             _.forEach(groupsForUser, function (groupToStr, groupId) {

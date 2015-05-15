@@ -28,6 +28,7 @@
                     </div>
 
                     <div class="row home_row">
+                        <h4>@lang('main.guide-page_table-header')</h4>
                         <table id="contact_by_guide_grid"></table>
                         <div id="contact_by_guide_grid_pager"></div>
                     </div>

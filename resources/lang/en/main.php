@@ -69,4 +69,8 @@ return [
 
     'guide-page_guide-select_no-guide-option' => 'No Guide',
     'guide-page_guide-select_any-guide-option' => 'Any Guide',
+    'guide-page_table-header' => 'Contacts who are registered and in running groups',
+
+    'etgar22registrar-page_header' => 'Registrars',
+    'etgar22registrar-page_table-header' => 'Contacts who are not yet registered in opening groups.',
 ];

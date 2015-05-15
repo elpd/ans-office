@@ -71,6 +71,8 @@ class Contact extends Model
         'singular',
         'inGroup',
         'inAnyRunningGroup',
+        'inAnyRegistrationGroup',
+        'inAnyRegistrationGroupAndNotAcceptedYetOrNoGroup',
         'guidedByUser',
         'withNoAssociatedGuides',
         'withAnyAssociatedGuide',
@@ -143,6 +145,38 @@ class Contact extends Model
                 $groupQuery->where('groups.status_id', '=', $runningStatus->id);
             });
         });
+    }
+
+    public function scopeInAnyRegistrationGroup($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->whereHas('group', function ($groupQuery) {
+
+                $registrationStatus = \App\GroupStatus::where('status', '=', 'registration')->firstOrFail();
+                $groupQuery->where('groups.status_id', '=', $registrationStatus->id);
+            });
+        });
+    }
+
+    public function scopeInAnyRegistrationGroupAndNotAcceptedYetOrNoGroup($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->whereHas('group', function ($groupQuery) {
+
+                $registrationStatus = \App\GroupStatus::where('status', '=', 'registration')->firstOrFail();
+                $groupQuery->where('groups.status_id', '=', $registrationStatus->id);
+            });
+
+            $membershipStatuses = [
+                \App\GroupMembersStatus::where('status', '=', 'new')->firstOrFail()->id,
+                \App\GroupMembersStatus::where('status', '=', 'in_process')->firstOrFail()->id,
+            ];
+            $groupMembersQuery->whereIn('status_id', $membershipStatuses);
+        });
+
+        $query->orHas('groupMembers', '=', 0);
     }
 
     public function scopeWithNoAssociatedGuides($query)
