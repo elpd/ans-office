@@ -17,7 +17,8 @@ class DataFromCsvController extends ApiController
         $overwriteEtgar22Option = $request->get('overwriteEtgar22Option', false) ? true: false;
 
         $outputHandler = new OutputHandler();
-        $command = new PopulateCsv($file->getRealPath(), $outputHandler, $overwriteEtgar22Option);
+        $user = $request->user();
+        $command = new PopulateCsv($file->getRealPath(), $outputHandler, $overwriteEtgar22Option, $user);
         $this->dispatch($command);
 
         return response()->json([

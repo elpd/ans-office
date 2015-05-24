@@ -88,6 +88,10 @@ class Contact extends Model
         return $this->hasMany('App\GroupsMember');
     }
 
+    public function notes() {
+        return $this->hasMany('App\ContactNote');
+    }
+
     /**
      * The attributes that should be casted to native types.
      *
