@@ -1,7 +1,8 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Tables;
 
-class CycleController extends Controller {
+use App\Http\Controllers\Controller;
 
+class GroupsMembersController extends Controller {
 
 	/**
 	 * Create a new controller instance.
@@ -20,7 +21,7 @@ class CycleController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.cycles')->with('selected_view', 'cycles');;
+		return view('table.groupsMembers')->with('selected_view', 'groups_members');;
 	}
 
 }

@@ -1,4 +1,4 @@
-@extends('employee')
+@extends('table')
 
 @section('subContent')
     <div id="etgar22_registration_requests_page" class="sub_content">

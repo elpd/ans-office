@@ -1,13 +1,13 @@
-@extends('employee')
+@extends('table')
 
 @section('subContent')
-    <div id="guides_page" class="sub_content">
+    <div id="groups_page" class="sub_content">
 
     </div>
 @endsection
 
 @section('childScript')
 <script>
-	scripts.push('employee/guides');
+	scripts.push('employee/groups');
 </script>
 @endsection

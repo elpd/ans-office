@@ -17,11 +17,12 @@ class PopulateCsv extends Command implements SelfHandling
      *
      * @return void
      */
-    public function __construct($filePath, $output = null, $overwriteEtgar22Option = false)
+    public function __construct($filePath, $output = null, $overwriteEtgar22Option = false, $user)
     {
         $this->filePath = $filePath;
         $this->output = $output;
         $this->overwriteEtgar22Option = $overwriteEtgar22Option;
+        $this->user = $user;
     }
 
     /**
@@ -63,7 +64,7 @@ class PopulateCsv extends Command implements SelfHandling
                 \DB::transaction(function () use ($etgar22Record) {
 
                     $this->dispatch(new PopulateEtgar22Record($etgar22Record,
-                        $this->output, $this->overwriteEtgar22Option));
+                        $this->output, $this->overwriteEtgar22Option, $this->user));
 
                     $log['well_constructed_rows'] = $etgar22Record;
 

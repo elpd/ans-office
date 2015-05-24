@@ -43,7 +43,7 @@ class Contact extends Model
         ),
         "phone" => array(
             'required',
-        //    'phone:IL',
+            //    'phone:IL',
         ),
         "facebook" => array(),
         "birth_year" => [
@@ -70,7 +70,12 @@ class Contact extends Model
     public $scopeMethods = [
         'singular',
         'inGroup',
-        'guidedByUser'
+        'inAnyRunningGroup',
+        'inAnyRegistrationGroup',
+        'inAnyRegistrationGroupAndNotAcceptedYetOrNoGroup',
+        'guidedByUser',
+        'withNoAssociatedGuides',
+        'withAnyAssociatedGuide',
     ];
 
     public function etgar22()
@@ -81,6 +86,10 @@ class Contact extends Model
     public function groupMembers()
     {
         return $this->hasMany('App\GroupsMember');
+    }
+
+    public function notes() {
+        return $this->hasMany('App\ContactNote');
     }
 
     /**
@@ -127,6 +136,63 @@ class Contact extends Model
 
                 $guidesQuery->where('users.id', '=', $guide_id);
             });
+        });
+    }
+
+    public function scopeInAnyRunningGroup($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->whereHas('group', function ($groupQuery) {
+
+                $runningStatus = \App\GroupStatus::where('status', '=', 'running')->firstOrFail();
+                $groupQuery->where('groups.status_id', '=', $runningStatus->id);
+            });
+        });
+    }
+
+    public function scopeInAnyRegistrationGroup($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->whereHas('group', function ($groupQuery) {
+
+                $registrationStatus = \App\GroupStatus::where('status', '=', 'registration')->firstOrFail();
+                $groupQuery->where('groups.status_id', '=', $registrationStatus->id);
+            });
+        });
+    }
+
+    public function scopeInAnyRegistrationGroupAndNotAcceptedYetOrNoGroup($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->whereHas('group', function ($groupQuery) {
+
+                $registrationStatus = \App\GroupStatus::where('status', '=', 'registration')->firstOrFail();
+                $groupQuery->where('groups.status_id', '=', $registrationStatus->id);
+            });
+
+            $membershipStatuses = [
+                \App\GroupMembersStatus::where('status', '=', 'new')->firstOrFail()->id,
+                \App\GroupMembersStatus::where('status', '=', 'in_process')->firstOrFail()->id,
+            ];
+            $groupMembersQuery->whereIn('status_id', $membershipStatuses);
+        });
+
+        $query->orHas('groupMembers', '=', 0);
+    }
+
+    public function scopeWithNoAssociatedGuides($query)
+    {
+        $query->has('groupMembers.guides', '<', 1);
+    }
+
+    public function scopeWithAnyAssociatedGuide($query)
+    {
+        $query->whereHas('groupMembers', function ($groupMembersQuery) {
+
+            $groupMembersQuery->has('guides');
         });
     }
 

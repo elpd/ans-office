@@ -86,6 +86,19 @@ define([], function () {
             }
             array.splice(new_index, 0, array.splice(old_index, 1)[0]);
             return array; // for testing purposes
+        },
+
+        generateOptions: function(itemsPackage, BusinessObject) {
+            var options = [];
+
+            _.forEach(itemsPackage.rows, function(row){
+                var bi = new BusinessObject(row.cell);
+                var $option = bi.to$SelectOption();
+
+                options.push($option);
+            });
+
+            return options;
         }
     };
 

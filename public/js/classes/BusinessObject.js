@@ -25,6 +25,10 @@ define([], function(){
 
       return html;
     },
+
+    to$SelectOption: function() {
+      return $(this.toSelectOption());
+    }
   };
 
   return Class;

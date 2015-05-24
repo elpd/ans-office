@@ -13,11 +13,12 @@ class PopulateEtgar22Record extends Command implements SelfHandling
      *
      * @return void
      */
-    public function __construct(Etgar22Record $etgar22Record, $output, $overwriteEtgar22Option)
+    public function __construct(Etgar22Record $etgar22Record, $output, $overwriteEtgar22Option, $currentUser)
     {
         $this->etgar22Record = $etgar22Record;
         $this->output = $output;
         $this->overwriteEtgar22Option = $overwriteEtgar22Option;
+        $this->currentUser = $currentUser;
     }
 
     /**
@@ -72,12 +73,19 @@ class PopulateEtgar22Record extends Command implements SelfHandling
         return $contact;
     }
 
-    protected function findOutEtgar22ForContact($contact)
+    protected function findOutEtgar22ForContact(\App\Contact $contact)
     {
         $etgar22 = $contact->etgar22()->first();
         if ($etgar22 != null) {
             if ($this->overwriteEtgar22Option) {
                 $etgar22 = $contact->etgar22()->first();
+
+                $newNote = new \App\ContactNote([
+                    "text" => $etgar22->toJson()
+                ]);
+                $newNote->user()->associate($this->currentUser);
+
+                $contact->notes()->save($newNote);
 
             } else {
                 throw new \Exception('contact already has etgar 22 record'); // TODO: custom exception with contact data.

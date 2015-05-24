@@ -25,20 +25,20 @@ class ComposerServiceProvider extends ServiceProvider {
         \View::composer([
             'app',
             'logged',
-            'employee',
+            'table',
             'admin',
             'admin.users',
             'admin.roles',
             'admin.permissions',
             'user.settings',
             'user.settings.general',
-            'employee.contacts',
-            'employee.cycles',
-            'employee.groups',
-            'employee.guides',
-            'employee.groupsMembersGuides',
-            'employee.groupsMembers',
-            'employee.etgar22RegistrationRequests',
+            'table.contacts',
+            'table.cycles',
+            'table.groups',
+            'table.guides',
+            'table.groupsMembersGuides',
+            'table.groupsMembers',
+            'table.etgar22RegistrationRequests',
         ], 'App\Http\ViewComposers\AppComposer');
     }
 

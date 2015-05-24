@@ -48,7 +48,7 @@ class RoleTableSeeder extends Seeder
             Permission::where('slug', 'LIKE', 'api.group.member.guide.action.%')->firstOrFail(),
         ];
 
-        $etgar22registratorPermissions = [
+        $etgar22firsttimeregistrarPermissions = [
             Permission::where('slug', '=', 'api.etgar22.registration.request.action.store')->get(),
         ];
 
@@ -82,12 +82,22 @@ class RoleTableSeeder extends Seeder
                 ]
             ],
             [
-                'name' => 'etgar22registrator',
-                'slug' => 'etgar22registrator',
+                'name' => 'Etgar 22 Registrar',
+                'slug' => 'etgar22registrar',
+                'description' => '',
+                'level' => 20,
+                'permissions' => [
+                    $employeeReadingPermissions,
+                    $employeeWritingPermissions,
+                ]
+            ],
+            [
+                'name' => 'Etgar 22 First Time Registrar',
+                'slug' => 'etgar22firsttimeregistrar',
                 'description' => 'api account for etgar22 registration',
                 'level' => 20,
                 'permissions' => [
-                    $etgar22registratorPermissions
+                    $etgar22firsttimeregistrarPermissions
                 ]
             ],
             array(

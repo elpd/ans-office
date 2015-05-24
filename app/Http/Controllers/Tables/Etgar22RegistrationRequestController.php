@@ -1,4 +1,6 @@
-<?php namespace App\Http\Controllers;
+<?php namespace App\Http\Controllers\Tables;
+
+use App\Http\Controllers\Controller;
 
 class Etgar22RegistrationRequestController extends Controller {
 
@@ -19,7 +21,7 @@ class Etgar22RegistrationRequestController extends Controller {
 	 */
 	public function index()
 	{
-		return view('employee.etgar22RegistrationRequests')->with('selected_view', 'etgar22_registration_requests');;
+		return view('table.etgar22RegistrationRequests')->with('selected_view', 'etgar22_registration_requests');;
 	}
 
 }

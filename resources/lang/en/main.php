@@ -13,7 +13,9 @@ return [
     'anonymouse_org_short_label' => 'ANS',
     'home_menu_label' => 'Home',
     'admin_menu_label' => 'Admin',
-    'employee_menu_label' => 'Employee',
+    'table_menu_label' => 'Tables',
+    'guide_menu_label' => 'Guide',
+    'etgar22_registrar_menu_label' => 'Etgar 22 Registrar',
 
     'menu_settings_label' => 'Settings',
     'menu_logout_label' => 'Logout',
@@ -64,4 +66,11 @@ return [
     'dataFromCsv_errors' => 'Errors',
     'dataFromCsv_info' => 'Info',
     'dataFromCsv_label_overwrite_etgar22' => 'Overwrite existing etgar22 records',
+
+    'guide-page_guide-select_no-guide-option' => 'No Guide',
+    'guide-page_guide-select_any-guide-option' => 'Any Guide',
+    'guide-page_table-header' => 'Contacts who are registered and in running groups',
+
+    'etgar22registrar-page_header' => 'Registrars',
+    'etgar22registrar-page_table-header' => 'Contacts who are not yet registered in opening groups.',
 ];
